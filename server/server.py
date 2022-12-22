@@ -175,7 +175,7 @@ def fetchallpaidtable():
     
     PaidTableDataList=[]
     for i in result:
-        sno,cmobileno,padate,paisbill,padescription,pamount,paymentmode=i
+        sno,cmobileno,padate,paisbill,padescription,pamount,paymentmode=i # i is tupple
         temp={
             "sno":sno,
             "cmobileno":cmobileno,
@@ -221,7 +221,7 @@ def fetchallpayabletable():
     """
     PayableTableDataList=[]
     for i in result:
-        sno,cmobileno,pydate,pyisbill,pydescription,pyamount=i
+        sno,cmobileno,pydate,pyisbill,pydescription,pyamount=i # i is tupple
         temp={
             "sno":sno,
             "cmobileno":cmobileno,
