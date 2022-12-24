@@ -6,8 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
-import 'povider/google_auth_provider.dart';
+import 'provider/google_auth_provider.dart';
 import 'screen/auth_screen_final.dart';
+import 'screen/client_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'cashbook',
         theme: ThemeData(
           useMaterial3: true,
           primarySwatch: Colors.blue,
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
               .authStateChanges(), //it give a token whter it is authenticed or not
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
-              return HomeScreen();
+              return ClientScreen();
             } else {
               //and no data so not auth.. so retry
               return AuthScreen();
@@ -47,6 +48,8 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           AddInPayableScreen.routeName: (context) => AddInPayableScreen(),
+          HomeScreen.routeName: (context) => HomeScreen(),
+          ClientScreen.routeName: (context) => ClientScreen(),
         },
       ),
     );

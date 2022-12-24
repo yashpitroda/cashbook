@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -67,10 +66,10 @@ class GauthProvider extends ChangeNotifier {
           context: context, message: 'Internal Server Error');
       return false;
     } else {
-      print('something went wrong -- authantication');
+      print('something went wrong -- authentication');
       print(response.statusCode);
       Utility.displaysnackbar(
-          context: context, message: 'something went wrong -- authantication');
+          context: context, message: 'something went wrong -- authentication');
       return false;
     }
   }
