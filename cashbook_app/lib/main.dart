@@ -17,7 +17,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -37,15 +37,7 @@ class MyApp extends StatelessWidget {
           stream: FirebaseAuth.instance
               .authStateChanges(), //it give a token whter it is authenticed or not
           builder: (context, userSnapshot) {
-            // print("12434242");
-            print(userSnapshot.connectionState.toString());
-            // print(userSnapshot.hasData);
-            // print(userSnapshot.toString());
             if (userSnapshot.hasData) {
-              // print("cnxvxlkffjdlfjfhjfjkf");
-              // print(userSnapshot.hasData);
-              // print(userSnapshot.toString());
-              //if data is found mean userr authanticated so we go to chatscreem
               return HomeScreen();
             } else {
               //and no data so not auth.. so retry

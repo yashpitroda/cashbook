@@ -12,25 +12,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final currentUser = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          InkWell(
-              onTap: () {
-                Provider.of<GauthProvider>(context, listen: false)
-                    .signOutWithGoogle();
-                print("logout");
-                // Navigator.of(context).pop();
-              },
-              child: Icon(Icons.logout))
-        ],
-      ),
-      body: Column(
-        children: [
-          
-        ],
+     
+      body: FutureBuilder(
+        future: Provider.of<GauthProvider>(context).adduserindatabase(
+            context,
+            currentUser!.displayName.toString(),
+            currentUser!.email.toString(),
+            currentUser!.photoURL.toString()),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data == true) {
+              return Center(
+                child: Text("jfdsj"),
+              );
+            }
+          }
+
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }
