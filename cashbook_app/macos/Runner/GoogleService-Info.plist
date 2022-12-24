@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>741662382903-2a75cat0v3qmsbne88uhaj8muutqostb.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.741662382903-2a75cat0v3qmsbne88uhaj8muutqostb</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCxOUFGNej7jHxN_G0Y65WhdvaIc0HE1Vo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>741662382903</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.cashbookApp</string>
+	<key>PROJECT_ID</key>
+	<string>cashbook-4f20d</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cashbook-4f20d.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:741662382903:ios:c6eda751cf17aea30658b2</string>
+</dict>
+</plist>

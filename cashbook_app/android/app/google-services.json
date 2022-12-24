@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "741662382903",
+    "project_id": "cashbook-4f20d",
+    "storage_bucket": "cashbook-4f20d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741662382903:android:2ec6b95a7b91e8010658b2",
+        "android_client_info": {
+          "package_name": "com.example.cashbook_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "741662382903-4955qlc09r83anl5ufknv8eihdkn6iik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8mQP9rS0WEyKwxo9j-ux7WU8V6OW1Kes"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "741662382903-4955qlc09r83anl5ufknv8eihdkn6iik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
