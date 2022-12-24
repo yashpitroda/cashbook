@@ -8,5 +8,4 @@ class Utility {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message)));
   }
-
 }

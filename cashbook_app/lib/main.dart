@@ -1,4 +1,4 @@
-import 'package:cashbook_app/screen/client_screen.dart';
+import 'package:cashbook_app/screen/add_in_payable_screen.dart';
 import 'package:cashbook_app/screen/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'provider/google_auth_provider.dart';
 import 'screen/auth_screen_final.dart';
+import 'screen/client_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
           },
         ),
         routes: {
+          AddInPayableScreen.routeName: (context) => AddInPayableScreen(),
           HomeScreen.routeName: (context) => HomeScreen(),
           ClientScreen.routeName: (context) => ClientScreen(),
         },

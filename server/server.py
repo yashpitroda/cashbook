@@ -17,7 +17,7 @@ async def useradd():
         
     username=value['username']
     useremail=value['useremail']
-    userimageurl=value['userimageurl']
+    userimageurl='aa'
     print(useremail)
 
     fetchdata=await util.finduser(useremail) #find user in db 
