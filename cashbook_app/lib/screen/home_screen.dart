@@ -1,3 +1,5 @@
+import 'package:cashbook_app/screen/add_in_payable_screen.dart';
+import 'package:cashbook_app/screen/client_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,9 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data == true) {
-              return Center(
-                child: Text("jfdsj"),
-              );
+              // return ClientScreen();
+              return AddInPayableScreen();
             }
           }
 

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -9,6 +10,7 @@ class ClientScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser;
     return Scaffold(
       backgroundColor: Colors.white,
       body: NestedScrollView(headerSliverBuilder: (context, isScrolled) {
@@ -16,7 +18,12 @@ class ClientScreen extends StatelessWidget {
           scrollableAppbar(),
         ];
       },
-      body: LayoutBuilder(builder: (context, constraint) {
+      body: 
+      
+      
+      
+      
+      LayoutBuilder(builder: (context, constraint) {
         return Container(
           height: constraint.maxHeight,
           width: double.infinity,
