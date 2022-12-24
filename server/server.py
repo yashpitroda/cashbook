@@ -2,7 +2,6 @@
 from flask_cors import CORS #imp
 from flask import Flask,request,jsonify
 import json
-
 import util
 
 prt = 9000
@@ -10,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route('/useradd',methods=['POST'])
-def useradd():
+async def useradd():
     value=request.get_json()
     requird=['username','useremail','userimageurl']
     if not all(key in value for key in requird):
@@ -21,8 +20,8 @@ def useradd():
     userimageurl=value['userimageurl']
     print(useremail)
 
-    fetchdata=util.finduser(useremail) #find user in db 
-    print(fetchdata) 
+    fetchdata=await util.finduser(useremail) #find user in db 
+    print(fetchdata,"Aaaaa") 
     
     if(fetchdata==None):
         # insert in db
