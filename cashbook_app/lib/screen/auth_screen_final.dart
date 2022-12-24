@@ -8,10 +8,10 @@ import '../widgets/signup_card.dart';
 class AuthScreen extends StatelessWidget {
   const AuthScreen({super.key});
   Future<void> onSubmitGoogleSignup(BuildContext context) async {
-    print("object");
+   
     await Provider.of<GauthProvider>(context, listen: false)
         .signUpWithGoogle(context);
-    print("object");
+    
   }
 
   @override
@@ -33,15 +33,6 @@ class AuthScreen extends StatelessWidget {
                 imagepath: "assets/images/g-logo-2.png",
               ),
             ),
-            // InkWell(
-            //   onTap: () => onSubmitAppleSignup(context),
-            //   child: SignupCard(
-            //     mxheight: mxheight,
-            //     mxwidth: mxwidth,
-            //     title: "Signup with Apple",
-            //     imagepath: "assets/images/g-logo-2.png",
-            //   ),
-            // ),
           ],
         ),
       )),

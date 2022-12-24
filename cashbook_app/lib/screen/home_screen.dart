@@ -29,8 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          Image.network(Provider.of<GauthProvider>(context).Imageurl ?? ""),
-          Center(child: Text("data")),
+          
         ],
       ),
     );

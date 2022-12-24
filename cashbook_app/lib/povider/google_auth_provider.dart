@@ -3,18 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-
 class GauthProvider extends ChangeNotifier {
-  String? imageurl;
   final FirebaseAuth fireauth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  String? get Imageurl {
-    return imageurl;
-  }
 
-  Future<void> signUpWithGoogle(
-    BuildContext context,
-  ) async {
+  Future<void> signUpWithGoogle(BuildContext context) async {
     if (kIsWeb) {
       //if it is website
       GoogleAuthProvider gAuthProvider = GoogleAuthProvider();
@@ -39,11 +32,9 @@ class GauthProvider extends ChangeNotifier {
         print(result.user!);
         print("*********");
         print(result.user!.email.toString());
-        // print(result.user!.phoneNumber.toString());
-        // print(result.user!.emailVerified.toString());
         print(result.user!.photoURL);
         print(result.user!.uid);
-        imageurl = result.user!.photoURL;
+
         notifyListeners();
       }
     }
