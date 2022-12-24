@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../povider/google_auth_provider.dart';
+import '../provider/google_auth_provider.dart';
 import '../widgets/signup_card.dart';
 
 

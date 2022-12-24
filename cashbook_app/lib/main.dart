@@ -1,3 +1,4 @@
+import 'package:cashbook_app/screen/client_screen.dart';
 import 'package:cashbook_app/screen/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
-import 'povider/google_auth_provider.dart';
+import 'provider/google_auth_provider.dart';
 import 'screen/auth_screen_final.dart';
 
 void main() async {
@@ -17,7 +18,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'cashbook',
         theme: ThemeData(
           useMaterial3: true,
           primarySwatch: Colors.blue,
@@ -38,13 +38,17 @@ class MyApp extends StatelessWidget {
               .authStateChanges(), //it give a token whter it is authenticed or not
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
-              return HomeScreen();
+              return ClientScreen();
             } else {
               //and no data so not auth.. so retry
               return AuthScreen();
             }
           },
         ),
+        routes: {
+          HomeScreen.routeName: (context) => HomeScreen(),
+          ClientScreen.routeName: (context) => ClientScreen(),
+        },
       ),
     );
   }
