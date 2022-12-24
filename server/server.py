@@ -9,17 +9,45 @@ prt = 9000
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/useradd',methods=['POST'])
+def useradd():
+    value=request.get_json()
+    requird=['username','useremail','userimageurl']
+    if not all(key in value for key in requird):
+         return {'error':'cname or cmobile will be None or null','status':'fail'},400
+        
+    username=value['username']
+    useremail=value['useremail']
+    userimageurl=value['userimageurl']
+    print(useremail)
 
+    fetchdata=util.finduser(useremail) #find user in db 
+    print(fetchdata) 
+    
+    if(fetchdata==None):
+        # insert in db
+        status=util.insertuser(username,useremail,userimageurl)
+        return {'status':status},200
+    
+    return {'status':fetchdata},200 #user is already exisit so retrun user
 
 @app.route('/clientadd',methods=['POST'])
 def clientadd():
+    """
+    {
+    "cname": "keval",
+    "cmobileno": "98965943",
+    "useremail" : "yash@gmail.com"
+    }
+    """
     value=request.get_json()
-    requird=['cname','cmobileno']
+    requird=['cname','cmobileno','useremail']
     if not all(key in value for key in requird):
          return {'error':'cname or cmobile will be None or null','status':'fail'},400
         
     cmobileno=value['cmobileno']
     cname=value['cname']
+    useremail=value['useremail']
     # print(cname)
 
     fetchdata=util.findclient(cmobileno) #find client in db 
@@ -27,7 +55,7 @@ def clientadd():
     
     if(fetchdata==None):
         # insert in db
-        status=util.insertclient(cname,cmobileno)
+        status=util.insertclient(cname,cmobileno,useremail)
         return {'status':status},200
     
     return {'status':fetchdata},200 #user is already exisit so retrun user
@@ -35,6 +63,11 @@ def clientadd():
         
 @app.route('/clientdelete',methods=['POST'])
 def clientdelete():
+    """
+     {
+    "cmobileno": "1234",
+    }
+    """
     value=request.get_json()
     requird=['cmobileno']
     if not all(key in value for key in requird):
@@ -55,11 +88,12 @@ def additeminpaidtable():
     "paisbill": "1",
     "padescription": "flsfjfsjf",
     "paamount": "1000.12",
-    "paymentmode" :"cash"
+    "paymentmode" :"cash",
+    "useremail" : "yash@gmail.com"
     }
     """
     value=request.get_json()
-    requird=["cmobileno","paisbill","padescription","paamount","paymentmode"]
+    requird=["cmobileno","paisbill","padescription","paamount","paymentmode","useremail"]
     if not all(key in value for key in requird):
          return {'error':'cmobile will be None or null','status':'fail'},400
         
@@ -68,8 +102,9 @@ def additeminpaidtable():
     padescription=value['padescription'] #stirng
     paamount=float(value['paamount']) #doble
     paymentmode=value['paymentmode'] #stirng
+    useremail=value["useremail"] #stirng
    
-    status=util.addItemInPaidTable(cmobileno,padescription,paisbill,paymentmode,paamount) #find client in db 
+    status=util.addItemInPaidTable(cmobileno,padescription,paisbill,paymentmode,paamount,useremail) #find client in db 
     print(status) 
 
     return {'status':status},200 #user delted
@@ -81,11 +116,12 @@ def additeminpayabletable():
     "cmobileno": "1234",
     "pyisbill": "1",
     "pydescription": "flsfjfsjf",
-    "pyamount": "1000.12"
+    "pyamount": "1000.12",
+    "useremail" : "yash@gmail.com"
     }
     """
     value=request.get_json()
-    requird=["cmobileno","pyisbill","pydescription","pyamount"]
+    requird=["cmobileno","pyisbill","pydescription","pyamount","useremail"]
     if not all(key in value for key in requird):
          return {'error':'cmobile will be None or null','status':'fail'},400
         
@@ -93,9 +129,10 @@ def additeminpayabletable():
     pyisbill=int(value['pyisbill']) #int
     pydescription=value['pydescription'] #stirng
     pyamount=float(value['pyamount']) #doble
+    useremail=value['useremail'] #doble
 
    
-    status=util.addItemInPayableTable(cmobileno,pydescription,pyisbill,pyamount) #find client in db 
+    status=util.addItemInPayableTable(cmobileno,pydescription,pyisbill,pyamount,useremail) 
     print(status) 
 
     return {'status':status},200 #user delted
@@ -234,9 +271,58 @@ def fetchallpayabletable():
     print(PayableTableDataList)
     return {'datalist': PayableTableDataList},200 
 
+@app.route('/updateiteminpayabletable',methods=['POST'])
+def updateiteminpayabletable():
+    """body
+    {
+    "sno":"5",
+    "cmobileno": "1234",
+    "pyisbill": "0",
+    "pydescription": "i am yash",
+    "pyamount": "1111.55"
+    }
+    """
+    value=request.get_json()
+    requird=["sno",'cmobileno','pyisbill','pydescription','pyamount']
+    if not all(key in value for key in requird):
+         return {'error':'cmobile will be None or null','status':'fail'},400
+        
+    sno=int(value['sno']) 
+    new_cmobileno=value['cmobileno'] #string
+    new_pyisbill=int(value['pyisbill']) #int
+    new_pydescription=value['pydescription'] #stirng
+    new_pyamount=float(value['pyamount']) #doble
+    
+    status=util.updateItemInPayableTable(sno,new_cmobileno,new_pyisbill,new_pydescription,new_pyamount) 
+    return {'status':status},200 
 
 
-
+@app.route('/updateiteminpaidtable',methods=['POST'])
+def updateiteminpaidtable():
+    """body
+    {
+    "sno":"5",
+    "cmobileno": "1234",
+    "paisbill": "0",
+    "padescription": "i am yash",
+    "paamount": "1111.55",
+    "paymentmode":"cash"
+    }
+    """
+    value=request.get_json()
+    requird=["sno",'cmobileno','paisbill','padescription','paamount',"paymentmode"]
+    if not all(key in value for key in requird):
+         return {'error':'cmobile will be None or null','status':'fail'},400
+        
+    sno=int(value['sno']) 
+    new_cmobileno=value['cmobileno'] #string
+    new_paisbill=int(value['paisbill']) #int
+    new_padescription=value['padescription'] #stirng
+    new_paamount=float(value['paamount']) #doble
+    new_paymentmode=value["paymentmode"] #string
+    
+    status=util.updateItemInPaidTable(sno,new_cmobileno,new_paisbill,new_padescription,new_paamount,new_paymentmode) 
+    return {'status':status},200 
 
 
 app.run(debug=True,port=prt,host='0.0.0.0')
