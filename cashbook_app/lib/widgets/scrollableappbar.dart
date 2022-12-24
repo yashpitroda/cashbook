@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 class scrollableAppbar extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      expandedHeight: MediaQuery.of(context).size.height*0.4,
+      expandedHeight: MediaQuery.of(context).size.height * 0.3,
       floating: false,
       pinned: true,
       iconTheme: IconThemeData(color: Colors.black),
@@ -18,8 +17,8 @@ class scrollableAppbar extends StatelessWidget {
                 fit: FlexFit.tight,
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child:  Text(
-                   'Cashbook',
+                  child: Text(
+                    'Cashbook',
                     style: TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 18,
