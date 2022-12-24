@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:http/http.dart' as http;
 
 class GauthProvider extends ChangeNotifier {
   final FirebaseAuth fireauth = FirebaseAuth.instance;
@@ -27,16 +31,47 @@ class GauthProvider extends ChangeNotifier {
         // Getting users credential
         UserCredential result =
             await fireauth.signInWithCredential(authCredential);
-
-        //print user data
-        print(result.user!);
-        print("*********");
-        print(result.user!.email.toString());
-        print(result.user!.photoURL);
-        print(result.user!.uid);
-
-        notifyListeners();
       }
+    }
+  }
+
+  Future<bool> adduserindatabase(BuildContext context, String username,
+      String useremail, String userimageurl) async {
+    final url = Uri.parse(Utility.BASEURL + "/useradd");
+
+    final response = await http.post(
+      url,
+      headers: {'Content-type': 'application/json'},
+      body: json.encode(
+        {
+          'username': username,
+          'useremail': useremail,
+          'userimageurl': userimageurl,
+        },
+      ),
+    );
+    final responseData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      if (responseData['status'].toString() == "database error") {
+        Utility.displaysnackbar(
+            context: context, message: 'something went wrong');
+        return false;
+      }
+
+      print("u are authnticated");
+      return true;
+    } else if (response.statusCode == 500) {
+      print('Internal Server Error');
+      print(response.statusCode);
+      Utility.displaysnackbar(
+          context: context, message: 'Internal Server Error');
+      return false;
+    } else {
+      print('something went wrong -- authantication');
+      print(response.statusCode);
+      Utility.displaysnackbar(
+          context: context, message: 'something went wrong -- authantication');
+      return false;
     }
   }
 
