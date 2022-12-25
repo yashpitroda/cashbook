@@ -1,13 +1,49 @@
+import 'package:cashbook_app/widgets/card_ui_1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../provider/google_auth_provider.dart';
 import '../widgets/scrollableappbar.dart';
 
 class ClientScreen extends StatelessWidget {
   static const String routeName = '/clientscreen';
-
+  double padvalue = 110;
+  List<Map<String, dynamic>> list = [
+    {
+      'user': 'yash',
+      'desc': 'hello world mf mf ',
+      'date': '2022-10-10',
+      'cashmode': 'cash',
+      'amount': '1000',
+      'ispaid': 'paid'
+    },
+    {
+      'user': 'yash',
+      'desc': 'hello world mf mf ',
+      'date': '2022-10-10',
+      'cashmode': 'bank',
+      'amount': '2000',
+      'ispaid': 'payable'
+    },
+    {
+      'user': 'keval',
+      'date': '2022-10-10',
+      'desc': 'hello world mf mf ',
+      'cashmode': 'cash',
+      'amount': '1000',
+      'ispaid': 'paid'
+    },
+    {
+      'user': 'ram',
+      'date': '2022-11-10',
+      'desc': 'hello world mf mf ',
+      'cashmode': 'cash',
+      'amount': '5000',
+      'ispaid': 'payable'
+    }
+  ];
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -30,15 +66,25 @@ class ClientScreen extends StatelessWidget {
                     ];
                   }, body: LayoutBuilder(builder: (context, constraint) {
                     return Container(
+                      color: Colors.grey.shade100,
                       height: constraint.maxHeight,
                       width: double.infinity,
-                      padding: EdgeInsets.fromLTRB(
-                          10, constraint.maxHeight * 0.12, 0, 6),
-                      child: DefaultTabController(
-                        length: 3,
-                        initialIndex: 0,
-                        child: Column(
-                            children: [Tabs(context), Tabbarview(context)]),
+                      child: AnimatedPadding(
+                        duration: const Duration(milliseconds: 200),
+                        padding: EdgeInsets.fromLTRB(
+                            10,
+                            constraint.biggest.height ==
+                                    MediaQuery.of(context).size.height
+                                ? padvalue
+                                : 10,
+                            10,
+                            10),
+                        child: DefaultTabController(
+                          length: 3,
+                          initialIndex: 0,
+                          child: Column(
+                              children: [Tabs(context), Tabbarview(context)]),
+                        ),
                       ),
                     );
                   })));
@@ -65,11 +111,10 @@ class ClientScreen extends StatelessWidget {
       padding: EdgeInsets.all(0),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            color: const Color(0xfff1f1f1)),
+            borderRadius: BorderRadius.circular(50), color: Colors.white),
         child: TabBar(
           labelColor: Colors.white,
-          unselectedLabelColor: const Color(0xffcbcbcb),
+          unselectedLabelColor: Colors.black,
           indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
               color: const Color(0xffb21c55)),
@@ -103,27 +148,13 @@ class ClientScreen extends StatelessWidget {
     return Expanded(
       child: Container(
         child: TabBarView(children: [
-          ListView.builder(
-            itemBuilder: (ctx, index) {
-              return Card(
-                color: Color(0xfff1f1f1),
-                shadowColor: Color.fromRGBO(250, 250, 250, 0.5),
-                elevation: 5,
-                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                  child: Text(
-                    "yash",
-                    style: Theme.of(context).textTheme.headline6,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              );
+          GroupedListView<dynamic, String>(
+            elements: list,
+            groupBy: (element) => element['date'],
+            groupSeparatorBuilder: (value) => Text(value),
+            itemBuilder: (context, element) {
+              return CardUI1();
             },
-            itemCount: 10,
           ),
           ListView.builder(
             itemBuilder: (Ctx, index) {
