@@ -42,6 +42,70 @@ class ClientScreen extends StatelessWidget {
       'cashmode': 'cash',
       'amount': '5000',
       'ispaid': 'payable'
+    },
+    {
+      'user': 'yash',
+      'desc': 'hello world mf mf ',
+      'date': '2022-10-10',
+      'cashmode': 'cash',
+      'amount': '1000',
+      'ispaid': 'paid'
+    },
+    {
+      'user': 'yash',
+      'desc': 'hello world mf mf ',
+      'date': '2022-10-10',
+      'cashmode': 'bank',
+      'amount': '2000',
+      'ispaid': 'payable'
+    },
+    {
+      'user': 'keval',
+      'date': '2022-10-10',
+      'desc': 'hello world mf mf ',
+      'cashmode': 'cash',
+      'amount': '1000',
+      'ispaid': 'paid'
+    },
+    {
+      'user': 'ram',
+      'date': '2022-11-10',
+      'desc': 'hello world mf mf ',
+      'cashmode': 'cash',
+      'amount': '5000',
+      'ispaid': 'payable'
+    },
+    {
+      'user': 'yash',
+      'desc': 'hello world mf mf ',
+      'date': '2022-10-10',
+      'cashmode': 'cash',
+      'amount': '1000',
+      'ispaid': 'paid'
+    },
+    {
+      'user': 'yash',
+      'desc': 'hello world mf mf ',
+      'date': '2022-10-10',
+      'cashmode': 'bank',
+      'amount': '2000',
+      'ispaid': 'payable'
+    },
+    {
+      'user': 'keval',
+      'date': '2022-10-10',
+      'desc': 'hello world mf mf ',
+      'cashmode': 'cash',
+      'amount': '1000',
+      'ispaid': 'paid'
+    },
+    {
+      'user': 'ram',
+      'date': '2022-11-10',
+      'desc': 'hello world mf mf ',
+      'cashmode': 'cash',
+      'amount': '5000',
+      'ispaid': 'payable'
     }
   ];
   @override
@@ -65,27 +129,77 @@ class ClientScreen extends StatelessWidget {
                       scrollableAppbar(),
                     ];
                   }, body: LayoutBuilder(builder: (context, constraint) {
-                    return Container(
-                      color: Colors.grey.shade100,
-                      height: constraint.maxHeight,
-                      width: double.infinity,
-                      child: AnimatedPadding(
-                        duration: const Duration(milliseconds: 200),
-                        padding: EdgeInsets.fromLTRB(
-                            10,
-                            constraint.biggest.height ==
-                                    MediaQuery.of(context).size.height
-                                ? padvalue
-                                : 10,
-                            10,
-                            10),
-                        child: DefaultTabController(
-                          length: 3,
-                          initialIndex: 0,
-                          child: Column(
-                              children: [Tabs(context), Tabbarview(context)]),
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            color: Colors.grey.shade100,
+                            width: double.infinity,
+                            child: AnimatedPadding(
+                              duration: const Duration(milliseconds: 200),
+                              padding: EdgeInsets.fromLTRB(
+                                  10,
+                                  constraint.biggest.height ==
+                                          MediaQuery.of(context).size.height
+                                      ? padvalue
+                                      : 10,
+                                  10,
+                                  10),
+                              child: DefaultTabController(
+                                length: 3,
+                                initialIndex: 0,
+                                child: Column(children: [
+                                  Tabs(context),
+                                  Tabbarview(context)
+                                ]),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(14, 0, 14, 10),
+                          height: 60,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                      fixedSize: const Size(10, 55),
+                                      backgroundColor: Colors.green.shade800),
+                                  child: const Text(
+                                    'paid',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Rubik',
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                      fixedSize: const Size(10, 55),
+                                      backgroundColor: Colors.red.shade800),
+                                  child: const Text(
+                                    'payable',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Rubik',
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
                     );
                   })));
             }
@@ -107,38 +221,35 @@ class ClientScreen extends StatelessWidget {
 
   // ------------------------------TABS-----------------------------------
   Widget Tabs(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(0),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50), color: Colors.white),
-        child: TabBar(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.black,
-          indicator: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              color: const Color(0xffb21c55)),
-          tabs: const [
-            Tab(
-              child: Text(
-                'Dump',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50), color: Colors.white),
+      child: TabBar(
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.black,
+        indicator: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            color: const Color(0xffb21c55)),
+        tabs: const [
+          Tab(
+            child: Text(
+              'Dump',
+              style: TextStyle(fontWeight: FontWeight.w700),
             ),
-            Tab(
-              child: Text(
-                'Client',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
+          ),
+          Tab(
+            child: Text(
+              'Client',
+              style: TextStyle(fontWeight: FontWeight.w700),
             ),
-            Tab(
-              child: Text(
-                'Date',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
+          ),
+          Tab(
+            child: Text(
+              'Date',
+              style: TextStyle(fontWeight: FontWeight.w700),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

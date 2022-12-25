@@ -4,7 +4,7 @@ class scrollableAppbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      expandedHeight: MediaQuery.of(context).size.height * 0.3,
+      expandedHeight: MediaQuery.of(context).size.height * 0.25,
       collapsedHeight: 60,
       floating: false,
       pinned: true,
@@ -30,7 +30,7 @@ class scrollableAppbar extends StatelessWidget {
       ],
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.parallax,
-        titlePadding:const EdgeInsets.fromLTRB(40, 0, 0, 0),
+        titlePadding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
         background: Card(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

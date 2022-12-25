@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
         theme: ThemeData(
-          useMaterial3: true,
+          // useMaterial3: true,
           primarySwatch: Colors.blue,
         ),
         home: StreamBuilder(
