@@ -5,56 +5,57 @@ class scrollableAppbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      expandedHeight: MediaQuery.of(context).size.height * 0.4,
+      expandedHeight: MediaQuery.of(context).size.height * 0.25,
+      collapsedHeight: 60,
       floating: false,
       pinned: true,
-      iconTheme: IconThemeData(color: Colors.black),
-      backgroundColor: Colors.white,
+      iconTheme: const IconThemeData(color: Colors.black),
+      backgroundColor: const Color(0xff582cd8),
+      actions: [
+        Align(
+          child: Container(
+            height: 40,
+            width: 40,
+            margin: const EdgeInsets.fromLTRB(0, 10, 14, 0),
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50), color: Colors.white),
+            child: IconButton(
+                onPressed: () => {},
+                icon: const Icon(
+                  Icons.manage_accounts,
+                  size: 22,
+                )),
+          ),
+        )
+      ],
       flexibleSpace: FlexibleSpaceBar(
-        title: Container(
-          child: Row(
+        collapseMode: CollapseMode.parallax,
+        titlePadding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
+        background: Card(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Flexible(
-                fit: FlexFit.tight,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    'Cashbook',
-                    style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black),
-                  ),
-                ),
+              Text(
+                '₹10,000',
+                style: TextStyle(
+                    fontFamily: 'Rubik',
+                    color: Colors.white,
+                    fontSize: 40,
+                    fontWeight: FontWeight.w600),
               ),
-              IconButton(
-                  onPressed: () => {
-                        Navigator.of(context)
-                            .pushNamed(AddInPayableScreen.routeName)
-                      },
-                  icon: const Icon(
-                    Icons.favorite_border_outlined,
-                    size: 18,
-                  ))
+              Text(
+                'Total Debt',
+                style: TextStyle(
+                    fontFamily: 'Rubik',
+                    color: Colors.white60,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400),
+              )
             ],
           ),
-        ),
-        collapseMode: CollapseMode.parallax,
-        titlePadding: EdgeInsets.fromLTRB(40, 0, 0, 0),
-        background: ShaderMask(
-          shaderCallback: (rect) {
-            return const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.white, Colors.white, Colors.transparent],
-            ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-          },
-          blendMode: BlendMode.dstIn,
-          child: Image.network(
-            'abc',
-            fit: BoxFit.cover,
-          ),
+          color: Color(0xff582cd8),
         ),
       ),
     );

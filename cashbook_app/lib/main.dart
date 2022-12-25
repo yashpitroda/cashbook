@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
         theme: ThemeData(
-          useMaterial3: true,
+          // useMaterial3: true,
           primarySwatch: Colors.blue,
         ),
         home: StreamBuilder(
@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
               .authStateChanges(), //it give a token whter it is authenticed or not
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
+              print("called2");
               return ClientScreen();
             } else {
               //and no data so not auth.. so retry
