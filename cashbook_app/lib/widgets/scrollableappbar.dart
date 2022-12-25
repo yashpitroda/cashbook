@@ -1,11 +1,11 @@
+import 'package:cashbook_app/screen/add_in_payable_screen.dart';
 import 'package:flutter/material.dart';
 
 class scrollableAppbar extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      expandedHeight: MediaQuery.of(context).size.height*0.4,
+      expandedHeight: MediaQuery.of(context).size.height * 0.4,
       floating: false,
       pinned: true,
       iconTheme: IconThemeData(color: Colors.black),
@@ -18,8 +18,8 @@ class scrollableAppbar extends StatelessWidget {
                 fit: FlexFit.tight,
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child:  Text(
-                   'Cashbook',
+                  child: Text(
+                    'Cashbook',
                     style: TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 18,
@@ -29,7 +29,10 @@ class scrollableAppbar extends StatelessWidget {
                 ),
               ),
               IconButton(
-                  onPressed: () => {},
+                  onPressed: () => {
+                        Navigator.of(context)
+                            .pushNamed(AddInPayableScreen.routeName)
+                      },
                   icon: const Icon(
                     Icons.favorite_border_outlined,
                     size: 18,

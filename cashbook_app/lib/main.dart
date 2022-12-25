@@ -1,5 +1,6 @@
 import 'package:cashbook_app/screen/add_in_payable_screen.dart';
 import 'package:cashbook_app/screen/home_screen.dart';
+import 'package:cashbook_app/screen/select_client_sreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,14 +43,16 @@ class MyApp extends StatelessWidget {
               return ClientScreen();
             } else {
               //and no data so not auth.. so retry
-              return AuthScreen();
+              // return const AuthScreen();
+              return const AuthScreen();
             }
           },
         ),
         routes: {
-          AddInPayableScreen.routeName: (context) => AddInPayableScreen(),
+          AddInPayableScreen.routeName: (context) =>const AddInPayableScreen(),
           HomeScreen.routeName: (context) => HomeScreen(),
           ClientScreen.routeName: (context) => ClientScreen(),
+          SelectClintScreen.routeName: (context) => SelectClintScreen(),
         },
       ),
     );
