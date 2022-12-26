@@ -1,5 +1,4 @@
 import 'package:cashbook_app/screen/select_client_sreen.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +17,6 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController clientNameController = TextEditingController();
 
-  String? selectedCname;
-
   int? _isBillValue = 1;
 
   DateTime? _selectedDate;
@@ -27,28 +24,17 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
   DateTime? finaldateTime;
   Map? selectedClientMap;
 
-  final List<String> cNameList = [
-    'Item1',
-    'Item2',
-    'Item3',
-    'Item4',
-    'Item5',
-    'Item6',
-    'Item7',
-    'Item8',
-  ];
   Future<void> _submitHander() async {
-    print(selectedCname);
     print(amountController.text);
     print(descriptionController.text);
     print(_isBillValue);
+    print(finaldateTime.toString());
+    print(selectedClientMap);
     // print(currentUser.email!);
-    clientNameController.text = "yash";
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     DateTime current_date = DateTime.now();
     finaldateTime = current_date;
     super.initState();
@@ -56,8 +42,6 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-
     super.didChangeDependencies();
   }
 
@@ -109,112 +93,178 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: Container(
-          child: Column(
-            children: [
-              DateTimeSelector(mqwidth),
-              SizedBox(
-                height: mqhight * 0.02,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    DateTimeSelector(mqwidth),
+                    SizedBox(
+                      height: mqhight * 0.02,
+                    ),
+
+                    CustomTextField(
+                      textinputtype: TextInputType.number,
+                      labeltext: "Amount",
+                      customController: amountController,
+                      hinttext: null,
+                      leadding_iconname: null,
+                      triling_iconname: null,
+                    ),
+
+                    SizedBox(
+                      height: mqhight * 0.02,
+                    ),
+                    CustomTextField(
+                      textinputtype: TextInputType.name,
+                      labeltext: "Description",
+                      customController: descriptionController,
+                      hinttext: "product name",
+                      leadding_iconname: null,
+                      triling_iconname: null,
+                    ),
+                    SizedBox(
+                      height: mqhight * 0.02,
+                    ),
+                    Row(
+                      children: [
+                        ChoiceChip(
+                          backgroundColor:
+                              const Color.fromARGB(255, 192, 200, 216),
+                          selectedColor:
+                              const Color.fromARGB(255, 104, 167, 255),
+                          label: const Text('WITH BILL'),
+                          selected: _isBillValue == 1,
+                          onSelected: (bool selected) {
+                            setState(() {
+                              _isBillValue = selected ? 1 : null;
+                            });
+                          },
+                        ),
+                        SizedBox(
+                          width: mqwidth * 0.03,
+                        ),
+                        ChoiceChip(
+                          backgroundColor:
+                              const Color.fromARGB(255, 192, 200, 216),
+                          selectedColor:
+                              const Color.fromARGB(255, 104, 167, 255),
+                          label: const Text('WITHOUT BILL'),
+                          selected: _isBillValue == 0,
+                          onSelected: (bool selected) {
+                            setState(() {
+                              _isBillValue = selected ? 0 : null;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: mqhight * 0.02,
+                    ),
+                    // CustomTextField(
+                    //   // textinputtype: TextInputType.number,
+                    //   textinputtype: null,
+                    //   labeltext: "Client name",
+                    //   customController: descriptionController,
+                    //   hinttext: null,
+                    //   leadding_iconname: null,
+                    //   triling_iconname: Icons.arrow_right,
+                    // ),
+                    TextField(
+                      readOnly: true,
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(SelectClintScreen.routeName)
+                            .then((value) {
+                          selectedClientMap = value as Map;
+                          print(selectedClientMap);
+                          clientNameController.text =
+                              selectedClientMap!["cname"];
+                        });
+                      },
+                      controller: clientNameController,
+                      cursorColor: Colors.black,
+                      style: const TextStyle(
+                          // letterSpacing: 1,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16),
+                      decoration: const InputDecoration(
+                        suffixIcon:
+                            Icon(Icons.arrow_right), //icon at tail of input
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                        ),
+                        labelText: "client name",
+                        labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+                        hintStyle: TextStyle(fontSize: 13),
+
+                        contentPadding:
+                            EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      ),
+                    ),
+
+                    // ElevatedButton(
+                    //     onPressed: _submitHander, child: const Text("btn")),
+                  ],
+                ),
               ),
-              CustomTextField(
-                textinputtype: TextInputType.number,
-                labeltext: "Amount",
-                customController: amountController,
-                hinttext: null,
-                leadding_iconname: null,
-                triling_iconname: null,
-              ),
-              SizedBox(
-                height: mqhight * 0.02,
-              ),
-              CustomTextField(
-                textinputtype: TextInputType.name,
-                labeltext: "Description",
-                customController: descriptionController,
-                hinttext: "product name",
-                leadding_iconname: null,
-                triling_iconname: null,
-              ),
-              SizedBox(
-                height: mqhight * 0.02,
-              ),
-              Row(
+            ),
+            Container(
+              // color: Colors.amber,
+              child: Column(
                 children: [
-                  ChoiceChip(
-                    backgroundColor: const Color.fromARGB(255, 192, 200, 216),
-                    selectedColor: const Color.fromARGB(255, 104, 167, 255),
-                    label: const Text('WITH BILL'),
-                    selected: _isBillValue == 1,
-                    onSelected: (bool selected) {
-                      setState(() {
-                        _isBillValue = selected ? 1 : null;
-                      });
-                    },
+                  Divider(
+                    thickness: 1.3,
                   ),
-                  SizedBox(
-                    width: mqwidth * 0.03,
-                  ),
-                  ChoiceChip(
-                    backgroundColor: const Color.fromARGB(255, 192, 200, 216),
-                    selectedColor: const Color.fromARGB(255, 104, 167, 255),
-                    label: const Text('WITHOUT BILL'),
-                    selected: _isBillValue == 0,
-                    onSelected: (bool selected) {
-                      setState(() {
-                        _isBillValue = selected ? 0 : null;
-                      });
-                    },
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                              fixedSize: const Size(10, 55),
+                              backgroundColor: Colors.red),
+                          child: const Text(
+                            'Cancel',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Rubik',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _submitHander,
+                          style: ElevatedButton.styleFrom(
+                              fixedSize: const Size(10, 55),
+                              backgroundColor: Colors.blue),
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Rubik',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ],
               ),
-              SizedBox(
-                height: mqhight * 0.02,
-              ),
-              // CustomTextField(
-              //   // textinputtype: TextInputType.number,
-              //   textinputtype: null,
-              //   labeltext: "Client name",
-              //   customController: descriptionController,
-              //   hinttext: null,
-              //   leadding_iconname: null,
-              //   triling_iconname: Icons.arrow_right,
-              // ),
-              TextField(
-                readOnly: true,
-                onTap: () {
-                  Navigator.of(context)
-                      .pushNamed(SelectClintScreen.routeName)
-                      .then((value) {
-                    selectedClientMap = value as Map;
-                    print(selectedClientMap);
-                    clientNameController.text = selectedClientMap!["cname"];
-                  });
-                },
-                controller: clientNameController,
-                cursorColor: Colors.black,
-                style: const TextStyle(
-                    // letterSpacing: 1,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16),
-                decoration: InputDecoration(
-                  suffixIcon: Icon(Icons.arrow_right), //icon at tail of input
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                  ),
-                  labelText: "client name",
-                  labelStyle: const TextStyle(letterSpacing: 1, fontSize: 14),
-                  hintStyle: TextStyle(fontSize: 13),
-
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                ),
-              ),
-
-              ElevatedButton(
-                  onPressed: _submitHander, child: const Text("btn")),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

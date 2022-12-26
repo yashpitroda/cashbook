@@ -1,3 +1,5 @@
+import 'package:cashbook_app/screen/add_client_screen.dart';
+import 'package:cashbook_app/screen/manage_client_screen.dart';
 import 'package:flutter/material.dart';
 
 class SelectClintScreen extends StatefulWidget {
@@ -102,69 +104,83 @@ class _SelectClintScreenState extends State<SelectClintScreen> {
     var mqwidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text("select client"),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.settings))],
+        title: const Text("select client"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(ManageClientScreen.routeName);
+              },
+              icon: Icon(Icons.settings))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            TextField(
-              onChanged: (value) {
-                filterSearchResults(value);
-              },
-              controller: editingController,
-              cursorColor: Colors.black,
-              style: const TextStyle(
-                  // letterSpacing: 1,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16),
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search_rounded),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(14)),
-                ),
-                labelText: "Search",
-                labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-                hintStyle: TextStyle(fontSize: 13),
-                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  return RadioListTile(
-                    title: Text(items[index]["cname"]),
-                    subtitle: Text("+91 ${items[index]["cmobileno"]}"),
-                    value: items[index],
-                    groupValue: selectedClient,
-                    // toggleable: true,
-                    onChanged: (value) {
-                      setState(() {
-                        // value contain map of perticluter index
-                        selectedClient = value;
-                        // print(value);
-                      });
-
-                      Navigator.of(context).pop(selectedClient);
-                    },
-                  );
-                },
-              ),
-            ),
+            CustomSearchbarTextfield(),
+            customClientListview(),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Add your onPressed code here!
+          Navigator.of(context).pushNamed(AddclientSceen.routeName);
         },
         label: const Text('Add Client'),
         icon: const Icon(Icons.add),
         // backgroundColor: Colors.pink,
+      ),
+    );
+  }
+
+  Expanded customClientListview() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return RadioListTile(
+            title: Text(items[index]["cname"]),
+            subtitle: Text("+91 ${items[index]["cmobileno"]}"),
+            value: items[index],
+            groupValue: selectedClient,
+            // toggleable: true,
+            onChanged: (value) {
+              setState(() {
+                // value contain map of perticluter index
+                selectedClient = value;
+                // print(value);
+              });
+
+              Navigator.of(context).pop(selectedClient);
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  TextField CustomSearchbarTextfield() {
+    return TextField(
+      onChanged: (value) {
+        filterSearchResults(value);
+      },
+      controller: editingController,
+      cursorColor: Colors.black,
+      style: const TextStyle(
+          // letterSpacing: 1,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+          fontSize: 16),
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Icons.search_rounded),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+        ),
+        labelText: "Search",
+        labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+        hintStyle: TextStyle(fontSize: 13),
+        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
       ),
     );
   }

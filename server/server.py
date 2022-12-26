@@ -17,17 +17,18 @@ async def useradd():
         
     username=value['username']
     useremail=value['useremail']
-    userimageurl='aa'
+    userimageurl=value['userimageurl']
     print(useremail)
 
     fetchdata=await util.finduser(useremail) #find user in db 
-    print(fetchdata,"Aaaaa") 
+    # print(fetchdata,"Aaaaa") 
     
     if(fetchdata==None):
         # insert in db
-        status=util.insertuser(username,useremail,userimageurl)
+        status=await util.insertuser(username,useremail,userimageurl)
+        print("new user added")
         return {'status':status},200
-    
+    print("found user in DB")
     return {'status':fetchdata},200 #user is already exisit so retrun user
 
 @app.route('/clientadd',methods=['POST'])
