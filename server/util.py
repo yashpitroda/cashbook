@@ -50,29 +50,48 @@ async def finduser(useremail):
 
 
 
-# def findclient(cmobileno):
-#     try:
-#         # query = f"SELECT * FROM client WHERE cmobileno={cmobileno}"
-#         query = f"SELECT * FROM client WHERE cmobileno={cmobileno}"
-#         cursor.execute(query)
-#         fatchData = cursor.fetchone()  # user is exist or not
-#         print("in utill", fatchData)
-#         return fatchData
-#     except Exception as e:
-#         print(e)
-#         return "database error"
+async def findclient(cmobileno):
+    try:
+        conn = await createConn()
+        cur = await conn.cursor()
+        # query = f"SELECT * FROM client WHERE cmobileno={cmobileno}"
+        query = f"SELECT * FROM client WHERE cmobileno={cmobileno}"
+        await cur.execute(query)
+        fatchData = await cur.fetchone()  # user is exist or not
+        # print("in utill", fatchData)
+        cur.close()
+        conn.close()
+        return fatchData
+    except Exception as e:
+        print(e)
+        return "database error"
 
+async def findclient2(cmobileno,useremail):
+    try:
+        conn = await createConn()
+        cur = await conn.cursor()
+        # query = f"SELECT * FROM client WHERE cmobileno={cmobileno}"
+        query = f"SELECT * FROM client WHERE cmobileno={cmobileno} and useremail='{useremail}'"
+        await cur.execute(query)
+        fatchData = await cur.fetchone()  # user is exist or not
+        # print("in utill", fatchData)
+        await cur.close()
+        conn.close()
+        return fatchData
+    except Exception as e:
+        print(e)
+        return "database error"
 
 async def insertuser(username, useremail, userimageurl):
     try:
         conn = await createConn()
         cur = await conn.cursor()
-        print("bb")
+        # print("bb")
         query = f"INSERT INTO users (username,useremail,userimageurl) values('{username}','{useremail}','{userimageurl}')"
 
         await cur.execute(query)
         await conn.commit()
-        cur.close()
+        await cur.close()
         conn.close()
         return "new user added in users"
     except Exception as e:
@@ -80,28 +99,66 @@ async def insertuser(username, useremail, userimageurl):
         return "database error"
 
 
-# def insertclient(cname, cmobileno, useremail):
-#     try:
-#         query = f"INSERT INTO client(cname,cmobileno,useremail) values('{cname}','{cmobileno}','{useremail}')"
-#         print(query)
-#         cursor.execute(query)
-#         db.commit()
-#         return "new clint added"
-#     except Exception as e:
-#         print(e)
-#         return "database error"
+async def insertclientwithcemail(cname,fermname, cmobileno,cemail, useremail,entrydatetime):
+    try:
+        conn = await createConn()
+        cur = await conn.cursor()
+        query = f"INSERT INTO client(cname,fermname,cmobileno,cemail,useremail,entrydatetime) values('{cname}','{fermname}','{cmobileno}','{cemail}','{useremail}','{entrydatetime}')"
+        await cur.execute(query)
+        await conn.commit()
+        await cur.close()
+        conn.close()
+        return "new clint added"
+    except Exception as e:
+        print(e)
+        return "database error"
+    
+async def insertclientwithoutcemail(cname,fermname, cmobileno, useremail,entrydatetime):
+    try:
+        conn = await createConn()
+        cur = await conn.cursor()
+        query = f"INSERT INTO client(cname,fermname,cmobileno,useremail,entrydatetime) values('{cname}','{fermname}','{cmobileno}','{useremail}','{entrydatetime}')"
+        await cur.execute(query)
+        await conn.commit()
+        await cur.close()
+        conn.close()
+        return "new clint added"
+    except Exception as e:
+        print(e)
+        return "database error"
 
 
-# def deleteclient(cmobileno):
-#     try:
-#         query = f"delete from client where cmobileno='{cmobileno}'"
-#         print(query)
-#         cursor.execute(query)
-#         db.commit()
-#         return "delete client success"
-#     except Exception as e:
-#         print(e)
-#         return "database error"
+async def deleteclient(cmobileno,useremail):
+    try:
+        conn = await createConn()
+        cur = await conn.cursor()
+        query = f"delete from client where cmobileno='{cmobileno}' AND useremail='{useremail}'"
+        # print(query)
+        await cur.execute(query)
+        await conn.commit()
+        await cur.close()
+        conn.close()
+        return "delete client success"
+    except Exception as e:
+        print(e)
+        return "database error"
+    
+async def fetchAllItemInClientTable(useremail):
+    try:
+        print(useremail)
+        conn = await createConn()
+        cur = await conn.cursor()
+        query = f"SELECT * FROM client WHERE useremail='{useremail}' ORDER BY fermname ASC"
+        # print(query)
+        await cur.execute(query)
+        fetchdata = await cur.fetchall()
+        # print(fetchdata)
+        await cur.close()
+        conn.close()
+        return fetchdata
+    except Exception as e:
+        print(e)
+        return "database error"
 
 
 # def addItemInPaidTable(

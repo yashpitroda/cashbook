@@ -1,4 +1,6 @@
+import 'package:cashbook_app/provider/client_contact_provider.dart';
 import 'package:cashbook_app/screen/add_client_screen.dart';
+import 'package:cashbook_app/screen/select_contact_screen.dart';
 import 'package:cashbook_app/screen/add_in_payable_screen.dart';
 import 'package:cashbook_app/screen/home_screen.dart';
 import 'package:cashbook_app/screen/manage_client_screen.dart';
@@ -29,8 +31,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => GauthProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (ctx) => ClientContactProvider(),
+        ),
       ],
       child: MaterialApp(
+        scrollBehavior: ScrollBehavior(
+            androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
         theme: ThemeData(
@@ -43,7 +50,7 @@ class MyApp extends StatelessWidget {
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
               print("called2");
-              return  ClientScreen();
+              return ClientScreen();
             } else {
               //and no data so not auth.. so retry
               return const AuthScreen();
@@ -56,8 +63,9 @@ class MyApp extends StatelessWidget {
           HomeScreen.routeName: (context) => HomeScreen(),
           ClientScreen.routeName: (context) => ClientScreen(),
           SelectClintScreen.routeName: (context) => SelectClintScreen(),
-          AddclientSceen.routeName: (context) => AddclientSceen(),
-          ManageClientScreen.routeName: (context) =>  ManageClientScreen(),
+          AddClientScreen.routeName: (context) => AddClientScreen(),
+          ManageClientScreen.routeName: (context) => ManageClientScreen(),
+          SelectContactScreen.routeName: (context) => SelectContactScreen(),
         },
       ),
     );

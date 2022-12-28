@@ -26,13 +26,16 @@ async def useradd():
     if(fetchdata==None):
         # insert in db
         status=await util.insertuser(username,useremail,userimageurl)
+        print("/useradd Completed") 
         print("new user added")
         return {'status':status},200
+    
     print("found user in DB")
+    print("/useradd Completed") 
     return {'status':fetchdata},200 #user is already exisit so retrun user
 
 @app.route('/clientadd',methods=['POST'])
-def clientadd():
+async def clientadd():
     """
     {
     "cname": "keval",
@@ -41,45 +44,97 @@ def clientadd():
     }
     """
     value=request.get_json()
-    requird=['cname','cmobileno','useremail']
+    requird=['cname','cmobileno','cemail','useremail',"entrydatetime","fermname"]
     if not all(key in value for key in requird):
          return {'error':'cname or cmobile will be None or null','status':'fail'},400
         
     cmobileno=value['cmobileno']
+    fermname=value['fermname']
     cname=value['cname']
+    cemail=value['cemail']
     useremail=value['useremail']
-    # print(cname)
-
-    fetchdata=util.findclient(cmobileno) #find client in db 
-    print(fetchdata) 
+    entrydatetime=value['entrydatetime']
+    # print(cemail)
+    # print(type(cemail))
     
-    if(fetchdata==None):
-        # insert in db
-        status=util.insertclient(cname,cmobileno,useremail)
-        return {'status':status},200
+    fetchdata=await util.findclient2(cmobileno,useremail) #find client in db 
+    # print(fetchdata) 
     
-    return {'status':fetchdata},200 #user is already exisit so retrun user
+    if(cemail==None):
+        # go without email
+        if(fetchdata==None):
+            # insert in db
+            status=await util.insertclientwithoutcemail(cname,fermname,cmobileno,useremail,entrydatetime)
+            print("/clientadd Completed") 
+            return {'status':status},200
+        print("/clientadd Completed") 
+        return {'status':fetchdata},200 #user is already exisit so retrun user
+    else:# go with email
+        if(fetchdata==None):
+            # insert in db
+            status=await util.insertclientwithcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime)
+            print("/clientadd Completed") 
+            return {'status':status},200
+        print("/clientadd Completed") 
+        return {'status':fetchdata},200 #user is already exisit so retrun user
+    
+    
+   
    
         
 @app.route('/clientdelete',methods=['POST'])
-def clientdelete():
+async def clientdelete():
     """
      {
     "cmobileno": "1234",
     }
     """
     value=request.get_json()
-    requird=['cmobileno']
+    requird=['cmobileno','useremail']
     if not all(key in value for key in requird):
          return {'error':'cmobile will be None or null','status':'fail'},400
         
     cmobileno=value['cmobileno']
+    useremail=value['useremail']
    
-    status=util.deleteclient(cmobileno) #find client in db 
-    print(status) 
+    status=await util.deleteclient(cmobileno,useremail) #find client in db 
+    # print(status)
+    print("/clientdelete Completed") 
 
     return {'status':status},200 #user delted
 
+@app.route('/fetchclient',methods=['POST'])
+async def fetchclient():
+    """body
+    {"useremail":"yashpitroda200@gmail.com"}
+    """
+    value=request.get_json()
+    requird=['useremail']
+    if not all(key in value for key in requird):
+         return {'error':'cmobile will be None or null','status':'fail'},400
+    useremail=value['useremail']
+    
+    result=await util.fetchAllItemInClientTable(useremail) #result hold list of tupple -- [(),(),()]
+
+    clientTableDataList=[]
+    for i in result:
+        cid,cname,fermname,cmobileno,cemail,useremail,entrydatetime=i # i is tupple
+        temp={
+            "cid":cid,
+            "cname":cname,
+            "fermname":fermname,
+            "cmobileno":cmobileno,
+            "cemail":cemail,
+            "useremail":useremail,    
+            "entrydatetime":entrydatetime, #in string   
+        }
+        clientTableDataList.append(temp)
+    # print(clientTableDataList)
+    print("/fatchclient Completed")
+    return {'datalist': clientTableDataList},200 
+
+
+ #--------------------_-------------------------------_-----------------
 @app.route('/additeminpaidtable',methods=['POST'])
 def additeminpaidtable():
     """body
@@ -173,58 +228,58 @@ def deleteiteminpaidtable():
 
     return {'status':status},200 
 
-@app.route('/fetchallpaidtable',methods=['POST'])
-def fetchallpaidtable():
-    """body
+# @app.route('/fetchallpaidtable',methods=['POST'])
+# def fetchallpaidtable():
+#     """body
     
-    """
-    result=util.fetchAllItemInPaidTable() #result hold list of tupple -- [(),(),()]
-    """
-    {
-    "datalist": [
-        {
-        "cmobileno": "1234",
-        "padate": "Thu, 22 Dec 2022 11:42:47 GMT",
-        "padescription": "flsfjfsjf",
-        "paisbill": 1,
-        "pamount": 1000.12,
-        "paymentmode": "cash",
-        "sno": 1
-        },
-        {
-        "cmobileno": "1234",
-        "padate": "Thu, 22 Dec 2022 11:42:47 GMT",
-        "padescription": "flsfjfsjf",
-        "paisbill": 1,
-        "pamount": 1000.12,
-        "paymentmode": "cash",
-        "sno": 3
-        }
-    ]
-    }
-    """
-    # print(result) 
-    # print(jsonify(result)) 
-    #dumps : is used to convert all row into list form:[] 
-    # print(json.dumps(result,default=str)) #default=str mean covert all paramiter to stirng 
-    # print(json.decode(response.body)); -- frented side
-    # listOfPaidTableData=json.dumps(result,default=str)
+#     """
+#     result=util.fetchAllItemInPaidTable() #result hold list of tupple -- [(),(),()]
+#     """
+#     {
+#     "datalist": [
+#         {
+#         "cmobileno": "1234",
+#         "padate": "Thu, 22 Dec 2022 11:42:47 GMT",
+#         "padescription": "flsfjfsjf",
+#         "paisbill": 1,
+#         "pamount": 1000.12,
+#         "paymentmode": "cash",
+#         "sno": 1
+#         },
+#         {
+#         "cmobileno": "1234",
+#         "padate": "Thu, 22 Dec 2022 11:42:47 GMT",
+#         "padescription": "flsfjfsjf",
+#         "paisbill": 1,
+#         "pamount": 1000.12,
+#         "paymentmode": "cash",
+#         "sno": 3
+#         }
+#     ]
+#     }
+#     """
+#     # print(result) 
+#     # print(jsonify(result)) 
+#     #dumps : is used to convert all row into list form:[] 
+#     # print(json.dumps(result,default=str)) #default=str mean covert all paramiter to stirng 
+#     # print(json.decode(response.body)); -- frented side
+#     # listOfPaidTableData=json.dumps(result,default=str)
     
-    PaidTableDataList=[]
-    for i in result:
-        sno,cmobileno,padate,paisbill,padescription,pamount,paymentmode=i # i is tupple
-        temp={
-            "sno":sno,
-            "cmobileno":cmobileno,
-            "padate":padate,
-            "paisbill":paisbill,
-            "padescription":padescription,
-            "pamount":pamount,
-            "paymentmode":paymentmode,
-        }
-        PaidTableDataList.append(temp)
-    print(PaidTableDataList)
-    return {'datalist': PaidTableDataList},200 
+#     PaidTableDataList=[]
+#     for i in result:
+#         sno,cmobileno,padate,paisbill,padescription,pamount,paymentmode=i # i is tupple
+#         temp={
+#             "sno":sno,
+#             "cmobileno":cmobileno,
+#             "padate":padate,
+#             "paisbill":paisbill,
+#             "padescription":padescription,
+#             "pamount":pamount,
+#             "paymentmode":paymentmode,
+#         }
+#         PaidTableDataList.append(temp)
+#     print(PaidTableDataList)
+#     return {'datalist': PaidTableDataList},200 
 
 
 @app.route('/fetchallpayabletable',methods=['POST'])
