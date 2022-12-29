@@ -1,4 +1,5 @@
-import 'package:cashbook_app/screen/select_contact_screen.dart';
+import 'package:cashbook_app/models/client_contact.dart';
+import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
 import 'package:cashbook_app/widgets/customtextfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,16 +7,23 @@ import 'package:provider/provider.dart';
 
 import '../provider/client_contact_provider.dart';
 
-class AddClientScreen extends StatefulWidget {
-  static const String routeName = '/AddClientScreen';
-  const AddClientScreen({super.key});
+class AddupdateClientScreen extends StatefulWidget {
+  static const String routeName = '/AddupdateClientScreen';
+  // AddupdateClientScreen({
+  //   // required this.isUpdate
+  //   });
 
   @override
-  State<AddClientScreen> createState() => _AddClientScreenState();
+  State<AddupdateClientScreen> createState() => _AddupdateClientScreenState();
 }
 
-class _AddClientScreenState extends State<AddClientScreen> {
+class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
+  var _isInit = true;
+  var _isloading = false;
+  bool? isUpdate;
   User? currentUser = FirebaseAuth.instance.currentUser;
+  String? clientOldMobileno;
+  String? useremail;
 
   TextEditingController cnameController = TextEditingController();
   TextEditingController cmobilenoController = TextEditingController();
@@ -34,6 +42,38 @@ class _AddClientScreenState extends State<AddClientScreen> {
     fremnameFocusNode = FocusNode();
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final args = ModalRoute.of(context)!.settings.arguments;
+      final cid = args;
+      isUpdate = (cid != null) ? true : false;
+      print(isUpdate);
+      if (cid != null) {
+        //edit/update product
+        //find object by id
+        ClientContact _editedclientobj =
+            Provider.of<ClientContactProvider>(context)
+                .findClientContactByCID(cid: cid as String);
+        //store data for updating --primaryKey(cmobileno,useremail) -- for where
+        clientOldMobileno = _editedclientobj.cmobileno;
+        useremail = currentUser!.email.toString();
+
+        //add this object vlaue to controler
+        // print(_editedclientobj.cemail!.isEmpty);
+        cnameController.text = _editedclientobj.cname;
+        cmobilenoController.text = _editedclientobj.cmobileno;
+        cemailController.text = _editedclientobj.cemail ?? "";
+        // cemailController.text = _editedclientobj.cemail as String?;
+        fermnameController.text = _editedclientobj.fermname;
+        print(_editedclientobj.cemail);
+      }
+    }
+    //  else  add product
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   @override
@@ -71,6 +111,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
       FocusScope.of(context).requestFocus(cmobilenoFocusNode);
       return;
     }
+
     final currentTime = DateTime.now();
     Map<String, dynamic> finalContactMap = {
       "cname": cnameController.text.toString(),
@@ -82,11 +123,23 @@ class _AddClientScreenState extends State<AddClientScreen> {
       "useremail": currentUser!.email.toString(),
       "entrydatetime": currentTime.toString(),
     };
-    print(finalContactMap);
+    // print(finalContactMap);
 
-    Provider.of<ClientContactProvider>(context, listen: false)
-        .addNewClient(newClientContactMap: finalContactMap);
-    Navigator.of(context).pop();
+    if (isUpdate == false) {
+      //add client
+      Provider.of<ClientContactProvider>(context, listen: false)
+          .addNewClient(newClientContactMap: finalContactMap);
+      print("add client com");
+      Navigator.of(context).pop();
+    } else {
+      //update client
+      Provider.of<ClientContactProvider>(context, listen: false)
+          .updateExistingClient(
+              updateClientContactMap: finalContactMap,
+              oldcMobileNo: clientOldMobileno!);
+      // print("update client com");
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -98,8 +151,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        title: const Text(
-          "Add Client",
+        title: Text(
+          (isUpdate == true) ? "Update Client" : "Add Client",
           style: TextStyle(fontFamily: "Rubik"),
         ),
       ),
@@ -176,7 +229,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _onSubmitHandler,
-        label: const Text('Submit'),
+        label: Text((isUpdate == true) ? "Update" : 'Submit'),
         icon: const Icon(Icons.check_sharp),
       ),
     );

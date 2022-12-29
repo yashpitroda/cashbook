@@ -19,6 +19,13 @@ class ClientContactProvider with ChangeNotifier {
     return [..._clientContactList];
   }
 
+  // ------------------------------findClientContactByCID-----------------------------------
+  ClientContact findClientContactByCID({required String cid}) {
+    return _clientContactList.firstWhere((element) {
+      return element.cid == cid;
+    });
+  }
+
 // ------------------------------filterSearchResults-----------------------------------
   void filterSearchResults(String query) {
     if (query.isNotEmpty) {
@@ -82,7 +89,7 @@ class ClientContactProvider with ChangeNotifier {
     responseContactDataList.forEach((element) {
       loadedClientOrderlist.add(ClientContact(
         cid: element['cid'].toString(),
-        cemail: element["email"], //if it will null or string
+        cemail: element["cemail"], //if it will null or string
         fermname: element['fermname'].toString(),
         cname: element['cname'].toString(),
         cmobileno: element['cmobileno'].toString(),
@@ -121,6 +128,36 @@ class ClientContactProvider with ChangeNotifier {
     final responseData = json.decode(response.body);
     print(responseData);
     fatchCilentContact(useremail: newClientContactMap['useremail']);
+  }
+
+  // ------------------------------findClientContactByCID-----------------------------------
+  Future<void> updateExistingClient(
+      {required Map updateClientContactMap,
+      required String oldcMobileNo}) async {
+    print(updateClientContactMap['useremail']);
+    final url = Uri.parse(Utility.BASEURL + "/clientupdate");
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(
+        {
+          'useremail': updateClientContactMap['useremail'],
+          'oldcmobileno': oldcMobileNo,
+          "cname": updateClientContactMap['cname'],
+          "fermname": updateClientContactMap['fermname'],
+          "cmobileno": updateClientContactMap['cmobileno'],
+          "cemail": updateClientContactMap['cemail'],
+          'entrydatetime': updateClientContactMap['entrydatetime']
+        },
+      ),
+    );
+    if (response.body == 'null') {
+      print('its products retruns data is not avalible in firebase server');
+      return;
+    }
+    final responseData = json.decode(response.body);
+    print(responseData);
+    fatchCilentContact(useremail: updateClientContactMap['useremail']);
   }
 
   Future<void> deleteClient(

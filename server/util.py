@@ -41,7 +41,7 @@ async def finduser(useremail):
         await cur.execute(query)
         fatchData = await cur.fetchone()  # user is exist or not
         # print("in utill", fatchData)
-        cur.close()
+        await cur.close()
         conn.close()
         return fatchData
     except Exception as e:
@@ -59,7 +59,7 @@ async def findclient(cmobileno):
         await cur.execute(query)
         fatchData = await cur.fetchone()  # user is exist or not
         # print("in utill", fatchData)
-        cur.close()
+        await cur.close()
         conn.close()
         return fatchData
     except Exception as e:
@@ -127,7 +127,34 @@ async def insertclientwithoutcemail(cname,fermname, cmobileno, useremail,entryda
         print(e)
         return "database error"
 
-
+async def updateclientwithcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno):
+    try:
+        conn = await createConn()
+        cur = await conn.cursor()
+        query = f"UPDATE client SET cname='{cname}',fermname='{fermname}',cmobileno='{cmobileno}',cemail='{cemail}',useremail='{useremail}',entrydatetime='{entrydatetime}' WHERE cmobileno={oldcmobileno} AND useremail='{useremail}'"
+        await cur.execute(query)
+        await conn.commit()
+        await cur.close()
+        conn.close()
+        return "clint updated"
+    except Exception as e:
+        print(e)
+        return "database error"
+    
+async def updateclientwithoutcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno):
+    try:
+        conn = await createConn()
+        cur = await conn.cursor()
+        query = f"UPDATE client SET cname='{cname}',fermname='{fermname}',cmobileno='{cmobileno}',cemail={cemail},useremail='{useremail}',entrydatetime='{entrydatetime}' WHERE cmobileno={oldcmobileno} AND useremail='{useremail}'"
+        await cur.execute(query)
+        await conn.commit()
+        await cur.close()
+        conn.close()
+        return "clint updated without email"
+    except Exception as e:
+        print(e)
+        return "database error"
+    
 async def deleteclient(cmobileno,useremail):
     try:
         conn = await createConn()

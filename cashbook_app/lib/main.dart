@@ -1,6 +1,6 @@
 import 'package:cashbook_app/provider/client_contact_provider.dart';
 import 'package:cashbook_app/screen/add_client_screen.dart';
-import 'package:cashbook_app/screen/select_contact_screen.dart';
+import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
 import 'package:cashbook_app/screen/add_in_payable_screen.dart';
 import 'package:cashbook_app/screen/home_screen.dart';
 import 'package:cashbook_app/screen/manage_client_screen.dart';
@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           HomeScreen.routeName: (context) => HomeScreen(),
           ClientScreen.routeName: (context) => ClientScreen(),
           SelectClintScreen.routeName: (context) => SelectClintScreen(),
-          AddClientScreen.routeName: (context) => AddClientScreen(),
+          AddupdateClientScreen.routeName: (context) => AddupdateClientScreen(),
           ManageClientScreen.routeName: (context) => ManageClientScreen(),
           SelectContactScreen.routeName: (context) => SelectContactScreen(),
         },

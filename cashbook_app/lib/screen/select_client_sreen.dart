@@ -1,6 +1,6 @@
 import 'package:cashbook_app/models/client_contact.dart';
 import 'package:cashbook_app/provider/client_contact_provider.dart';
-import 'package:cashbook_app/screen/select_contact_screen.dart';
+import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
 import 'package:cashbook_app/screen/manage_client_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -176,7 +176,7 @@ class _SelectClintScreenState extends State<SelectClintScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         onPressed: () {
           // Add your onPressed code here!
-          Navigator.of(context).pushNamed(AddClientScreen.routeName);
+          Navigator.of(context).pushNamed(AddupdateClientScreen.routeName);
           // .then((_) => _refreshProducts(context));
         },
         label: const Text('Add Client'),

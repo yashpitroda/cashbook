@@ -18,7 +18,7 @@ async def useradd():
     username=value['username']
     useremail=value['useremail']
     userimageurl=value['userimageurl']
-    print(useremail)
+    # print(useremail)
 
     fetchdata=await util.finduser(useremail) #find user in db 
     # print(fetchdata,"Aaaaa") 
@@ -78,9 +78,44 @@ async def clientadd():
         print("/clientadd Completed") 
         return {'status':fetchdata},200 #user is already exisit so retrun user
     
+@app.route('/clientupdate',methods=['POST'])
+async def clientupdate():
+    """
+   
+    """
+    value=request.get_json()
+    requird=['cname','cmobileno','cemail','useremail',"entrydatetime","fermname","oldcmobileno"]
+    if not all(key in value for key in requird):
+         return {'error':'cname or cmobile will be None or null','status':'fail'},400
+        
+    cmobileno=value['cmobileno']
+    fermname=value['fermname']
+    cname=value['cname']
+    cemail=value['cemail']
+    useremail=value['useremail']
+    entrydatetime=value['entrydatetime']
+    oldcmobileno=value['oldcmobileno']
+    # print(cemail)
+    # print(type(cemail))
+   
     
    
-   
+    
+    if(cemail==None):
+        # go without email
+        # update in db
+        if(cemail==None):
+            cemail='NULL'
+        status=await util.updateclientwithoutcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno)
+        print("/clientupdate Completed") 
+        return {'status':status},200
+       
+    else:# go with email
+        # update in db
+        status=await util.updateclientwithcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno)
+        print("/clientupdate Completed") 
+        return {'status':status},200
+      
         
 @app.route('/clientdelete',methods=['POST'])
 async def clientdelete():
