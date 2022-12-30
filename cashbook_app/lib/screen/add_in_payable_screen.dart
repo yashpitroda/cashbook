@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:cashbook_app/models/client_contact.dart';
 import 'package:cashbook_app/screen/select_client_sreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,24 +17,30 @@ class AddInPayableScreen extends StatefulWidget {
 
 class _AddInPayableScreenState extends State<AddInPayableScreen> {
   // final currentUser = FirebaseAuth.instance.currentUser!;
-
+  FocusNode? amountFocusNode;
+  FocusNode? descriptionFocusNode;
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController clientNameController = TextEditingController();
+  TextEditingController clientMobilenoController = TextEditingController();
+  TextEditingController fermNameController = TextEditingController();
 
   int? _isBillValue = 1;
+  bool _isclientInfoExpanded = false;
 
   DateTime? _selectedDate;
   TimeOfDay? _selectedtime;
   DateTime? finaldateTime;
-  Map? selectedClientMap;
+  ClientContact? selectedClientobj;
 
   Future<void> _submitHander() async {
     print(amountController.text);
     print(descriptionController.text);
     print(_isBillValue);
     print(finaldateTime.toString());
-    print(selectedClientMap);
+    print(fermNameController.text);
+    print(clientNameController.text);
+    print(clientMobilenoController.text);
     // print(currentUser.email!);
   }
 
@@ -39,12 +48,16 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
   void initState() {
     DateTime current_date = DateTime.now();
     finaldateTime = current_date;
+    amountFocusNode = FocusNode();
+    descriptionFocusNode = FocusNode();
     super.initState();
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void dispose() {
+    amountFocusNode!.dispose();
+    descriptionFocusNode!.dispose();
+    super.dispose();
   }
 
   void customDatePicker() {
@@ -85,197 +98,276 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
     });
   }
 
+  void _gotoSelectClintScreen() {
+    Navigator.of(context).pushNamed(SelectClintScreen.routeName).then((value) {
+      selectedClientobj = value as ClientContact;
+      clientNameController.text = selectedClientobj!.cname;
+      fermNameController.text = selectedClientobj!.fermname;
+      clientMobilenoController.text = selectedClientobj!.cmobileno;
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var mqhight = MediaQuery.of(context).size.height;
     var mqwidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
         title: const Text(
           "Add Entry In Payable",
           style: TextStyle(fontFamily: "Rubik"),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    DateTimeSelector(mqwidth),
-                    SizedBox(
-                      height: mqhight * 0.02,
-                    ),
-
-                    CustomTextField(
-                      customfocusnode: null,
-                      textinputtype: TextInputType.number,
-                      labeltext: "Amount",
-                      customController: amountController,
-                      hinttext: null,
-                      leadding_iconname: null,
-                      triling_iconname: null,
-                    ),
-
-                    SizedBox(
-                      height: mqhight * 0.02,
-                    ),
-                    CustomTextField(
-                      customfocusnode: null,
-                      textinputtype: TextInputType.name,
-                      labeltext: "Description",
-                      customController: descriptionController,
-                      hinttext: "product name",
-                      leadding_iconname: null,
-                      triling_iconname: null,
-                    ),
-                    SizedBox(
-                      height: mqhight * 0.02,
-                    ),
-                    Row(
+      body: GestureDetector(
+        onTap: () {
+          amountFocusNode!.unfocus();
+          descriptionFocusNode!.unfocus();
+        },
+        child: Container(
+          // color: Colors.grey.withOpacity(0.09),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ChoiceChip(
-                          backgroundColor:
-                              const Color.fromARGB(255, 192, 200, 216),
-                          selectedColor:
-                              const Color.fromARGB(255, 104, 167, 255),
-                          label: const Text('WITH BILL'),
-                          selected: _isBillValue == 1,
-                          onSelected: (bool selected) {
-                            setState(() {
-                              _isBillValue = selected ? 1 : null;
-                            });
-                          },
+                        DateTimeSelector(mqwidth),
+                        SizedBox(
+                          height: mqhight * 0.02,
+                        ),
+                        Column(
+                          children: [
+                            firmnameTextField(),
+                            SizedBox(
+                              height: mqhight * 0.02,
+                            ),
+                            clientNameTextField(),
+                            SizedBox(
+                              height: mqhight * 0.02,
+                            ),
+                            clientPhoneTextField(),
+                          ],
                         ),
                         SizedBox(
-                          width: mqwidth * 0.03,
+                          height: mqhight * 0.01,
                         ),
-                        ChoiceChip(
-                          backgroundColor:
-                              const Color.fromARGB(255, 192, 200, 216),
-                          selectedColor:
-                              const Color.fromARGB(255, 104, 167, 255),
-                          label: const Text('WITHOUT BILL'),
-                          selected: _isBillValue == 0,
-                          onSelected: (bool selected) {
-                            setState(() {
-                              _isBillValue = selected ? 0 : null;
-                            });
-                          },
+                        const Divider(
+                          thickness: 1.2,
                         ),
+                        SizedBox(
+                          height: mqhight * 0.01,
+                        ),
+                        CustomTextField(
+                          customtextinputaction: TextInputAction.next,
+                          customfocusnode: amountFocusNode,
+                          textinputtype: TextInputType.number,
+                          labeltext: "Amount",
+                          customController: amountController,
+                          hinttext: null,
+                          leadding_iconname: null,
+                          triling_iconname: null,
+                        ),
+                        SizedBox(
+                          height: mqhight * 0.02,
+                        ),
+                        CustomTextField(
+                          customtextinputaction: TextInputAction.done,
+                          customfocusnode: descriptionFocusNode,
+                          textinputtype: TextInputType.name,
+                          labeltext: "Description",
+                          customController: descriptionController,
+                          hinttext: "product name",
+                          leadding_iconname: null,
+                          triling_iconname: null,
+                        ),
+                        SizedBox(
+                          height: mqhight * 0.015,
+                        ),
+                        billWithOrWithoutOption(mqwidth),
                       ],
                     ),
-                    SizedBox(
-                      height: mqhight * 0.02,
-                    ),
-                    // CustomTextField(
-                    //   // textinputtype: TextInputType.number,
-                    //   textinputtype: null,
-                    //   labeltext: "Client name",
-                    //   customController: descriptionController,
-                    //   hinttext: null,
-                    //   leadding_iconname: null,
-                    //   triling_iconname: Icons.arrow_right,
-                    // ),
-                    TextField(
-                      readOnly: true,
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(SelectClintScreen.routeName)
-                            .then((value) {
-                          selectedClientMap = value as Map;
-                          print(selectedClientMap);
-                          clientNameController.text =
-                              selectedClientMap!["cname"];
-                        });
-                      },
-                      controller: clientNameController,
-                      cursorColor: Colors.black,
-                      style: const TextStyle(
-                          // letterSpacing: 1,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16),
-                      decoration: const InputDecoration(
-                        suffixIcon:
-                            Icon(Icons.arrow_right), //icon at tail of input
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                        ),
-                        labelText: "client name",
-                        labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-                        hintStyle: TextStyle(fontSize: 13),
+                  ),
+                ),
+                bottombuttoncard(context),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-                        contentPadding:
-                            EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                      ),
-                    ),
-
-                    // ElevatedButton(
-                    //     onPressed: _submitHander, child: const Text("btn")),
-                  ],
+  Column bottombuttoncard(BuildContext context) {
+    return Column(
+      children: [
+        const Divider(
+          thickness: 1.3,
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(10, 55), backgroundColor: Colors.red),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Rubik',
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
-            Container(
-              // color: Colors.amber,
-              child: Column(
-                children: [
-                  Divider(
-                    thickness: 1.3,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                              fixedSize: const Size(10, 55),
-                              backgroundColor: Colors.red),
-                          child: const Text(
-                            'Cancel',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Rubik',
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: _submitHander,
-                          style: ElevatedButton.styleFrom(
-                              fixedSize: const Size(10, 55),
-                              backgroundColor: Colors.blue),
-                          child: const Text(
-                            'Save',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Rubik',
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
+            const SizedBox(
+              width: 20,
             ),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _submitHander,
+                style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(10, 55),
+                    backgroundColor: Colors.blue),
+                child: const Text(
+                  'Save',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Rubik',
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            )
           ],
         ),
+      ],
+    );
+  }
+
+  Row billWithOrWithoutOption(double mqwidth) {
+    return Row(
+      children: [
+        ChoiceChip(
+          backgroundColor: const Color.fromARGB(255, 192, 200, 216),
+          selectedColor: const Color.fromARGB(255, 104, 167, 255),
+          label: const Text('WITH BILL'),
+          selected: _isBillValue == 1,
+          onSelected: (bool selected) {
+            setState(() {
+              _isBillValue = selected ? 1 : null;
+            });
+          },
+        ),
+        SizedBox(
+          width: mqwidth * 0.03,
+        ),
+        ChoiceChip(
+          backgroundColor: const Color.fromARGB(255, 192, 200, 216),
+          selectedColor: const Color.fromARGB(255, 104, 167, 255),
+          label: const Text('WITHOUT BILL'),
+          selected: _isBillValue == 0,
+          onSelected: (bool selected) {
+            setState(() {
+              _isBillValue = selected ? 0 : null;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  TextField clientPhoneTextField() {
+    return TextField(
+      enabled: false,
+      readOnly: true,
+      controller: clientMobilenoController,
+      cursorColor: Colors.black,
+      style: const TextStyle(
+          // letterSpacing: 1,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+          fontSize: 16),
+      decoration: const InputDecoration(
+        filled: true,
+        fillColor: Color.fromARGB(208, 235, 238, 244),
+
+        // suffixIcon: Icon(
+        //     Icons.arrow_right), //icon at tail of input
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        labelText: "Phone",
+        // prefixText: "Client phone:  ",
+        // hintText: "Client phone:  ",
+        labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+        hintStyle: TextStyle(fontSize: 13),
+
+        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+      ),
+    );
+  }
+
+  TextField clientNameTextField() {
+    return TextField(
+      enabled: false,
+      readOnly: true,
+      controller: clientNameController,
+      cursorColor: Colors.black,
+      style: const TextStyle(
+          // letterSpacing: 1,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+          fontSize: 16),
+      decoration: const InputDecoration(
+        filled: true,
+        fillColor: Color.fromARGB(208, 235, 238, 244),
+        // suffixIcon: Icon(
+        //     Icons.arrow_right), //icon at tail of input
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        // labelText: "client",
+        labelText: "Name",
+        labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+        hintStyle: TextStyle(fontSize: 13),
+
+        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+      ),
+    );
+  }
+
+  TextField firmnameTextField() {
+    return TextField(
+      readOnly: true,
+      onTap: () {
+        _gotoSelectClintScreen();
+      },
+      controller: fermNameController,
+      cursorColor: Colors.black,
+      style: const TextStyle(
+          // letterSpacing: 1,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+          fontSize: 16),
+      decoration: const InputDecoration(
+        suffixIcon: Icon(Icons.arrow_right), //icon at tail of input
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        // labelText: "client",
+        labelText: "Firm Name",
+        labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+        hintStyle: TextStyle(fontSize: 13),
+
+        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
       ),
     );
   }

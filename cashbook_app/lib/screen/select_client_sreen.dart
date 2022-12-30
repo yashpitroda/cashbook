@@ -18,7 +18,12 @@ class SelectClintScreen extends StatefulWidget {
 
 class _SelectClintScreenState extends State<SelectClintScreen> {
   User? currentUser = FirebaseAuth.instance.currentUser!;
+  TextEditingController searchTextController = TextEditingController();
+  var _isInit = true;
+  var _isloading = false;
+  var selectedClient;
   bool issearchon = false;
+  
   Future<void> _refreshClient(BuildContext context) async {
     await Provider.of<ClientContactProvider>(context, listen: false)
         .fatchCilentContact(useremail: currentUser!.email.toString());
@@ -26,11 +31,6 @@ class _SelectClintScreenState extends State<SelectClintScreen> {
     print('refresh done');
   }
 
-  TextEditingController editingController = TextEditingController();
-  FocusNode editingfocusnode = FocusNode();
-  var _isInit = true;
-  var _isloading = false;
-  var selectedClient;
 
   @override
   void didChangeDependencies() {
@@ -66,10 +66,8 @@ class _SelectClintScreenState extends State<SelectClintScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
         title: const Text(
-          "select client",
+          "Select Client",
           style: TextStyle(fontFamily: "Rubik"),
         ),
         actions: [
@@ -84,10 +82,10 @@ class _SelectClintScreenState extends State<SelectClintScreen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : RefreshIndicator(
-              onRefresh: () => _refreshClient(context),
+          : Container(
+              color: Colors.grey.withOpacity(0.09),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 child: Column(
                   children: [
                     TextField(
@@ -96,7 +94,7 @@ class _SelectClintScreenState extends State<SelectClintScreen> {
                                 listen: false)
                             .filterSearchResults(value);
                       },
-                      controller: editingController,
+                      controller: searchTextController,
                       cursorColor: Colors.black,
                       style: const TextStyle(
                           color: Colors.black,
@@ -114,13 +112,23 @@ class _SelectClintScreenState extends State<SelectClintScreen> {
                             EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                       ),
                     ),
+                    SizedBox(
+                      height: mqhight * 0.015,
+                    ),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              RadioListTile(
+                      child: RefreshIndicator(
+                        onRefresh: () => _refreshClient(context),
+                        child: ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              elevation: 0,
+                              color: Colors.white,
+                              child: RadioListTile(
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 0),
                                 title: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -159,13 +167,13 @@ class _SelectClintScreenState extends State<SelectClintScreen> {
                                   setState(() {
                                     selectedClient = value;
                                   });
-
+                                  print(selectedClient);
                                   Navigator.of(context).pop(selectedClient);
                                 },
                               ),
-                            ],
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ],
@@ -173,7 +181,6 @@ class _SelectClintScreenState extends State<SelectClintScreen> {
               ),
             ),
       floatingActionButton: FloatingActionButton.extended(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         onPressed: () {
           // Add your onPressed code here!
           Navigator.of(context).pushNamed(AddupdateClientScreen.routeName);

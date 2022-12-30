@@ -148,9 +148,6 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
     var mqwidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
         title: Text(
           (isUpdate == true) ? "Update Client" : "Add Client",
           style: TextStyle(fontFamily: "Rubik"),
@@ -183,6 +180,7 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
                 height: mqhight * 0.005,
               ),
               CustomTextField(
+                  customtextinputaction: TextInputAction.next,
                   customfocusnode: cnameFocusNode,
                   customController: cnameController,
                   labeltext: 'client name',
@@ -194,6 +192,7 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
                 height: mqhight * 0.02,
               ),
               CustomTextField(
+                  customtextinputaction: TextInputAction.next,
                   customfocusnode: fremnameFocusNode,
                   customController: fermnameController,
                   labeltext: 'ferm name',
@@ -205,6 +204,7 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
                 height: mqhight * 0.02,
               ),
               CustomTextField(
+                  customtextinputaction: TextInputAction.next,
                   customfocusnode: cmobilenoFocusNode,
                   customController: cmobilenoController,
                   labeltext: 'client mobile number',
@@ -216,6 +216,7 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
                 height: mqhight * 0.02,
               ),
               CustomTextField(
+                  customtextinputaction: TextInputAction.done,
                   customfocusnode: cemailFocusNode,
                   customController: cemailController,
                   labeltext: 'client email',

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -11,6 +10,7 @@ class CustomTextField extends StatelessWidget {
     required this.leadding_iconname,
     required this.textinputtype,
     required this.customfocusnode,
+    required this.customtextinputaction,
   }) : super(key: key);
 
   final TextEditingController customController;
@@ -20,10 +20,13 @@ class CustomTextField extends StatelessWidget {
   final IconData? leadding_iconname;
   final TextInputType? textinputtype;
   final FocusNode? customfocusnode;
+  final TextInputAction? customtextinputaction;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      textInputAction:
+          (customtextinputaction == null) ? null : customtextinputaction,
       focusNode: customfocusnode,
       controller: customController,
       cursorColor: Colors.black,

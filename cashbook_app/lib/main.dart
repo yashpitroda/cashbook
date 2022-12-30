@@ -41,8 +41,22 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
         theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+          ),
           // useMaterial3: true,
-          primarySwatch: Colors.blue,
+          textTheme:
+              const TextTheme(bodyMedium: TextStyle(fontFamily: "Rubik")),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+          ),
+          inputDecorationTheme: const InputDecorationTheme(
+            filled: true,
+            fillColor: Colors.white,
+          ),
         ),
         home: StreamBuilder(
           stream: FirebaseAuth.instance

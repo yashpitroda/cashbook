@@ -14,7 +14,7 @@ class ManageClientScreen extends StatefulWidget {
 }
 
 class _ManageClientScreenState extends State<ManageClientScreen> {
-  TextEditingController editingController = TextEditingController();
+  TextEditingController searchTextController = TextEditingController();
   FocusNode editingFocusnode = FocusNode();
   final currentUser = FirebaseAuth.instance.currentUser;
   var _isInit = true;
@@ -94,8 +94,6 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
     );
   }
 
-  void _onTapOnEdit() {}
-
   void _onTapOnDelete({required String cmobileno, required String useremail}) {
     _showMyDialog(cmobileno, useremail);
   }
@@ -109,9 +107,6 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
         title: const Text(
           "Manage Client",
           style: TextStyle(fontFamily: "Rubik"),
@@ -121,53 +116,51 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : RefreshIndicator(
-              onRefresh: () => _refreshClient(context),
-              child: GestureDetector(
-                onTap: () {
-                  editingFocusnode.unfocus();
-                },
-                child: Container(
-                  color: Colors.grey.withOpacity(0.09),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: mqhight * 0.01,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TextField(
-                          focusNode: editingFocusnode,
-                          onChanged: (value) {
-                            Provider.of<ClientContactProvider>(context,
-                                    listen: false)
-                                .filterSearchResults(value);
-                          },
-                          controller: editingController,
-                          cursorColor: Colors.black,
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16),
-                          decoration: const InputDecoration(
-                            prefixIcon: Icon(Icons.search_rounded),
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(14)),
-                            ),
-                            labelText: "Search",
-                            labelStyle:
-                                TextStyle(letterSpacing: 1, fontSize: 14),
-                            hintStyle: TextStyle(fontSize: 13),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          : GestureDetector(
+              onTap: () {
+                editingFocusnode.unfocus();
+              },
+              child: Container(
+                color: Colors.grey.withOpacity(0.09),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: mqhight * 0.01,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: TextField(
+                        focusNode: editingFocusnode,
+                        onChanged: (value) {
+                          Provider.of<ClientContactProvider>(context,
+                                  listen: false)
+                              .filterSearchResults(value);
+                        },
+                        controller: searchTextController,
+                        cursorColor: Colors.black,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16),
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.search_rounded),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(14)),
                           ),
+                          labelText: "Search",
+                          labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+                          hintStyle: TextStyle(fontSize: 13),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                         ),
                       ),
-                      SizedBox(
-                        height: mqhight * 0.02,
-                      ),
-                      Expanded(
+                    ),
+                    SizedBox(
+                      height: mqhight * 0.02,
+                    ),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: () => _refreshClient(context),
                         child: ListView.builder(
                           itemCount: items.length,
                           itemBuilder: (context, index) {
@@ -223,7 +216,8 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
                                           IconButton(
                                             onPressed: () {
                                               Navigator.of(context).pushNamed(
-                                                  AddupdateClientScreen.routeName,
+                                                  AddupdateClientScreen
+                                                      .routeName,
                                                   arguments: items[index].cid);
                                             },
                                             icon: const Icon(
@@ -254,14 +248,13 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
                             );
                           },
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
       floatingActionButton: FloatingActionButton.extended(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         onPressed: () {
           // Add your onPressed code here!
           // Navigator.of(context).pushNamed(AddClientScreen.routeName);
