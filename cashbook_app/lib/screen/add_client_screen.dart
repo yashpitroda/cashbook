@@ -153,78 +153,86 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
           style: TextStyle(fontFamily: "Rubik"),
         ),
       ),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          child: Column(
-            children: [
-              Container(
-                height: 44,
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  icon: Icon(Icons.contacts_sharp),
-                  onPressed: gotoContactsScreen,
-                  label: Text(
-                    "Select Contact",
-                    style: TextStyle(fontFamily: "Rubik"),
+      body: GestureDetector(
+        onTap: () {
+          cnameFocusNode!.unfocus();
+          cemailFocusNode!.unfocus();
+          cmobilenoFocusNode!.unfocus();
+          fremnameFocusNode!.unfocus();
+        },
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: Column(
+              children: [
+                Container(
+                  height: 44,
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    icon: Icon(Icons.contacts_sharp),
+                    onPressed: gotoContactsScreen,
+                    label: const Text(
+                      "Select Contact",
+                      style: TextStyle(fontFamily: "Rubik"),
+                    ),
                   ),
                 ),
-              ),
-              // SizedBox(
-              //   height: mqhight * 0.005,
-              // ),
-              Divider(
-                thickness: 1.4,
-              ),
-              SizedBox(
-                height: mqhight * 0.005,
-              ),
-              CustomTextField(
-                  customtextinputaction: TextInputAction.next,
-                  customfocusnode: cnameFocusNode,
-                  customController: cnameController,
-                  labeltext: 'client name',
-                  hinttext: null,
-                  triling_iconname: null,
-                  leadding_iconname: null,
-                  textinputtype: TextInputType.name),
-              SizedBox(
-                height: mqhight * 0.02,
-              ),
-              CustomTextField(
-                  customtextinputaction: TextInputAction.next,
-                  customfocusnode: fremnameFocusNode,
-                  customController: fermnameController,
-                  labeltext: 'ferm name',
-                  hinttext: null,
-                  triling_iconname: null,
-                  leadding_iconname: null,
-                  textinputtype: TextInputType.name),
-              SizedBox(
-                height: mqhight * 0.02,
-              ),
-              CustomTextField(
-                  customtextinputaction: TextInputAction.next,
-                  customfocusnode: cmobilenoFocusNode,
-                  customController: cmobilenoController,
-                  labeltext: 'client mobile number',
-                  hinttext: null,
-                  triling_iconname: null,
-                  leadding_iconname: null,
-                  textinputtype: TextInputType.phone),
-              SizedBox(
-                height: mqhight * 0.02,
-              ),
-              CustomTextField(
-                  customtextinputaction: TextInputAction.done,
-                  customfocusnode: cemailFocusNode,
-                  customController: cemailController,
-                  labeltext: 'client email',
-                  hinttext: null,
-                  triling_iconname: null,
-                  leadding_iconname: null,
-                  textinputtype: TextInputType.emailAddress)
-            ],
+                // SizedBox(
+                //   height: mqhight * 0.005,
+                // ),
+                const Divider(
+                  thickness: 1.4,
+                ),
+                SizedBox(
+                  height: mqhight * 0.005,
+                ),
+                CustomTextField(
+                    customtextinputaction: TextInputAction.next,
+                    customfocusnode: cnameFocusNode,
+                    customController: cnameController,
+                    labeltext: 'client name',
+                    hinttext: null,
+                    triling_iconname: null,
+                    leadding_iconname: null,
+                    textinputtype: TextInputType.name),
+                SizedBox(
+                  height: mqhight * 0.02,
+                ),
+                CustomTextField(
+                    customtextinputaction: TextInputAction.next,
+                    customfocusnode: fremnameFocusNode,
+                    customController: fermnameController,
+                    labeltext: 'ferm name',
+                    hinttext: null,
+                    triling_iconname: null,
+                    leadding_iconname: null,
+                    textinputtype: TextInputType.name),
+                SizedBox(
+                  height: mqhight * 0.02,
+                ),
+                CustomTextField(
+                    customtextinputaction: TextInputAction.next,
+                    customfocusnode: cmobilenoFocusNode,
+                    customController: cmobilenoController,
+                    labeltext: 'client mobile number',
+                    hinttext: null,
+                    triling_iconname: null,
+                    leadding_iconname: null,
+                    textinputtype: TextInputType.phone),
+                SizedBox(
+                  height: mqhight * 0.02,
+                ),
+                CustomTextField(
+                    customtextinputaction: TextInputAction.done,
+                    customfocusnode: cemailFocusNode,
+                    customController: cemailController,
+                    labeltext: 'client email',
+                    hinttext: null,
+                    triling_iconname: null,
+                    leadding_iconname: null,
+                    textinputtype: TextInputType.emailAddress)
+              ],
+            ),
           ),
         ),
       ),
