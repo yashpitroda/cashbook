@@ -97,10 +97,7 @@ async def clientupdate():
     oldcmobileno=value['oldcmobileno']
     # print(cemail)
     # print(type(cemail))
-   
-    
-   
-    
+
     if(cemail==None):
         # go without email
         # update in db
@@ -169,7 +166,7 @@ async def fetchclient():
     return {'datalist': clientTableDataList},200 
 
 
- #--------------------_-------------------------------_-----------------
+ #--------------------------------------------------------------------
 @app.route('/additeminpaidtable',methods=['POST'])
 def additeminpaidtable():
     """body

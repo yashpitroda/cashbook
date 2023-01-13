@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Utility {
-  static const BASEURL = "http://192.168.1.61:9000";
+  static const BASEURL = "http://192.168.0.101:9000";
 
   // static void displaysnackbar( String message,{required BuildContext context}) {
   static void displaysnackbar(

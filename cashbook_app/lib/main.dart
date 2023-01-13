@@ -41,14 +41,15 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
         theme: ThemeData(
+          fontFamily: 'Rubik',
           appBarTheme: const AppBarTheme(
             elevation: 0,
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
           ),
           // useMaterial3: true,
-          textTheme:
-              const TextTheme(bodyMedium: TextStyle(fontFamily: "Rubik")),
+          // textTheme:
+          //     const TextTheme(bodyMedium: TextStyle(fontFamily: "Rubik")),
           floatingActionButtonTheme: FloatingActionButtonThemeData(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),

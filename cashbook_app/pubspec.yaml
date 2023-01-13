@@ -96,6 +96,10 @@ flutter:
           weight: 400
         - asset: assets/fonts/Rubik/Rubik-Bold.ttf
           weight: 600
+    - family: Roboto
+      fonts:
+        - asset: /Users/yash/playground/cashBook/cashbook_app/assets/fonts/roboto/Roboto-Light.ttf
+       
 
   #   - family: Trajan Pro
   #     fonts:

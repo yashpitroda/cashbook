@@ -69,7 +69,7 @@ class _SelectClintScreenState extends State<SelectClintScreen> {
         elevation: 0,
         title: const Text(
           "Select Client",
-          style: TextStyle(fontFamily: "Rubik"),
+          // style: TextStyle(fontFamily: "Rubik"),
         ),
         actions: [
           IconButton(
