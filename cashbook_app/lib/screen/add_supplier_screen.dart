@@ -1,45 +1,45 @@
-import 'package:cashbook_app/models/client_contact.dart';
+import 'package:cashbook_app/models/supplier.dart';
 import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
 import 'package:cashbook_app/widgets/customtextfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/client_contact_provider.dart';
+import '../provider/supplier_provider.dart';
 
-class AddupdateClientScreen extends StatefulWidget {
-  static const String routeName = '/AddupdateClientScreen';
+class AddupdateSupplierScreen extends StatefulWidget {
+  static const String routeName = '/AddupdateSupplierScreen';
   // AddupdateClientScreen({
   //   // required this.isUpdate
   //   });
 
   @override
-  State<AddupdateClientScreen> createState() => _AddupdateClientScreenState();
+  State<AddupdateSupplierScreen> createState() => _AddupdateSupplierScreenState();
 }
 
-class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
+class _AddupdateSupplierScreenState extends State<AddupdateSupplierScreen> {
   var _isInit = true;
   var _isloading = false;
   bool? isUpdate;
   User? currentUser = FirebaseAuth.instance.currentUser;
-  String? clientOldMobileno;
+  String? suppilerOldMobileno;
   String? useremail;
 
-  TextEditingController cnameController = TextEditingController();
-  TextEditingController cmobilenoController = TextEditingController();
-  TextEditingController cemailController = TextEditingController();
-  TextEditingController fermnameController = TextEditingController();
+  TextEditingController snameController = TextEditingController();
+  TextEditingController smobilenoController = TextEditingController();
+  TextEditingController semailController = TextEditingController();
+  TextEditingController firmnameController = TextEditingController();
 
-  FocusNode? cnameFocusNode;
-  FocusNode? cemailFocusNode;
-  FocusNode? cmobilenoFocusNode;
-  FocusNode? fremnameFocusNode;
+  FocusNode? snameFocusNode;
+  FocusNode? semailFocusNode;
+  FocusNode? smobilenoFocusNode;
+  FocusNode? firmnameFocusNode;
   @override
   void initState() {
-    cnameFocusNode = FocusNode();
-    cemailFocusNode = FocusNode();
-    cmobilenoFocusNode = FocusNode();
-    fremnameFocusNode = FocusNode();
+    snameFocusNode = FocusNode();
+    semailFocusNode = FocusNode();
+    smobilenoFocusNode = FocusNode();
+    firmnameFocusNode = FocusNode();
 
     super.initState();
   }
@@ -48,27 +48,27 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
   void didChangeDependencies() {
     if (_isInit) {
       final args = ModalRoute.of(context)!.settings.arguments;
-      final cid = args;
-      isUpdate = (cid != null) ? true : false;
+      final sid = args;
+      isUpdate = (sid != null) ? true : false;
       print(isUpdate);
-      if (cid != null) {
+      if (sid != null) {
         //edit/update product
         //find object by id
-        ClientContact _editedclientobj =
-            Provider.of<ClientContactProvider>(context)
-                .findClientContactByCID(cid: cid as String);
+        Supplier _editedclientobj =
+            Provider.of<SupplierProvider>(context)
+                .findSupplierBySID(sid: sid as String);
         //store data for updating --primaryKey(cmobileno,useremail) -- for where
-        clientOldMobileno = _editedclientobj.cmobileno;
+        suppilerOldMobileno = _editedclientobj.smobileno;
         useremail = currentUser!.email.toString();
 
         //add this object vlaue to controler
         // print(_editedclientobj.cemail!.isEmpty);
-        cnameController.text = _editedclientobj.cname;
-        cmobilenoController.text = _editedclientobj.cmobileno;
-        cemailController.text = _editedclientobj.cemail ?? "";
+        snameController.text = _editedclientobj.sname;
+        smobilenoController.text = _editedclientobj.smobileno;
+        semailController.text = _editedclientobj.semail ?? "";
         // cemailController.text = _editedclientobj.cemail as String?;
-        fermnameController.text = _editedclientobj.fermname;
-        print(_editedclientobj.cemail);
+        firmnameController.text = _editedclientobj.firmname;
+        // print(_editedclientobj.semail);
       }
     }
     //  else  add product
@@ -78,10 +78,10 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
 
   @override
   void dispose() {
-    cnameFocusNode!.dispose();
-    cemailFocusNode!.dispose();
-    cmobilenoFocusNode!.dispose();
-    fremnameFocusNode!.dispose();
+    snameFocusNode!.dispose();
+    semailFocusNode!.dispose();
+    smobilenoFocusNode!.dispose();
+    firmnameFocusNode!.dispose();
     super.dispose();
   }
 
@@ -92,34 +92,34 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
         .then((value) {
       selectedContactMap = value as Map;
       // print(selectedContactMap);
-      cnameController.text = selectedContactMap!['cname'];
-      cmobilenoController.text = selectedContactMap!['cmobileno'];
-      cemailController.text = selectedContactMap!['cemail'];
+      snameController.text = selectedContactMap!['name'];
+      smobilenoController.text = selectedContactMap!['mobileno'];
+      semailController.text = selectedContactMap!['email'];
     });
   }
 
   void _onSubmitHandler() {
-    if (cnameController.text.isEmpty) {
-      FocusScope.of(context).requestFocus(cnameFocusNode);
+    if (snameController.text.isEmpty) {
+      FocusScope.of(context).requestFocus(snameFocusNode);
       return;
     }
-    if (fermnameController.text.isEmpty) {
-      FocusScope.of(context).requestFocus(fremnameFocusNode);
+    if (firmnameController.text.isEmpty) {
+      FocusScope.of(context).requestFocus(firmnameFocusNode);
       return;
     }
-    if (cmobilenoController.text.isEmpty) {
-      FocusScope.of(context).requestFocus(cmobilenoFocusNode);
+    if (smobilenoController.text.isEmpty) {
+      FocusScope.of(context).requestFocus(smobilenoFocusNode);
       return;
     }
 
     final currentTime = DateTime.now();
-    Map<String, dynamic> finalContactMap = {
-      "cname": cnameController.text.toString(),
-      "cmobileno": cmobilenoController.text.toString(),
-      "fermname": fermnameController.text.toString().toLowerCase(),
-      "cemail": (cemailController.text.isEmpty)
+    Map<String, dynamic> finalsupplierMap = {
+      "sname": snameController.text.toString(),
+      "smobileno": smobilenoController.text.toString(),
+      "firmname": firmnameController.text.toString().toLowerCase(),
+      "semail": (semailController.text.isEmpty)
           ? null
-          : cemailController.text.toString().toLowerCase(),
+          : semailController.text.toString().toLowerCase(),
       "useremail": currentUser!.email.toString(),
       "entrydatetime": currentTime.toString(),
     };
@@ -127,16 +127,16 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
 
     if (isUpdate == false) {
       //add client
-      Provider.of<ClientContactProvider>(context, listen: false)
-          .addNewClient(newClientContactMap: finalContactMap);
-      print("add client com");
+      Provider.of<SupplierProvider>(context, listen: false)
+          .addNewSupplier(newSupplierMap: finalsupplierMap);
+      // print("add client com");
       Navigator.of(context).pop();
     } else {
       //update client
-      Provider.of<ClientContactProvider>(context, listen: false)
-          .updateExistingClient(
-              updateClientContactMap: finalContactMap,
-              oldcMobileNo: clientOldMobileno!);
+      Provider.of<SupplierProvider>(context, listen: false)
+          .updateExistingSupplier(
+              updateSupplierMap: finalsupplierMap,
+              oldcMobileNo: suppilerOldMobileno!);
       // print("update client com");
       Navigator.of(context).pop();
     }
@@ -149,16 +149,16 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          (isUpdate == true) ? "Update Client" : "Add Client",
+          (isUpdate == true) ? "Update Supplier" : "Add Supplier",
           style: TextStyle(fontFamily: "Rubik"),
         ),
       ),
       body: GestureDetector(
         onTap: () {
-          cnameFocusNode!.unfocus();
-          cemailFocusNode!.unfocus();
-          cmobilenoFocusNode!.unfocus();
-          fremnameFocusNode!.unfocus();
+          snameFocusNode!.unfocus();
+          semailFocusNode!.unfocus();
+          smobilenoFocusNode!.unfocus();
+          firmnameFocusNode!.unfocus();
         },
         child: Container(
           child: Padding(
@@ -188,9 +188,9 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
                 ),
                 CustomTextField(
                     customtextinputaction: TextInputAction.next,
-                    customfocusnode: cnameFocusNode,
-                    customController: cnameController,
-                    labeltext: 'client name',
+                    customfocusnode: snameFocusNode,
+                    customController: snameController,
+                    labeltext: 'Supplier name',
                     hinttext: null,
                     triling_iconname: null,
                     leadding_iconname: null,
@@ -200,9 +200,9 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
                 ),
                 CustomTextField(
                     customtextinputaction: TextInputAction.next,
-                    customfocusnode: fremnameFocusNode,
-                    customController: fermnameController,
-                    labeltext: 'ferm name',
+                    customfocusnode: firmnameFocusNode,
+                    customController: firmnameController,
+                    labeltext: 'firm name',
                     hinttext: null,
                     triling_iconname: null,
                     leadding_iconname: null,
@@ -212,9 +212,9 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
                 ),
                 CustomTextField(
                     customtextinputaction: TextInputAction.next,
-                    customfocusnode: cmobilenoFocusNode,
-                    customController: cmobilenoController,
-                    labeltext: 'client mobile number',
+                    customfocusnode: smobilenoFocusNode,
+                    customController: smobilenoController,
+                    labeltext: 'Phone',
                     hinttext: null,
                     triling_iconname: null,
                     leadding_iconname: null,
@@ -224,9 +224,9 @@ class _AddupdateClientScreenState extends State<AddupdateClientScreen> {
                 ),
                 CustomTextField(
                     customtextinputaction: TextInputAction.done,
-                    customfocusnode: cemailFocusNode,
-                    customController: cemailController,
-                    labeltext: 'client email',
+                    customfocusnode: semailFocusNode,
+                    customController: semailController,
+                    labeltext: 'Email',
                     hinttext: null,
                     triling_iconname: null,
                     leadding_iconname: null,

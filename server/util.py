@@ -13,9 +13,9 @@ import aiomysql
 
 # cursor = db.cursor()
 
-# def findclient(mysql,cmobileno):
+# def findsupplier(mysql,cmobileno):
 #     cursor = mysql.connection.cursor()
-#     query = f"SELECT * FROM client WHERE cmobileno={cmobileno}"
+#     query = f"SELECT * FROM supplier WHERE cmobileno={cmobileno}"
 #     cursor.execute(query)
 #     fatchData=cursor.fetchone() #user is exist or not
 #     print(fatchData)
@@ -35,7 +35,7 @@ async def finduser(useremail):
     try:
         conn = await createConn()
         cur = await conn.cursor()
-        # query = f"SELECT * FROM client WHERE cmobileno={cmobileno}"
+        # query = f"SELECT * FROM supplier WHERE cmobileno={cmobileno}"
         
         query = f"SELECT * FROM users WHERE useremail='{useremail}'"
         await cur.execute(query)
@@ -50,12 +50,12 @@ async def finduser(useremail):
 
 
 
-async def findclient(cmobileno):
+async def findsupplier(cmobileno):
     try:
         conn = await createConn()
         cur = await conn.cursor()
-        # query = f"SELECT * FROM client WHERE cmobileno={cmobileno}"
-        query = f"SELECT * FROM client WHERE cmobileno={cmobileno}"
+        # query = f"SELECT * FROM supplier WHERE cmobileno={cmobileno}"
+        query = f"SELECT * FROM supplier WHERE cmobileno={cmobileno}"
         await cur.execute(query)
         fatchData = await cur.fetchone()  # user is exist or not
         # print("in utill", fatchData)
@@ -66,12 +66,12 @@ async def findclient(cmobileno):
         print(e)
         return "database error"
 
-async def findclient2(cmobileno,useremail):
+async def findsupplier2(cmobileno,useremail):
     try:
         conn = await createConn()
         cur = await conn.cursor()
-        # query = f"SELECT * FROM client WHERE cmobileno={cmobileno}"
-        query = f"SELECT * FROM client WHERE cmobileno={cmobileno} and useremail='{useremail}'"
+        # query = f"SELECT * FROM supplier WHERE cmobileno={cmobileno}"
+        query = f"SELECT * FROM supplier WHERE cmobileno={cmobileno} and useremail='{useremail}'"
         await cur.execute(query)
         fatchData = await cur.fetchone()  # user is exist or not
         # print("in utill", fatchData)
@@ -99,11 +99,11 @@ async def insertuser(username, useremail, userimageurl):
         return "database error"
 
 
-async def insertclientwithcemail(cname,fermname, cmobileno,cemail, useremail,entrydatetime):
+async def insertsupplierwithcemail(cname,fermname, cmobileno,cemail, useremail,entrydatetime):
     try:
         conn = await createConn()
         cur = await conn.cursor()
-        query = f"INSERT INTO client(cname,fermname,cmobileno,cemail,useremail,entrydatetime) values('{cname}','{fermname}','{cmobileno}','{cemail}','{useremail}','{entrydatetime}')"
+        query = f"INSERT INTO supplier(cname,fermname,cmobileno,cemail,useremail,entrydatetime) values('{cname}','{fermname}','{cmobileno}','{cemail}','{useremail}','{entrydatetime}')"
         await cur.execute(query)
         await conn.commit()
         await cur.close()
@@ -113,11 +113,11 @@ async def insertclientwithcemail(cname,fermname, cmobileno,cemail, useremail,ent
         print(e)
         return "database error"
     
-async def insertclientwithoutcemail(cname,fermname, cmobileno, useremail,entrydatetime):
+async def insertsupplierwithoutcemail(cname,fermname, cmobileno, useremail,entrydatetime):
     try:
         conn = await createConn()
         cur = await conn.cursor()
-        query = f"INSERT INTO client(cname,fermname,cmobileno,useremail,entrydatetime) values('{cname}','{fermname}','{cmobileno}','{useremail}','{entrydatetime}')"
+        query = f"INSERT INTO supplier(cname,fermname,cmobileno,useremail,entrydatetime) values('{cname}','{fermname}','{cmobileno}','{useremail}','{entrydatetime}')"
         await cur.execute(query)
         await conn.commit()
         await cur.close()
@@ -127,11 +127,11 @@ async def insertclientwithoutcemail(cname,fermname, cmobileno, useremail,entryda
         print(e)
         return "database error"
 
-async def updateclientwithcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno):
+async def updatesupplierwithcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno):
     try:
         conn = await createConn()
         cur = await conn.cursor()
-        query = f"UPDATE client SET cname='{cname}',fermname='{fermname}',cmobileno='{cmobileno}',cemail='{cemail}',useremail='{useremail}',entrydatetime='{entrydatetime}' WHERE cmobileno={oldcmobileno} AND useremail='{useremail}'"
+        query = f"UPDATE supplier SET cname='{cname}',fermname='{fermname}',cmobileno='{cmobileno}',cemail='{cemail}',useremail='{useremail}',entrydatetime='{entrydatetime}' WHERE cmobileno={oldcmobileno} AND useremail='{useremail}'"
         await cur.execute(query)
         await conn.commit()
         await cur.close()
@@ -141,11 +141,11 @@ async def updateclientwithcemail(cname,fermname,cmobileno,cemail,useremail,entry
         print(e)
         return "database error"
     
-async def updateclientwithoutcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno):
+async def updatesupplierwithoutcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno):
     try:
         conn = await createConn()
         cur = await conn.cursor()
-        query = f"UPDATE client SET cname='{cname}',fermname='{fermname}',cmobileno='{cmobileno}',cemail={cemail},useremail='{useremail}',entrydatetime='{entrydatetime}' WHERE cmobileno={oldcmobileno} AND useremail='{useremail}'"
+        query = f"UPDATE supplier SET cname='{cname}',fermname='{fermname}',cmobileno='{cmobileno}',cemail={cemail},useremail='{useremail}',entrydatetime='{entrydatetime}' WHERE cmobileno={oldcmobileno} AND useremail='{useremail}'"
         await cur.execute(query)
         await conn.commit()
         await cur.close()
@@ -155,27 +155,27 @@ async def updateclientwithoutcemail(cname,fermname,cmobileno,cemail,useremail,en
         print(e)
         return "database error"
     
-async def deleteclient(cmobileno,useremail):
+async def deletesupplier(cmobileno,useremail):
     try:
         conn = await createConn()
         cur = await conn.cursor()
-        query = f"delete from client where cmobileno='{cmobileno}' AND useremail='{useremail}'"
+        query = f"delete from supplier where cmobileno='{cmobileno}' AND useremail='{useremail}'"
         # print(query)
         await cur.execute(query)
         await conn.commit()
         await cur.close()
         conn.close()
-        return "delete client success"
+        return "delete supplier success"
     except Exception as e:
         print(e)
         return "database error"
     
-async def fetchAllItemInClientTable(useremail):
+async def fetchAllItemInsupplierTable(useremail):
     try:
         print(useremail)
         conn = await createConn()
         cur = await conn.cursor()
-        query = f"SELECT * FROM client WHERE useremail='{useremail}' ORDER BY fermname ASC"
+        query = f"SELECT * FROM supplier WHERE useremail='{useremail}' ORDER BY fermname ASC"
         # print(query)
         await cur.execute(query)
         fetchdata = await cur.fetchall()

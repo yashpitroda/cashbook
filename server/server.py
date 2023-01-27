@@ -34,8 +34,8 @@ async def useradd():
     print("/useradd Completed") 
     return {'status':fetchdata},200 #user is already exisit so retrun user
 
-@app.route('/clientadd',methods=['POST'])
-async def clientadd():
+@app.route('/supplieradd',methods=['POST'])
+async def supplieradd():
     """
     {
     "cname": "keval",
@@ -44,7 +44,7 @@ async def clientadd():
     }
     """
     value=request.get_json()
-    requird=['cname','cmobileno','cemail','useremail',"entrydatetime","fermname"]
+    requird=['sname','smobileno','semail','useremail',"entrydatetime","firmname"]
     if not all(key in value for key in requird):
          return {'error':'cname or cmobile will be None or null','status':'fail'},400
         
@@ -57,29 +57,29 @@ async def clientadd():
     # print(cemail)
     # print(type(cemail))
     
-    fetchdata=await util.findclient2(cmobileno,useremail) #find client in db 
+    fetchdata=await util.findsupplier2(cmobileno,useremail) #find supplier in db 
     # print(fetchdata) 
     
     if(cemail==None):
         # go without email
         if(fetchdata==None):
             # insert in db
-            status=await util.insertclientwithoutcemail(cname,fermname,cmobileno,useremail,entrydatetime)
-            print("/clientadd Completed") 
+            status=await util.insertsupplierwithoutcemail(cname,fermname,cmobileno,useremail,entrydatetime)
+            print("/supplieradd Completed") 
             return {'status':status},200
-        print("/clientadd Completed") 
+        print("/supplieradd Completed") 
         return {'status':fetchdata},200 #user is already exisit so retrun user
     else:# go with email
         if(fetchdata==None):
             # insert in db
-            status=await util.insertclientwithcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime)
-            print("/clientadd Completed") 
+            status=await util.insertsupplierwithcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime)
+            print("/supplieradd Completed") 
             return {'status':status},200
-        print("/clientadd Completed") 
+        print("/supplieradd Completed") 
         return {'status':fetchdata},200 #user is already exisit so retrun user
     
-@app.route('/clientupdate',methods=['POST'])
-async def clientupdate():
+@app.route('/supplierupdate',methods=['POST'])
+async def supplierupdate():
     """
    
     """
@@ -103,19 +103,19 @@ async def clientupdate():
         # update in db
         if(cemail==None):
             cemail='NULL'
-        status=await util.updateclientwithoutcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno)
-        print("/clientupdate Completed") 
+        status=await util.updatesupplierwithoutcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno)
+        print("/supplierupdate Completed") 
         return {'status':status},200
        
     else:# go with email
         # update in db
-        status=await util.updateclientwithcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno)
-        print("/clientupdate Completed") 
+        status=await util.updatesupplierwithcemail(cname,fermname,cmobileno,cemail,useremail,entrydatetime,oldcmobileno)
+        print("/supplierupdate Completed") 
         return {'status':status},200
       
         
-@app.route('/clientdelete',methods=['POST'])
-async def clientdelete():
+@app.route('/supplierdelete',methods=['POST'])
+async def supplierdelete():
     """
      {
     "cmobileno": "1234",
@@ -129,14 +129,14 @@ async def clientdelete():
     cmobileno=value['cmobileno']
     useremail=value['useremail']
    
-    status=await util.deleteclient(cmobileno,useremail) #find client in db 
+    status=await util.deletesupplier(cmobileno,useremail) #find supplier in db 
     # print(status)
-    print("/clientdelete Completed") 
+    print("/supplierdelete Completed") 
 
     return {'status':status},200 #user delted
 
-@app.route('/fetchclient',methods=['POST'])
-async def fetchclient():
+@app.route('/fetchsupplier',methods=['POST'])
+async def fetchsupplier():
     """body
     {"useremail":"yashpitroda200@gmail.com"}
     """
@@ -146,9 +146,9 @@ async def fetchclient():
          return {'error':'cmobile will be None or null','status':'fail'},400
     useremail=value['useremail']
     
-    result=await util.fetchAllItemInClientTable(useremail) #result hold list of tupple -- [(),(),()]
+    result=await util.fetchAllItemInsupplierTable(useremail) #result hold list of tupple -- [(),(),()]
 
-    clientTableDataList=[]
+    supplierTableDataList=[]
     for i in result:
         cid,cname,fermname,cmobileno,cemail,useremail,entrydatetime=i # i is tupple
         temp={
@@ -160,10 +160,10 @@ async def fetchclient():
             "useremail":useremail,    
             "entrydatetime":entrydatetime, #in string   
         }
-        clientTableDataList.append(temp)
-    # print(clientTableDataList)
-    print("/fatchclient Completed")
-    return {'datalist': clientTableDataList},200 
+        supplierTableDataList.append(temp)
+    # print(supplierTableDataList)
+    print("/fatchsupplier Completed")
+    return {'datalist': supplierTableDataList},200 
 
 
  #--------------------------------------------------------------------
@@ -191,7 +191,7 @@ def additeminpaidtable():
     paymentmode=value['paymentmode'] #stirng
     useremail=value["useremail"] #stirng
    
-    status=util.addItemInPaidTable(cmobileno,padescription,paisbill,paymentmode,paamount,useremail) #find client in db 
+    status=util.addItemInPaidTable(cmobileno,padescription,paisbill,paymentmode,paamount,useremail) #find supplier in db 
     print(status) 
 
     return {'status':status},200 #user delted

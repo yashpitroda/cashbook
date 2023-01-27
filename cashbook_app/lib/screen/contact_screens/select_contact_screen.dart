@@ -1,4 +1,4 @@
-import 'package:cashbook_app/provider/client_contact_provider.dart';
+import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:cashbook_app/widgets/customtextfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +6,8 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'dart:math' as math;
 
 import 'package:provider/provider.dart';
+
+import '../../utill/utility.dart';
 
 class SelectContactScreen extends StatefulWidget {
   static const String routeName = '/SelectContactScreen';
@@ -17,9 +19,10 @@ class SelectContactScreen extends StatefulWidget {
 
 class _SelectContactScreenState extends State<SelectContactScreen> {
   TextEditingController searchTextController = TextEditingController();
+  FocusNode searchTextfocusnode = FocusNode();
 
   List<Contact> _dummycontactslist = [];
-  List<Contact> contactList = [];
+  List<Contact>? contactList;
   List<Color> colorsList = [];
 
   bool _permissionDenied = false;
@@ -45,13 +48,15 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
   void initState() {
     super.initState();
     //add contact in list
+
     _fetchContacts().then((_) {
-      contactList.addAll(_dummycontactslist);
+      // contactList!.addAll(_dummycontactslist);
+      contactList = _dummycontactslist;
 
       //add color in colorlist
-      for (var i = 0; i < contactList.length; i++) {
+      for (var i = 0; i < contactList!.length; i++) {
         colorsList.add(Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
-            .withOpacity(0.2));
+            .withOpacity(0.3));
       }
     });
   }
@@ -59,12 +64,12 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
 // ------------------------------_onSubmitHandler-----------------------------------
   void _onSubmitHandler(BuildContext context) {
     Map<String, dynamic> finalselectedContactMap = {
-      "cname": selectedContact!.displayName.toString().toLowerCase(),
-      "cmobileno": selectedContact!.phones.first.number
+      "name": selectedContact!.displayName.toString().toLowerCase(),
+      "mobileno": selectedContact!.phones.first.number
           .toString()
           .replaceAll(" ", "")
           .replaceFirst("+91", ""),
-      "cemail": (selectedContact!.emails.length == 0)
+      "email": (selectedContact!.emails.length == 0)
           ? null
           : selectedContact!.emails.first.address.toString().toLowerCase(),
     };
@@ -94,14 +99,16 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
         }
       });
       setState(() {
-        contactList.clear();
-        contactList.addAll(dummyListData);
+        // contactList!.clear();
+        // contactList!.addAll(dummyListData);
+        contactList = dummyListData;
       });
       return;
     } else {
       setState(() {
-        contactList.clear();
-        contactList.addAll(_dummycontactslist);
+        // contactList!.clear();
+        // contactList!.addAll(_dummycontactslist);
+        contactList = _dummycontactslist;
       });
     }
   }
@@ -111,7 +118,7 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Select contacts",
+          "Select contact",
           style: TextStyle(fontFamily: "Rubik"),
         ),
         actions: [
@@ -139,6 +146,7 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
                       onChanged: (value) {
                         filterSearchResults(value);
                       },
+                      focusNode: searchTextfocusnode,
                       controller: searchTextController,
                       cursorColor: Colors.black,
                       style: const TextStyle(
@@ -146,7 +154,20 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
                           color: Colors.black,
                           // fontWeight: FontWeight.w500,
                           fontSize: 18),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
+                        suffixIcon: searchTextfocusnode.hasFocus
+                            ? IconButton(
+                                icon: Icon(Icons.clear),
+                                onPressed: () {
+                                  // print();
+                                  searchTextController.clear();
+                                  searchTextfocusnode.unfocus();
+                                  _fetchContacts().then((_) {
+                                    contactList = _dummycontactslist;
+                                  });
+                                },
+                              )
+                            : null,
                         border: InputBorder.none,
                         prefixIcon: Icon(Icons.search), //icon at tail of input
                       ),
@@ -175,64 +196,65 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
   Widget _CustomContactListView() {
     if (_permissionDenied)
       return const Center(child: Text('Permission denied'));
-    if (contactList == null)
-      return const Center(child: CircularProgressIndicator());
-    return ListView.builder(
-        itemCount: contactList.length,
-        itemBuilder: (context, i) => ListTile(
-            leading: ((i == isSelectedContactIndex &&
-                    !isSelectedContactIndex!.isNaN))
-                ? const CircleAvatar(
-                    child: Icon(Icons.check),
-                    backgroundColor: Colors.blue,
-                  )
-                : CircleAvatar(
-                    backgroundColor: colorsList[i],
-                    child: Image.asset(
-                      'assets/images/contect_icon.png',
-                      fit: BoxFit.fill,
-                    ),
+
+    return (contactList == null)
+        ? const CircularProgressIndicator()
+        : ListView.builder(
+            itemCount: contactList!.length,
+            itemBuilder: (context, i) => ListTile(
+                leading: ((i == isSelectedContactIndex &&
+                        !isSelectedContactIndex!.isNaN))
+                    ? const CircleAvatar(
+                        child: Icon(Icons.check),
+                        backgroundColor: Colors.blue,
+                      )
+                    : CircleAvatar(
+                        backgroundColor: colorsList[i],
+                        child: Image.asset(
+                          'assets/images/contect_icon.png',
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                subtitle: Text(
+                  '${contactList![i].phones.isNotEmpty ? contactList![i].phones.first.number.toString().replaceAll(" ", "").replaceFirst("+91", "") : '(none)'}',
+                  style: TextStyle(
+                      fontSize: ((i == isSelectedContactIndex &&
+                              !isSelectedContactIndex!.isNaN))
+                          ? 15
+                          : 14,
+                      fontFamily: "Rubik"),
+                ),
+                title: Text(
+                  contactList![i].displayName,
+                  style: TextStyle(
+                    overflow: TextOverflow.fade,
+                    fontWeight: (((i == isSelectedContactIndex &&
+                            !isSelectedContactIndex!.isNaN)))
+                        ? FontWeight.w500
+                        : null,
+                    color: (((i == isSelectedContactIndex &&
+                            !isSelectedContactIndex!.isNaN)))
+                        ? Colors.blue
+                        : Colors.black,
+                    fontFamily: 'Rubik',
+                    fontSize: (((i == isSelectedContactIndex &&
+                            !isSelectedContactIndex!.isNaN)))
+                        ? 20
+                        : 16,
                   ),
-            subtitle: Text(
-              '${contactList[i].phones.isNotEmpty ? contactList[i].phones.first.number.toString().replaceAll(" ", "").replaceFirst("+91", "") : '(none)'}',
-              style: TextStyle(
-                  fontSize: ((i == isSelectedContactIndex &&
-                          !isSelectedContactIndex!.isNaN))
-                      ? 15
-                      : 14,
-                  fontFamily: "Rubik"),
-            ),
-            title: Text(
-              contactList[i].displayName,
-              style: TextStyle(
-                overflow: TextOverflow.fade,
-                fontWeight: (((i == isSelectedContactIndex &&
-                        !isSelectedContactIndex!.isNaN)))
-                    ? FontWeight.w500
-                    : null,
-                color: (((i == isSelectedContactIndex &&
-                        !isSelectedContactIndex!.isNaN)))
-                    ? Colors.blue
-                    : Colors.black,
-                fontFamily: 'Rubik',
-                fontSize: (((i == isSelectedContactIndex &&
-                        !isSelectedContactIndex!.isNaN)))
-                    ? 20
-                    : 16,
-              ),
-            ),
-            onTap: () {
-              setState(() {
-                if (isSelectedContactIndex == null) {
-                  isSelectedContactIndex = i;
-                  selectedContact = contactList[i];
-                } else if (isSelectedContactIndex == i) {
-                  isSelectedContactIndex = null;
-                } else if (isSelectedContactIndex != i) {
-                  isSelectedContactIndex = i;
-                  selectedContact = contactList[i];
-                }
-              });
-            }));
+                ),
+                onTap: () {
+                  setState(() {
+                    if (isSelectedContactIndex == null) {
+                      isSelectedContactIndex = i;
+                      selectedContact = contactList![i];
+                    } else if (isSelectedContactIndex == i) {
+                      isSelectedContactIndex = null;
+                    } else if (isSelectedContactIndex != i) {
+                      isSelectedContactIndex = i;
+                      selectedContact = contactList![i];
+                    }
+                  });
+                }));
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:cashbook_app/models/client_contact.dart';
-import 'package:cashbook_app/screen/select_client_sreen.dart';
+import 'package:cashbook_app/models/supplier.dart';
+import 'package:cashbook_app/screen/select_supplier_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -21,26 +21,25 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
   FocusNode? descriptionFocusNode;
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController clientNameController = TextEditingController();
-  TextEditingController clientMobilenoController = TextEditingController();
-  TextEditingController fermNameController = TextEditingController();
+  TextEditingController supplierNameController = TextEditingController();
+  TextEditingController supplierMobilenoController = TextEditingController();
+  TextEditingController firmNameController = TextEditingController();
 
   int? _isBillValue = 1;
-  bool _isclientInfoExpanded = false;
 
   DateTime? _selectedDate;
   TimeOfDay? _selectedtime;
   DateTime? finaldateTime;
-  ClientContact? selectedClientobj;
+  Supplier? selectedSupplierobj;
 
   Future<void> _submitHander() async {
     print(amountController.text);
     print(descriptionController.text);
     print(_isBillValue);
     print(finaldateTime.toString());
-    print(fermNameController.text);
-    print(clientNameController.text);
-    print(clientMobilenoController.text);
+    print(firmNameController.text);
+    print(supplierNameController.text);
+    print(supplierMobilenoController.text);
     // print(currentUser.email!);
   }
 
@@ -99,11 +98,13 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
   }
 
   void _gotoSelectClintScreen() {
-    Navigator.of(context).pushNamed(SelectClintScreen.routeName).then((value) {
-      selectedClientobj = value as ClientContact;
-      clientNameController.text = selectedClientobj!.cname;
-      fermNameController.text = selectedClientobj!.fermname;
-      clientMobilenoController.text = selectedClientobj!.cmobileno;
+    Navigator.of(context)
+        .pushNamed(SelectSupplierScreen.routeName)
+        .then((value) {
+      selectedSupplierobj = value as Supplier;
+      firmNameController.text = selectedSupplierobj!.firmname;
+      supplierNameController.text = selectedSupplierobj!.sname;
+      supplierMobilenoController.text = selectedSupplierobj!.smobileno;
       setState(() {});
     });
   }
@@ -178,7 +179,7 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
                           customtextinputaction: TextInputAction.done,
                           customfocusnode: descriptionFocusNode,
                           textinputtype: TextInputType.name,
-                          labeltext: "Description",
+                          labeltext: "remark",
                           customController: descriptionController,
                           hinttext: "product name",
                           leadding_iconname: null,
@@ -288,7 +289,7 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
     return TextField(
       enabled: false,
       readOnly: true,
-      controller: clientMobilenoController,
+      controller: supplierMobilenoController,
       cursorColor: Colors.black,
       style: const TextStyle(
           // letterSpacing: 1,
@@ -319,7 +320,7 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
     return TextField(
       enabled: false,
       readOnly: true,
-      controller: clientNameController,
+      controller: supplierNameController,
       cursorColor: Colors.black,
       style: const TextStyle(
           // letterSpacing: 1,
@@ -350,7 +351,7 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
       onTap: () {
         _gotoSelectClintScreen();
       },
-      controller: fermNameController,
+      controller: firmNameController,
       cursorColor: Colors.black,
       style: const TextStyle(
           // letterSpacing: 1,

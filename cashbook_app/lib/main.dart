@@ -1,10 +1,10 @@
-import 'package:cashbook_app/provider/client_contact_provider.dart';
-import 'package:cashbook_app/screen/add_client_screen.dart';
+import 'package:cashbook_app/provider/supplier_provider.dart';
+import 'package:cashbook_app/screen/add_supplier_screen.dart';
 import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
 import 'package:cashbook_app/screen/add_in_payable_screen.dart';
 import 'package:cashbook_app/screen/home_screen.dart';
-import 'package:cashbook_app/screen/manage_client_screen.dart';
-import 'package:cashbook_app/screen/select_client_sreen.dart';
+import 'package:cashbook_app/screen/manage_supplier_screen.dart';
+import 'package:cashbook_app/screen/select_supplier_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'provider/google_auth_provider.dart';
 import 'screen/auth_screen_final.dart';
-import 'screen/client_screen.dart';
+import 'screen/supplier_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,11 +32,11 @@ class MyApp extends StatelessWidget {
           create: (ctx) => GauthProvider(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => ClientContactProvider(),
+          create: (ctx) => SupplierProvider(),
         ),
       ],
       child: MaterialApp(
-        scrollBehavior: ScrollBehavior(
+        scrollBehavior:const ScrollBehavior(
             androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
@@ -77,9 +77,9 @@ class MyApp extends StatelessWidget {
           AddInPayableScreen.routeName: (context) => const AddInPayableScreen(),
           HomeScreen.routeName: (context) => HomeScreen(),
           ClientScreen.routeName: (context) => ClientScreen(),
-          SelectClintScreen.routeName: (context) => SelectClintScreen(),
-          AddupdateClientScreen.routeName: (context) => AddupdateClientScreen(),
-          ManageClientScreen.routeName: (context) => ManageClientScreen(),
+          SelectSupplierScreen.routeName: (context) => SelectSupplierScreen(),
+          AddupdateSupplierScreen.routeName: (context) => AddupdateSupplierScreen(),
+          ManageSupplierScreen.routeName: (context) => ManageSupplierScreen(),
           SelectContactScreen.routeName: (context) => SelectContactScreen(),
         },
       ),

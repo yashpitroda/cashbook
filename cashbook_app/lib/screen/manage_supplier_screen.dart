@@ -1,31 +1,26 @@
-import 'package:cashbook_app/provider/client_contact_provider.dart';
+import 'package:cashbook_app/provider/supplier_provider.dart';
+import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'add_client_screen.dart';
+import '../widgets/customsearch_textfield.dart';
+import 'add_supplier_screen.dart';
 
-class ManageClientScreen extends StatefulWidget {
-  static const String routeName = '/ManageClientScreen';
-  ManageClientScreen({super.key});
+class ManageSupplierScreen extends StatefulWidget {
+  static const String routeName = '/ManageSupplierScreen';
+  ManageSupplierScreen({super.key});
 
   @override
-  State<ManageClientScreen> createState() => _ManageClientScreenState();
+  State<ManageSupplierScreen> createState() => _ManageSupplierScreenState();
 }
 
-class _ManageClientScreenState extends State<ManageClientScreen> {
+class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
   TextEditingController searchTextController = TextEditingController();
-  FocusNode editingFocusnode = FocusNode();
+  FocusNode searchTextfocusnode = FocusNode();
   final currentUser = FirebaseAuth.instance.currentUser;
   var _isInit = true;
   var _isloading = false;
-
-  Future<void> _refreshClient(BuildContext context) async {
-    await Provider.of<ClientContactProvider>(context, listen: false)
-        .fatchCilentContact(useremail: currentUser!.email.toString());
-
-    print('refresh done');
-  }
 
   @override
   void didChangeDependencies() {
@@ -33,20 +28,20 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
       setState(() {
         _isloading = true;
       });
-      Provider.of<ClientContactProvider>(context, listen: false)
-          .fatchCilentContact(useremail: currentUser!.email.toString())
+      Provider.of<SupplierProvider>(context, listen: false)
+          .fatchSupplier(useremail: currentUser!.email.toString())
           .then((_) {
         setState(() {
           _isloading = false;
         });
       });
     }
-
     _isInit = false;
     super.didChangeDependencies();
   }
 
-  Future<void> _showMyDialog(String cmobileno, String useremail) async {
+  Future<void> _showAlertDialog(
+      {required String smobileno, required String useremail}) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -83,8 +78,8 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                Provider.of<ClientContactProvider>(context, listen: false)
-                    .deleteClient(cmobileno: cmobileno, useremail: useremail);
+                Provider.of<SupplierProvider>(context, listen: false)
+                    .deleteSupplier(smobileno: smobileno, useremail: useremail);
                 Navigator.of(context).pop();
               },
             ),
@@ -94,21 +89,27 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
     );
   }
 
-  void _onTapOnDelete({required String cmobileno, required String useremail}) {
-    _showMyDialog(cmobileno, useremail);
+  void _onTapOnDelete({required String smobileno, required String useremail}) {
+    _showAlertDialog(smobileno: smobileno, useremail: useremail);
+  }
+
+  void clearTextOnSearchTextField() {
+    searchTextController.clear();
+    searchTextfocusnode.unfocus();
+    Utility.refreshSupplier(context);
   }
 
   @override
   Widget build(BuildContext context) {
     var mqhight = MediaQuery.of(context).size.height;
     var mqwidth = MediaQuery.of(context).size.width;
-    final items = Provider.of<ClientContactProvider>(context, listen: true)
-        .clientContactList;
+    final items =
+        Provider.of<SupplierProvider>(context, listen: true).supplierList;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Manage Client",
+          "Manage supplier",
           style: TextStyle(fontFamily: "Rubik"),
         ),
       ),
@@ -118,7 +119,7 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
             )
           : GestureDetector(
               onTap: () {
-                editingFocusnode.unfocus();
+                searchTextfocusnode.unfocus();
               },
               child: Container(
                 color: Colors.grey.withOpacity(0.09),
@@ -129,38 +130,60 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: TextField(
-                        focusNode: editingFocusnode,
-                        onChanged: (value) {
-                          Provider.of<ClientContactProvider>(context,
-                                  listen: false)
-                              .filterSearchResults(value);
-                        },
-                        controller: searchTextController,
-                        cursorColor: Colors.black,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16),
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.search_rounded),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(14)),
-                          ),
-                          labelText: "Search",
-                          labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-                          hintStyle: TextStyle(fontSize: 13),
-                          contentPadding:
-                              EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                        ),
-                      ),
+                      child: CustomSearchTextField(
+                          customController: searchTextController,
+                          labeltext: "search",
+                          hinttext: null,
+                          textinputtype: TextInputType.name,
+                          customfocusnode: searchTextfocusnode,
+                          customtextinputaction: null,
+                          customOnChangedFuction:
+                              Utility.SearchInSupplierListInProvider,
+                          customClearSearchFuction: clearTextOnSearchTextField),
                     ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 8),
+                    //   child: TextField(
+                    //     focusNode: searchTextfocusnode,
+                    //     onChanged: (value) {
+                    //       Provider.of<SupplierProvider>(context, listen: false)
+                    //           .filterSearchResults(query: value);
+                    //     },
+                    //     controller: searchTextController,
+                    //     cursorColor: Colors.black,
+                    //     style: const TextStyle(
+                    //         color: Colors.black,
+                    //         fontWeight: FontWeight.w500,
+                    //         fontSize: 16),
+                    //     decoration: InputDecoration(
+                    //       suffixIcon: searchTextfocusnode.hasFocus
+                    //           ? IconButton(
+                    //               icon: Icon(Icons.clear),
+                    //               onPressed: () {
+                    //                 searchTextController.clear();
+                    //                 searchTextfocusnode.unfocus();
+                    //                 Utility.refreshSupplier(context);
+                    //               },
+                    //             )
+                    //           : null,
+                    //       prefixIcon: Icon(Icons.search_rounded),
+                    //       border: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.all(Radius.circular(14)),
+                    //       ),
+                    //       labelText: "Search",
+                    //       labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+                    //       hintStyle: TextStyle(fontSize: 13),
+                    //       contentPadding:
+                    //           EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(
                       height: mqhight * 0.02,
                     ),
                     Expanded(
                       child: RefreshIndicator(
-                        onRefresh: () => _refreshClient(context),
+                        onRefresh: () => Utility.refreshSupplier(context),
                         child: ListView.builder(
                           itemCount: items.length,
                           itemBuilder: (context, index) {
@@ -175,7 +198,7 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
                                   children: [
                                     ListTile(
                                       title: Text(
-                                        "${items[index].fermname}",
+                                        "${items[index].firmname}",
                                         style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
@@ -189,7 +212,7 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
                                             height: 4,
                                           ),
                                           Text(
-                                            "${items[index].cname}",
+                                            "${items[index].sname}",
                                             style: const TextStyle(
                                               fontFamily: "Rubik",
                                               fontSize: 15,
@@ -199,7 +222,7 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
                                             height: 1,
                                           ),
                                           Text(
-                                            "+91 ${items[index].cmobileno}",
+                                            "+91 ${items[index].smobileno}",
                                             style: const TextStyle(
                                               fontFamily: "Rubik",
                                               fontSize: 15,
@@ -216,9 +239,9 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
                                           IconButton(
                                             onPressed: () {
                                               Navigator.of(context).pushNamed(
-                                                  AddupdateClientScreen
+                                                  AddupdateSupplierScreen
                                                       .routeName,
-                                                  arguments: items[index].cid);
+                                                  arguments: items[index].sid);
                                             },
                                             icon: const Icon(
                                               Icons.edit,
@@ -227,8 +250,8 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
                                           ),
                                           IconButton(
                                             onPressed: () => _onTapOnDelete(
-                                                cmobileno:
-                                                    items[index].cmobileno,
+                                                smobileno:
+                                                    items[index].smobileno,
                                                 useremail: currentUser!.email
                                                     .toString()),
                                             icon: const Icon(
@@ -259,11 +282,11 @@ class _ManageClientScreenState extends State<ManageClientScreen> {
           // Add your onPressed code here!
           // Navigator.of(context).pushNamed(AddClientScreen.routeName);
           Navigator.of(context).pushNamed(
-            AddupdateClientScreen.routeName,
+            AddupdateSupplierScreen.routeName,
           );
           // .then((_) => _refreshProducts(context));
         },
-        label: const Text('Add Client'),
+        label: const Text('Add supplier'),
         icon: const Icon(Icons.add),
       ),
     );

@@ -5,31 +5,31 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-import '../models/client_contact.dart';
+import '../models/supplier.dart';
 
-class ClientContactProvider with ChangeNotifier {
+class SupplierProvider with ChangeNotifier {
   // ------------------------------initialization-----------------------------------
   // User? currentUser = FirebaseAuth.instance.currentUser!; //this is not use here // it is passes from frentend fuction
-  List<ClientContact> _clientContactList = [];
-  List<ClientContact> _storedContactList =
+  List<Supplier> _supplierList = [];
+  List<Supplier> _storedSupplierList =
       []; //for backup of _clientContactList --
 
   // ------------------------------getter-----------------------------------
-  List<ClientContact> get clientContactList {
-    return [..._clientContactList];
+  List<Supplier> get supplierList {
+    return [..._supplierList];
   }
 
   // ------------------------------findClientContactByCID-----------------------------------
-  ClientContact findClientContactByCID({required String cid}) {
-    return _clientContactList.firstWhere((element) {
-      return element.cid == cid;
+  Supplier findSupplierBySID({required String sid}) {
+    return _supplierList.firstWhere((element) {
+      return element.sid == sid;
     });
   }
 
 // ------------------------------filterSearchResults-----------------------------------
-  void filterSearchResults(String query) {
+  void filterSearchResults({required String query}) {
     if (query.isNotEmpty) {
-      List<ClientContact> matchDataWithQueryList =
+      List<Supplier> matchDataWithQueryList =
           []; //foundedDataList -- mached data from query
 
       //use foreach-- method 1
@@ -44,26 +44,26 @@ class ClientContactProvider with ChangeNotifier {
       // });
 
       // or
-      matchDataWithQueryList = _storedContactList.where((item) {
-        return item.cname.contains(query) ||
-            item.cmobileno.toString().contains(query) ||
-            item.fermname.toString().contains(query);
+      matchDataWithQueryList = _storedSupplierList.where((item) {
+        return item.sname.contains(query) ||
+            item.smobileno.toString().contains(query) ||
+            item.firmname.toString().contains(query);
       }).toList();
       // _clientContactList.clear();
       // _clientContactList.addAll(dummyListData); //it is not right way
-      _clientContactList = matchDataWithQueryList; //right way //
+      _supplierList = matchDataWithQueryList; //right way //
       notifyListeners();
     } else {
       //if query is empty  then _storedContactList add to _clientContactList
-      _clientContactList = _storedContactList; //right way
+      _supplierList = _storedSupplierList; //right way
       notifyListeners();
     }
   }
 
 // ------------------------------fatchCilentContact-----------------------------------
-  Future<void> fatchCilentContact({required useremail}) async {
-    print("hahs");
-    final url = Uri.parse(Utility.BASEURL + "/fetchclient");
+  Future<void> fatchSupplier({required useremail}) async {
+    // print("hahs");
+    final url = Uri.parse(Utility.BASEURL + "/fetchsupplier");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
@@ -79,45 +79,45 @@ class ClientContactProvider with ChangeNotifier {
     }
     final responseData = json.decode(response.body);
     // print(responseData);
-    List responseContactDataList = responseData['datalist']; //[{},{},{}]
-    final List<ClientContact> loadedClientOrderlist = [];
+    List responseSupplierDataList = responseData['datalist']; //[{},{},{}]
+    final List<Supplier> tempLoadedSupplierlist = [];
 
     // Wed, 28 Dec 2022 13:34:09 GMT //element['entrydatetime'] -- hold this type of formate --this formate coming form flask server
     final stirngToDateTmeFormatter =
         DateFormat('EEE, d MMM yyyy HH:mm:ss'); // Wed, 28 Dec 2022 13:34:09 GMT
 
-    responseContactDataList.forEach((element) {
-      loadedClientOrderlist.add(ClientContact(
-        cid: element['cid'].toString(),
-        cemail: element["cemail"], //if it will null or string
-        fermname: element['fermname'].toString(),
-        cname: element['cname'].toString(),
-        cmobileno: element['cmobileno'].toString(),
+    responseSupplierDataList.forEach((element) {
+      tempLoadedSupplierlist.add(Supplier(
+        sid: element['sid'].toString(),
+        semail: element["semail"], //if it will null or string
+        firmname: element['firmname'].toString(),
+        sname: element['sname'].toString(),
+        smobileno: element['smobileno'].toString(),
         entrydatetime: stirngToDateTmeFormatter.parse(element[
             'entrydatetime']), //element['entrydatetime'] is alreeady in string
       ));
     });
-    _clientContactList = loadedClientOrderlist;
-    _storedContactList = _clientContactList; //for backup in searching
+    _supplierList = tempLoadedSupplierlist;
+    _storedSupplierList = _supplierList; //for backup in searching
 
     notifyListeners();
   }
 
 // ------------------------------addNewClient-----------------------------------
-  Future<void> addNewClient({required Map newClientContactMap}) async {
-    print(newClientContactMap['useremail']);
-    final url = Uri.parse(Utility.BASEURL + "/clientadd");
+  Future<void> addNewSupplier({required Map newSupplierMap}) async {
+    print(newSupplierMap['useremail']);
+    final url = Uri.parse(Utility.BASEURL + "/supplieradd");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
       body: json.encode(
         {
-          "cname": newClientContactMap['cname'],
-          "fermname": newClientContactMap['fermname'],
-          "cmobileno": newClientContactMap['cmobileno'],
-          "cemail": newClientContactMap['cemail'],
-          'useremail': newClientContactMap['useremail'],
-          'entrydatetime': newClientContactMap['entrydatetime']
+          "sname": newSupplierMap['sname'],
+          "firmname": newSupplierMap['firmname'],
+          "smobileno": newSupplierMap['smobileno'],
+          "semail": newSupplierMap['semail'],
+          'useremail': newSupplierMap['useremail'],
+          'entrydatetime': newSupplierMap['entrydatetime']
         },
       ),
     );
@@ -127,27 +127,27 @@ class ClientContactProvider with ChangeNotifier {
     }
     final responseData = json.decode(response.body);
     print(responseData);
-    fatchCilentContact(useremail: newClientContactMap['useremail']);
+    fatchSupplier(useremail: newSupplierMap['useremail']);
   }
 
   // ------------------------------findClientContactByCID-----------------------------------
-  Future<void> updateExistingClient(
-      {required Map updateClientContactMap,
+  Future<void> updateExistingSupplier(
+      {required Map updateSupplierMap,
       required String oldcMobileNo}) async {
-    print(updateClientContactMap['useremail']);
-    final url = Uri.parse(Utility.BASEURL + "/clientupdate");
+    print(updateSupplierMap['useremail']);
+    final url = Uri.parse(Utility.BASEURL + "/supplierupdate");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
       body: json.encode(
         {
-          'useremail': updateClientContactMap['useremail'],
+          'useremail': updateSupplierMap['useremail'],
           'oldcmobileno': oldcMobileNo,
-          "cname": updateClientContactMap['cname'],
-          "fermname": updateClientContactMap['fermname'],
-          "cmobileno": updateClientContactMap['cmobileno'],
-          "cemail": updateClientContactMap['cemail'],
-          'entrydatetime': updateClientContactMap['entrydatetime']
+          "sname": updateSupplierMap['sname'],
+          "firmname": updateSupplierMap['firmname'],
+          "smobileno": updateSupplierMap['smobileno'],
+          "semail": updateSupplierMap['semail'],
+          'entrydatetime': updateSupplierMap['entrydatetime']
         },
       ),
     );
@@ -157,24 +157,24 @@ class ClientContactProvider with ChangeNotifier {
     }
     final responseData = json.decode(response.body);
     print(responseData);
-    fatchCilentContact(useremail: updateClientContactMap['useremail']);
+    fatchSupplier(useremail: updateSupplierMap['useremail']);
   }
 
-  Future<void> deleteClient(
-      {required String cmobileno, required String useremail}) async {
-    final url = Uri.parse(Utility.BASEURL + "/clientdelete");
+  Future<void> deleteSupplier(
+      {required String smobileno, required String useremail}) async {
+    final url = Uri.parse(Utility.BASEURL + "/supplierdelete");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
       body: json.encode(
-        {"cmobileno": cmobileno, "useremail": useremail},
+        {"smobileno": smobileno, "useremail": useremail},
       ),
     );
     if (response.body == 'null') {
       print('its products retruns data is not avalible in firebase server');
       return;
     }
-    fatchCilentContact(useremail: useremail);
+    fatchSupplier(useremail: useremail);
     print("detetion done");
   }
 }
