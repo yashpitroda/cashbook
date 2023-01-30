@@ -4,6 +4,7 @@ import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
 import 'package:cashbook_app/screen/add_in_payable_screen.dart';
 import 'package:cashbook_app/screen/home_screen.dart';
 import 'package:cashbook_app/screen/manage_supplier_screen.dart';
+import 'package:cashbook_app/screen/purchase_screen.dart';
 import 'package:cashbook_app/screen/select_supplier_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        scrollBehavior:const ScrollBehavior(
+        scrollBehavior: const ScrollBehavior(
             androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
@@ -78,9 +79,11 @@ class MyApp extends StatelessWidget {
           HomeScreen.routeName: (context) => HomeScreen(),
           ClientScreen.routeName: (context) => ClientScreen(),
           SelectSupplierScreen.routeName: (context) => SelectSupplierScreen(),
-          AddupdateSupplierScreen.routeName: (context) => AddupdateSupplierScreen(),
+          AddupdateSupplierScreen.routeName: (context) =>
+              AddupdateSupplierScreen(),
           ManageSupplierScreen.routeName: (context) => ManageSupplierScreen(),
           SelectContactScreen.routeName: (context) => SelectContactScreen(),
+          PurchaseScreen.routeName: (context) => PurchaseScreen(),
         },
       ),
     );

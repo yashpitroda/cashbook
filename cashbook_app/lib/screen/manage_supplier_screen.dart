@@ -1,6 +1,7 @@
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -114,8 +115,8 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
         ),
       ),
       body: (_isloading)
-          ? Center(
-              child: CircularProgressIndicator(),
+          ? const Center(
+              child: CupertinoActivityIndicator(),
             )
           : GestureDetector(
               onTap: () {

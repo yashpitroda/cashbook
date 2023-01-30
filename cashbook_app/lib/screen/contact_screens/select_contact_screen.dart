@@ -1,6 +1,7 @@
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:cashbook_app/widgets/customtextfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'dart:math' as math;
@@ -198,7 +199,7 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
       return const Center(child: Text('Permission denied'));
 
     return (contactList == null)
-        ? const CircularProgressIndicator()
+        ? const  CupertinoActivityIndicator()
         : ListView.builder(
             itemCount: contactList!.length,
             itemBuilder: (context, i) => ListTile(

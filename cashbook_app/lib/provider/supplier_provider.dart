@@ -11,8 +11,7 @@ class SupplierProvider with ChangeNotifier {
   // ------------------------------initialization-----------------------------------
   // User? currentUser = FirebaseAuth.instance.currentUser!; //this is not use here // it is passes from frentend fuction
   List<Supplier> _supplierList = [];
-  List<Supplier> _storedSupplierList =
-      []; //for backup of _clientContactList --
+  List<Supplier> _storedSupplierList = []; //for backup of _clientContactList --
 
   // ------------------------------getter-----------------------------------
   List<Supplier> get supplierList {
@@ -93,8 +92,17 @@ class SupplierProvider with ChangeNotifier {
         firmname: element['firmname'].toString(),
         sname: element['sname'].toString(),
         smobileno: element['smobileno'].toString(),
-        entrydatetime: stirngToDateTmeFormatter.parse(element[
-            'entrydatetime']), //element['entrydatetime'] is alreeady in string
+        entrydatetime: stirngToDateTmeFormatter.parse(
+          element['entrydatetime'],
+        ), //element['entrydatetime'] is alreeady in string
+        outstanding_amount_withbill:
+            element["outstanding_amount_withbill"].toString(),
+        outstanding_amount_without_bill:
+            element["outstanding_amount_without_bill"].toString(),
+        advance_amount_with_bill:
+            element["advance_amount_with_bill"].toString(),
+        advance_amount_without_bill:
+            element["advance_amount_without_bill"].toString(),
       ));
     });
     _supplierList = tempLoadedSupplierlist;
@@ -132,8 +140,7 @@ class SupplierProvider with ChangeNotifier {
 
   // ------------------------------findClientContactByCID-----------------------------------
   Future<void> updateExistingSupplier(
-      {required Map updateSupplierMap,
-      required String oldcMobileNo}) async {
+      {required Map updateSupplierMap, required String oldcMobileNo}) async {
     print(updateSupplierMap['useremail']);
     final url = Uri.parse(Utility.BASEURL + "/supplierupdate");
     final response = await http.post(

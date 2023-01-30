@@ -1,4 +1,5 @@
 import 'package:cashbook_app/screen/add_in_payable_screen.dart';
+import 'package:cashbook_app/screen/purchase_screen.dart';
 import 'package:cashbook_app/widgets/card_ui_1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -185,7 +186,7 @@ class ClientScreen extends StatelessWidget {
                               child: ElevatedButton(
                                 onPressed: () {
                                   Navigator.of(context)
-                                      .pushNamed(AddInPayableScreen.routeName);
+                                      .pushNamed(PurchaseScreen.routeName);
                                 },
                                 style: ElevatedButton.styleFrom(
                                     fixedSize: const Size(10, 55),
@@ -309,7 +310,8 @@ class ClientScreen extends StatelessWidget {
               );
             },
             itemCount: 10,
-          )
+          ),
+          Text("page 3"),
         ]),
       ),
     );

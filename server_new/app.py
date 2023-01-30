@@ -99,7 +99,7 @@ async def fetchsupplier():
 
     supplierTableDataList=[]
     for i in result:
-        sid,sname,firmname,smobileno,semail,useremail,entrydatetime=i # i is tupple
+        sid,sname,firmname,smobileno,semail,useremail,entrydatetime,outstanding_amount_withbill,outstanding_amount_without_bill,advance_amount_with_bill,advance_amount_without_bill=i # i is tupple
         temp={
             "sid":sid,
             "sname":sname,
@@ -108,6 +108,10 @@ async def fetchsupplier():
             "semail":semail,
             "useremail":useremail,    
             "entrydatetime":entrydatetime, #in string   
+            "outstanding_amount_withbill":outstanding_amount_withbill, #in string   
+            "outstanding_amount_without_bill":outstanding_amount_without_bill, #in string   
+            "advance_amount_with_bill":advance_amount_with_bill, #in string   
+            "advance_amount_without_bill":advance_amount_without_bill, #in string   
         }
         supplierTableDataList.append(temp)
     # print(supplierTableDataList)

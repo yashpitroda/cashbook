@@ -4,6 +4,7 @@ import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
 import 'package:cashbook_app/screen/manage_supplier_screen.dart';
 import 'package:cashbook_app/widgets/customsearch_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -80,7 +81,9 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
       ),
       body: (_isloading)
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CupertinoActivityIndicator(
+                radius: 13,
+              ),
             )
           : GestureDetector(
               onTap: () {
@@ -152,7 +155,7 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
                                 elevation: 0,
                                 color: Colors.white,
                                 child: RadioListTile(
-                                  contentPadding: EdgeInsets.symmetric(
+                                  contentPadding: const EdgeInsets.symmetric(
                                       horizontal: 4, vertical: 0),
                                   title: Row(
                                     mainAxisAlignment:
@@ -160,14 +163,14 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
                                     children: [
                                       Text(
                                         "${items[index].firmname}",
-                                        style: TextStyle(
+                                        style:const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                             fontFamily: "Rubik"),
                                       ),
                                       Text(
                                         "${items[index].entrydatetime.toString().split(' ')[0]}",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 12, fontFamily: "Rubik"),
                                       ),
                                     ],
@@ -181,7 +184,8 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
                                     children: [
                                       Text(
                                         "${items[index].sname} : +91 ${items[index].smobileno}",
-                                        style: TextStyle(fontFamily: "Rubik"),
+                                        style: const TextStyle(
+                                            fontFamily: "Rubik"),
                                       ),
                                     ],
                                   ),

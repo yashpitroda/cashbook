@@ -7,7 +7,7 @@ import '../provider/supplier_provider.dart';
 class Utility {
   // final currentUser = FirebaseAuth.instance.currentUser;
 
-  static const BASEURL = "http://192.168.0.103:9000";
+  static const BASEURL = "http://192.168.43.144:9000";
 
   // static void displaysnackbar( String message,{required BuildContext context}) {
   static void displaysnackbar(
@@ -21,6 +21,11 @@ class Utility {
     // onChangeOnSearchTextField
     Provider.of<SupplierProvider>(context, listen: false)
         .filterSearchResults(query: value);
+  }
+
+  static void removeFocus({required BuildContext context}) {
+    //removeFocus -- remove keybord or all focusNode
+    FocusScope.of(context).unfocus();
   }
 
   static Future<void> refreshSupplier(BuildContext context) async {
