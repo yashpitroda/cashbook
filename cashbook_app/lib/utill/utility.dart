@@ -28,6 +28,11 @@ class Utility {
     FocusScope.of(context).unfocus();
   }
 
+  static String getCurrentUserEMAILID() {
+    return FirebaseAuth.instance.currentUser!.email.toString();
+    // return FirebaseAuth.instance.currentUser!;
+  }
+
   static Future<void> refreshSupplier(BuildContext context) async {
     await Provider.of<SupplierProvider>(context, listen: false).fatchSupplier(
         useremail: FirebaseAuth.instance.currentUser!.email.toString());

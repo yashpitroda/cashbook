@@ -1,3 +1,4 @@
+import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:cashbook_app/screen/add_supplier_screen.dart';
 import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
@@ -35,6 +36,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => SupplierProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (ctx) => PurchaseProvider(),
+        )
       ],
       child: MaterialApp(
         scrollBehavior: const ScrollBehavior(

@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:cashbook_app/models/supplier.dart';
+import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/screen/select_supplier_screen.dart';
 import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/customtextfield.dart';
 
@@ -17,7 +19,7 @@ class PurchaseScreen extends StatefulWidget {
 }
 
 class _PurchaseScreenState extends State<PurchaseScreen> {
-  bool _isPAID = true;
+  bool _is_INSTANT_PAYMENT = true;
   bool _isCREDIT_ADVANCE = false;
 
   double padvalue = 110;
@@ -37,22 +39,12 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
   TextEditingController firmNameController = TextEditingController();
 
   int? _isBillValue = 1;
+  int? _iscashBankValue = 0;
 
   DateTime? _selectedDate;
   TimeOfDay? _selectedtime;
   DateTime? finaldateTime;
   Supplier? selectedSupplierobj;
-
-  Future<void> _submitHander() async {
-    print(billamountController.text);
-    print(descriptionController.text);
-    print(_isBillValue);
-    print(finaldateTime.toString());
-    print(firmNameController.text);
-    print(supplierNameController.text);
-    print(supplierMobilenoController.text);
-    // print(currentUser.email!);
-  }
 
   @override
   void initState() {
@@ -90,7 +82,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     // }
   }
 
-  void onChangedInPAID({required String value}) {
+  void onChangedInINSTANT_PAYMENT({required String value}) {
     if (value.isEmpty) {
       paidamountController.text = "";
       updatedadvanceamountController.text = "";
@@ -261,6 +253,45 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     return Colors.black;
   }
 
+  int c_cr = 0;
+  Future<void> _submitHander(BuildContext context) async {
+    // print(billamountController.text);
+    // print(descriptionController.text);
+    // print(_isBillValue);
+    // print(finaldateTime.toString());
+    // print(firmNameController.text);
+    // print(supplierNameController.text);
+    // print(supplierMobilenoController.text);
+    // print(currentUser.email!);
+
+    // if (_is_INSTANT_PAYMENT) {
+    //   c_cr = 0;
+    // }
+    // if (_isCREDIT_ADVANCE) {
+    //   c_cr = 1;
+    // }
+
+    Provider.of<PurchaseProvider>(context, listen: false)
+        .submit_IN_Purchase(
+            isBillValue: _isBillValue!,
+            c_cr: c_cr,
+            cash_bank: _iscashBankValue!,
+            selectedSupplierobj: selectedSupplierobj!,
+            billAmount: int.parse(billamountController.text),
+            paidAmount: int.parse(paidamountController.text),
+            updatedAdavanceAmount:
+                int.parse(updatedadvanceamountController.text),
+            updatedOutstandingAmount:
+                int.parse(updatedoutstandingamountController.text),
+            remark: descriptionController.text,
+            finaldateTime: finaldateTime!)
+        .then((value) {
+      if (value == "success") {
+        print("done");
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var mqhight = MediaQuery.of(context).size.height;
@@ -292,6 +323,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                           thickness: 1.2,
                         ),
                         billWithOrWithoutOption(mqwidth),
+                        cashBankOption(mqwidth),
                         // SizedBox(
                         //   height: mqhight * 0.02,
                         // ),
@@ -363,7 +395,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                               physics:
                                                   NeverScrollableScrollPhysics(),
                                               children: [
-                                                PAIDtabView(mqhight),
+                                                INSTANT_PAYMENTtabView(mqhight),
                                                 Column(
                                                   children: [
                                                     SizedBox(
@@ -692,7 +724,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
     );
   }
 
-  Column PAIDtabView(double mqhight) {
+  Column INSTANT_PAYMENTtabView(double mqhight) {
     return Column(
       children: [
         SizedBox(
@@ -700,7 +732,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
         ),
         TextField(
           onChanged: (value) {
-            onChangedInPAID(value: value);
+            onChangedInINSTANT_PAYMENT(value: value);
           },
           keyboardType: TextInputType.number,
           controller: billamountController,
@@ -813,11 +845,13 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
           doEmptyController();
           Utility.removeFocus(context: context);
           if (value == 0) {
-            _isPAID = true;
+            c_cr = 0;
+            _is_INSTANT_PAYMENT = true;
             _isCREDIT_ADVANCE = false;
           }
           if (value == 1) {
-            _isPAID = false;
+            c_cr = 1;
+            _is_INSTANT_PAYMENT = false;
             _isCREDIT_ADVANCE = true;
             // if (_isBillValue == 1) {
             //   updatedoutstandingamountController.text =
@@ -850,7 +884,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
         tabs: const [
           Tab(
             child: Text(
-              'PAID',
+              'INSTANT PAYMENT',
               style: TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
@@ -902,7 +936,9 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: _submitHander,
+                onPressed: () {
+                  _submitHander(context);
+                },
                 style: ElevatedButton.styleFrom(
                     fixedSize: const Size(10, 55),
                     backgroundColor: Colors.blue),
@@ -951,6 +987,38 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
               _isBillValue = selected ? 0 : null;
               doEmptyController();
               Utility.removeFocus(context: context);
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  Row cashBankOption(double mqwidth) {
+    return Row(
+      children: [
+        ChoiceChip(
+          backgroundColor: const Color.fromARGB(255, 192, 200, 216),
+          selectedColor: const Color.fromARGB(255, 104, 167, 255),
+          label: const Text('CASH'),
+          selected: _iscashBankValue == 0,
+          onSelected: (bool selected) {
+            setState(() {
+              _iscashBankValue = selected ? 0 : null;
+            });
+          },
+        ),
+        SizedBox(
+          width: mqwidth * 0.03,
+        ),
+        ChoiceChip(
+          backgroundColor: const Color.fromARGB(255, 192, 200, 216),
+          selectedColor: const Color.fromARGB(255, 104, 167, 255),
+          label: const Text('Bank'),
+          selected: _iscashBankValue == 1,
+          onSelected: (bool selected) {
+            setState(() {
+              _iscashBankValue = selected ? 1 : null;
             });
           },
         ),

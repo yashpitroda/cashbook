@@ -41,7 +41,7 @@ class Supplier():
             await conn.commit()
             await cur.close()
             conn.close()
-            return "new clint added"
+            return "success"
         except Exception as e:
             print(e)
             return "database error"
@@ -75,7 +75,7 @@ class Supplier():
             await conn.commit()
             await cur.close()
             conn.close()
-            return "clint updated"
+            return "success"
         except Exception as e:
             print(e)
             return "database error"
@@ -86,15 +86,52 @@ class Supplier():
             conn = await utills.createConn()
             cur = await conn.cursor()
             query = f"SELECT * FROM supplier WHERE useremail='{useremail}' ORDER BY firmname ASC"
-            # print(query)
             await cur.execute(query)
             fetchdata = await cur.fetchall()
-            # print(fetchdata)
             await cur.close()
             conn.close()
             return fetchdata
         except Exception as e:
             print(e)
             return "database error"
-
-  
+    
+    async def update_outstanding_amount(isbillvalue,sid,updated_outstanding_amount):
+        try:
+            conn = await utills.createConn()
+        
+            cur = await conn.cursor()
+            query=""
+            if(isbillvalue==1):
+                query = f"UPDATE supplier SET outstanding_amount_withbill={updated_outstanding_amount} WHERE sid={sid}"
+            if(isbillvalue==0):
+                query = f"UPDATE supplier SET outstanding_amount_withoutbill={updated_outstanding_amount} WHERE sid={sid}"           
+            await cur.execute(query)
+            await conn.commit()
+           
+            await cur.close()
+            conn.close()
+            return "success"
+        except Exception as e:
+            print(e)
+            return "database error"
+ 
+    
+    async def update_advance_amount(isbillvalue,sid,updated_advance_amount):
+        try:
+            conn = await utills.createConn()
+            cur = await conn.cursor()
+            query=""
+            # print(isbillvalue)
+            if(isbillvalue==1):
+                query = f"UPDATE supplier SET advance_amount_withbill={updated_advance_amount} WHERE sid={sid}"
+            if(isbillvalue==0):
+                query = f"UPDATE supplier SET advance_amount_withoutbill={updated_advance_amount} WHERE sid={sid}"    
+            await cur.execute(query)
+            await conn.commit()
+            await cur.close()
+            conn.close()
+            return "success"
+        except Exception as e:
+            print(e)
+            return "database error"
+     

@@ -5,6 +5,7 @@ from flask_smorest import Api
 from models.user_mod import UserModel
 from models.supplier import Supplier
 
+from models.purchase import Purchase 
 
 prt = 9000
 app = Flask(__name__)
@@ -17,6 +18,35 @@ CORS(app)
 # app.config["OPENAPI_URL_PREFIX"] = "/"
 # app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
 # app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
+
+@app.route('/addinpurchase',methods=['POST'])
+async def addinpurchase():
+    value=request.get_json()
+    isbillvalue =value [ "isbillvalue"]
+    c_cr =value ['c_cr']
+    bill_amount  =value ['bill_amount']
+    updated_outstanding_amount  =value ['updated_outstanding_amount']
+    firmname =value ['firmname']
+    useremail  =value ['useremail']
+    date =value ['date']
+    cash_bank  =value ['cash_bank']
+    paidamount =value [ "paidamount"]
+    updated_advance_amount   =value['updated_advance_amount']
+    sid  =value[ "sid"]
+    smobileno  =value ['smobileno']
+    remark  =value ['remark']
+    new_purchase_obj=Purchase(cash_bank=cash_bank,bill_amount=bill_amount,c_cr=c_cr,date=date,firmname=firmname,isbillvalue=isbillvalue,paidamount=paidamount,useremail=useremail,smobileno=smobileno,remark=remark)
+    status=await new_purchase_obj.insert_IN_purchase_2()
+    print("!!!!")
+    print(status)
+    
+   
+    if(status=="success"):
+        
+        return {'status':status},200
+    else:
+         return {'status':"database error"},200
+    
 
 @app.route('/useradd',methods=['POST'])
 async def useradd():
