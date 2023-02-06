@@ -11,11 +11,12 @@ import 'package:provider/provider.dart';
 import '../utill/utility.dart';
 
 class PurchaseProvider extends ChangeNotifier {
+  SupplierProvider? supplierProviderOBJ;
   String useremail = Utility.getCurrentUserEMAILID();
   int _a = 0;
-  void adda() {
-    _a++;
-    notifyListeners();
+  void update({required SupplierProvider supplierProvider_obj}) {
+    supplierProviderOBJ = supplierProvider_obj;
+    // notifyListeners();
   }
 
   int get geta {
@@ -50,7 +51,6 @@ class PurchaseProvider extends ChangeNotifier {
     print(t);
     return t;
   }
- 
 
   Future<void> fatchPurchase() async {
     print("fatchPurchase is call");
@@ -75,42 +75,40 @@ class PurchaseProvider extends ChangeNotifier {
 
     if (responseData["status"] == "success") {
       responsePurchaseDataList.forEach((element) {
-        tempLoadedPurchaselist.add(
-          Purchase(
-            pid: element["puchase_map"]["pid"].toString(),
-            isbillvalue: element["puchase_map"]["isbillvalue"].toString(),
-            firmname: element["puchase_map"]["firmname"].toString(),
-            bill_amount: element["puchase_map"]["bill_amount"].toString(),
-            paidamount: element["puchase_map"]["paidamount"].toString(),
-            outstanding_amount:
-                element["puchase_map"]["outstanding_amount"].toString(),
-            advance_amount: element["puchase_map"]["advance_amount"].toString(),
-            date:
-                stirngToDateTmeFormatter.parse(element["puchase_map"]['date']),
-            c_cr: element["puchase_map"]["c_cr"].toString(),
-            cash_bank: element["puchase_map"]["cash_bank"].toString(),
-            cbid: element["puchase_map"]["cbid"].toString(),
-            remark: element["puchase_map"]["remark"].toString(),
-            smobileno: element["puchase_map"]["smobileno"].toString(),
-            cashBankObj: CashBank(
-                cbid: element["cash_bank_map"]["cbid"].toString(),
-                is_paymentmode:
-                    element["cash_bank_map"]["is_paymentmode"].toString(),
-                cash_balance:
-                    element["cash_bank_map"]["cash_balance"].toString(),
-                cash_credit: element["cash_bank_map"]["cash_credit"].toString(),
-                cash_debit: element["cash_bank_map"]["cash_debit"].toString(),
-                bank_balance:
-                    element["cash_bank_map"]["bank_balance"].toString(),
-                bank_credit: element["cash_bank_map"]["bank_credit"].toString(),
-                bank_debit: element["cash_bank_map"]["bank_debit"].toString(),
-                date: stirngToDateTmeFormatter
-                    .parse(element["cash_bank_map"]['date']),
-                particulars: element["cash_bank_map"]["particulars"].toString(),
-                useremail: element["cash_bank_map"]["useremail"].toString()),
-            supplierObj: null,
-          ),
-        );
+        tempLoadedPurchaselist.add(Purchase(
+          pid: element["puchase_map"]["pid"].toString(),
+          isbillvalue: element["puchase_map"]["isbillvalue"].toString(),
+          firmname: element["puchase_map"]["firmname"].toString(),
+          bill_amount: element["puchase_map"]["bill_amount"].toString(),
+          paidamount: element["puchase_map"]["paidamount"].toString(),
+          outstanding_amount:
+              element["puchase_map"]["outstanding_amount"].toString(),
+          advance_amount: element["puchase_map"]["advance_amount"].toString(),
+          date: stirngToDateTmeFormatter.parse(element["puchase_map"]['date']),
+          c_cr: element["puchase_map"]["c_cr"].toString(),
+          cash_bank: element["puchase_map"]["cash_bank"].toString(),
+          cbid: element["puchase_map"]["cbid"].toString(),
+          remark: element["puchase_map"]["remark"].toString(),
+          smobileno: element["puchase_map"]["smobileno"].toString(),
+          cashBankObj: CashBank(
+              cbid: element["cash_bank_map"]["cbid"].toString(),
+              is_paymentmode:
+                  element["cash_bank_map"]["is_paymentmode"].toString(),
+              cash_balance: element["cash_bank_map"]["cash_balance"].toString(),
+              cash_credit: element["cash_bank_map"]["cash_credit"].toString(),
+              cash_debit: element["cash_bank_map"]["cash_debit"].toString(),
+              bank_balance: element["cash_bank_map"]["bank_balance"].toString(),
+              bank_credit: element["cash_bank_map"]["bank_credit"].toString(),
+              bank_debit: element["cash_bank_map"]["bank_debit"].toString(),
+              date: stirngToDateTmeFormatter
+                  .parse(element["cash_bank_map"]['date']),
+              particulars: element["cash_bank_map"]["particulars"].toString(),
+              useremail: element["cash_bank_map"]["useremail"].toString()),
+          supplierObj: supplierProviderOBJ!.findSupplierBymobileno(
+              smobileno: element["puchase_map"]["smobileno"].toString()),
+        )
+            // supplierObj: null),
+            );
       });
 
       _purchaseList = tempLoadedPurchaselist;

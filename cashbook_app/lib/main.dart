@@ -33,18 +33,21 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => GauthProvider(),
+          create: (BuildContext ctx) => GauthProvider(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => SupplierProvider(),
+          create: (BuildContext ctx) => SupplierProvider(),
         ),
         // ChangeNotifierProvider(
         //   create: (ctx) => PurchaseProvider(),
         // ),
-        // ChangeNotifierProxyProvider<SupplierProvider, PurchaseProvider>(
-        //   create: (ctx) => PurchaseProvider(),
-        //   update: (context, value, previous) => PurchaseProvider(),
-        // )
+        ChangeNotifierProxyProvider<SupplierProvider, PurchaseProvider>(
+          create: (BuildContext ctx) => PurchaseProvider(),
+          update: (BuildContext ctx, value_supplierProvider,
+                  previous_PurchaseProvider) =>
+              previous_PurchaseProvider!
+                ..update(supplierProvider_obj: value_supplierProvider),
+        )
       ],
       child: MaterialApp(
         scrollBehavior: const ScrollBehavior(
@@ -76,7 +79,9 @@ class MyApp extends StatelessWidget {
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
               print("called2");
-              return HomeScreen();
+              return HomeScreen(
+                maincontext: context,
+              );
             } else {
               //and no data so not auth.. so retry
               return const AuthScreen();
@@ -87,7 +92,9 @@ class MyApp extends StatelessWidget {
         routes: {
           LoadingScreen.routeName: (context) => const LoadingScreen(),
           AddInPayableScreen.routeName: (context) => const AddInPayableScreen(),
-          HomeScreen.routeName: (context) => HomeScreen(),
+          HomeScreen.routeName: (context) => HomeScreen(
+                maincontext: context,
+              ),
           ClientScreen.routeName: (context) => ClientScreen(),
           SelectSupplierScreen.routeName: (context) => SelectSupplierScreen(),
           AddupdateSupplierScreen.routeName: (context) =>
@@ -96,7 +103,9 @@ class MyApp extends StatelessWidget {
           SelectContactScreen.routeName: (context) => SelectContactScreen(),
           AddUpdatePurchaseScreen.routeName: (context) =>
               AddUpdatePurchaseScreen(),
-          PurchaseScreen.routeName: (context) => PurchaseScreen(),
+          PurchaseScreen.routeName: (context) => PurchaseScreen(
+                maincontext: context,
+              ),
         },
       ),
     );

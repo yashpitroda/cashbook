@@ -1,13 +1,20 @@
-import 'package:cashbook_app/screen/add_in_payable_screen.dart';
-import 'package:cashbook_app/screen/purchase_screen.dart';
-import 'package:cashbook_app/screen/supplier_screen.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:cashbook_app/screen/add_in_payable_screen.dart';
+import 'package:cashbook_app/screen/purchase_screen.dart';
+import 'package:cashbook_app/screen/supplier_screen.dart';
+
 import '../provider/google_auth_provider.dart';
 
 class HomeScreen extends StatelessWidget {
+  final BuildContext maincontext;
+  const HomeScreen({
+    Key? key,
+    required this.maincontext,
+  }) : super(key: key);
   static const routeName = '/home';
   @override
   Widget build(BuildContext context) {
@@ -51,7 +58,10 @@ class HomeScreen extends StatelessWidget {
       children: [
         ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(PurchaseScreen.routeName);
+              Navigator.of(maincontext).pushNamed(PurchaseScreen.routeName);
+//               Navigator.of(MaterialApp).push(
+//   MaterialPageRoute(builder: (MaterialAppContext) => ScreenB())
+// )
             },
             child: Text("go to purchase screen")),
         ElevatedButton(

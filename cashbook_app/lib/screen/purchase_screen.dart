@@ -1,20 +1,26 @@
-import 'package:cashbook_app/models/purchase.dart';
-import 'package:cashbook_app/provider/purchase_provider.dart';
-import 'package:cashbook_app/provider/supplier_provider.dart';
-import 'package:cashbook_app/screen/loading_screen.dart';
-import 'package:cashbook_app/utill/utility.dart';
-import 'package:cashbook_app/widgets/scrollableappbar.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import 'package:cashbook_app/models/purchase.dart';
+import 'package:cashbook_app/provider/purchase_provider.dart';
+import 'package:cashbook_app/provider/supplier_provider.dart';
+import 'package:cashbook_app/screen/loading_screen.dart';
+import 'package:cashbook_app/utill/utility.dart';
+import 'package:cashbook_app/widgets/scrollableappbar.dart';
+
 import 'add_update_purchase_screen.dart';
 
 class PurchaseScreen extends StatelessWidget {
   static const routeName = '/PurchaseScreen';
-  PurchaseScreen({Key? key}) : super(key: key);
+  BuildContext maincontext;
+  PurchaseScreen({
+    Key? key,
+    required this.maincontext,
+  }) : super(key: key);
   final ScrollController _controller = ScrollController();
   void _scrollup() {
     _controller.animateTo(
@@ -33,19 +39,8 @@ class PurchaseScreen extends StatelessWidget {
         ]),
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            // final a = Provider.of<PurchaseProvider>(
-            //   context,
-            // ).geta;
             final purchaselist =
                 Provider.of<PurchaseProvider>(context).getPurchaseList;
-            final uniquedatelist =
-                Provider.of<PurchaseProvider>(context).getuniqueDateForCard;
-
-            print("nnnnn");
-            // if (snapshot.hasData == true) {
-
-            // }
-
             return _scaffold(context, purchaselist);
           } else {
             return const LoadingScreen();
@@ -177,7 +172,7 @@ class PurchaseScreen extends StatelessWidget {
                                             children: [
                                               Text(
                                                 purchaselist[index].firmname +
-                                                    " (${purchaselist[index].supplierObj})",
+                                                    " (${purchaselist[index].supplierObj!.sname})",
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: Theme.of(context)
