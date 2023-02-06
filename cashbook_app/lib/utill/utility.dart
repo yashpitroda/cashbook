@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/supplier_provider.dart';
@@ -8,9 +9,10 @@ class Utility {
   // final currentUser = FirebaseAuth.instance.currentUser;
 
   static const BASEURL = "http://192.168.43.144:9000";
+  // static const BASEURL = "http://192.168.1.33:9000";
 
   // static void displaysnackbar( String message,{required BuildContext context}) {
-  static void displaysnackbar(
+  static void displaysnackbar( 
       {required BuildContext context, required String message}) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message)));
@@ -34,8 +36,28 @@ class Utility {
   }
 
   static Future<void> refreshSupplier(BuildContext context) async {
-    await Provider.of<SupplierProvider>(context, listen: false).fatchSupplier(
-        useremail: FirebaseAuth.instance.currentUser!.email.toString());
+    await Provider.of<SupplierProvider>(context, listen: false).fatchSupplier();
     // print('refresh done');
+  }
+
+  static DateFormat dateFormat_DDMMYYYY() {
+    DateFormat formattedDate = DateFormat('dd/MM/yyyy');
+    return formattedDate;
+  }
+
+  static DateFormat dateFormat_DD_MonthName_YYYY() {
+    DateFormat formattedDate = DateFormat('dd MMMM yyyy');
+    return formattedDate;
+  }
+
+  static DateTime convertDatetimeToDateOnly({required DateTime souceDateTime}) {
+    // return DateUtils.dateOnly( souceDateTime);
+    return DateUtils.dateOnly(souceDateTime);
+  }
+
+  static bool check_is_A_sameday(
+      {required DateTime souceDateTime_1, required DateTime souceDateTime_2}) {
+    // return DateUtils.dateOnly( souceDateTime);
+    return DateUtils.isSameDay(souceDateTime_1, souceDateTime_2);
   }
 }

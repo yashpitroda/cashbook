@@ -14,7 +14,8 @@ class AddupdateSupplierScreen extends StatefulWidget {
   //   });
 
   @override
-  State<AddupdateSupplierScreen> createState() => _AddupdateSupplierScreenState();
+  State<AddupdateSupplierScreen> createState() =>
+      _AddupdateSupplierScreenState();
 }
 
 class _AddupdateSupplierScreenState extends State<AddupdateSupplierScreen> {
@@ -54,9 +55,8 @@ class _AddupdateSupplierScreenState extends State<AddupdateSupplierScreen> {
       if (sid != null) {
         //edit/update product
         //find object by id
-        Supplier _editedclientobj =
-            Provider.of<SupplierProvider>(context)
-                .findSupplierBySID(sid: sid as String);
+        Supplier _editedclientobj = Provider.of<SupplierProvider>(context)
+            .findSupplierBySID(sid: sid as String);
         //store data for updating --primaryKey(cmobileno,useremail) -- for where
         suppilerOldMobileno = _editedclientobj.smobileno;
         useremail = currentUser!.email.toString();
@@ -90,11 +90,13 @@ class _AddupdateSupplierScreenState extends State<AddupdateSupplierScreen> {
     Navigator.of(context)
         .pushNamed(SelectContactScreen.routeName)
         .then((value) {
-      selectedContactMap = value as Map;
+      selectedContactMap = value as Map?;
       // print(selectedContactMap);
-      snameController.text = selectedContactMap!['name'];
-      smobilenoController.text = selectedContactMap!['mobileno'];
-      semailController.text = selectedContactMap!['email'];
+      if (selectedContactMap != null) {
+        snameController.text = selectedContactMap!['name'];
+        smobilenoController.text = selectedContactMap!['mobileno'];
+        semailController.text = selectedContactMap!['email'];
+      }
     });
   }
 

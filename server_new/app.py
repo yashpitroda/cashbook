@@ -4,8 +4,8 @@ from flask_smorest import Api
 
 from models.user_mod import UserModel
 from models.supplier import Supplier
-
 from models.purchase import Purchase 
+from models.cashbank import CashBankClass
 
 prt = 9000
 app = Flask(__name__)
@@ -39,10 +39,7 @@ async def addinpurchase():
     status=await new_purchase_obj.insert_IN_purchase_2()
     print("!!!!")
     print(status)
-    
-   
     if(status=="success"):
-        
         return {'status':status},200
     else:
          return {'status':"database error"},200
@@ -147,6 +144,69 @@ async def fetchsupplier():
     # print(supplierTableDataList)
     print("/fatchsupplier Completed")
     return {'datalist': supplierTableDataList},200 
+
+@app.route('/fetchpurchase',methods=['POST'])
+async def fetchpurchase():
+    """body
+    {"useremail":"yashpitroda200@gmail.com"}
+    """
+    value=request.get_json()
+    requird=['useremail']
+    if not all(key in value for key in requird):
+         return {'error':'cmobile will be None or null','status':'fail'},400
+    useremail=value['useremail']
+    
+    result=await Purchase.fetchAllItemInpurchaseTable(useremail=useremail) #result hold list of tupple -- [(),(),()]
+    status=""
+    purchaseTableDataList=[]
+    for row in result:
+        pid,isbillvalue,firmname,bill_amount,paidamount,advance_amount,outstanding_amount,c_cr,remark,smobileno,useremail,date,cbid,cash_bank=row # i is tupple
+        purchase_map={
+            "pid":pid,
+            "isbillvalue":isbillvalue,
+            "firmname":firmname,
+            "bill_amount":bill_amount,
+            "paidamount":paidamount,
+            "advance_amount":advance_amount,    
+            "outstanding_amount":outstanding_amount, #in string   
+            "c_cr":c_cr, #in string   
+            "remark":remark, #in string   
+            "smobileno":smobileno, #in string   
+            "useremail":useremail, #in string   
+            "date":date, #in string   
+            "cbid":cbid, #in string   
+            "cash_bank":cash_bank, #in string   
+        }
+       
+        result_cashbank=await CashBankClass.find_one_IN_CashBank_BY_CBID(cbid=cbid)
+        if(result=="database error" or result_cashbank=="database error"):
+            status="error"
+        else:
+            status="success"
+        # print(result_cashbank)
+        for row1 in result_cashbank:
+            cbid,is_paymentmode,date,cash_debit,bank_debit,cash_credit,bank_credit,cash_balance,bank_balance,particulars,useremail=row1
+            cash_bank_map={
+                "cbid":cbid,
+                "is_paymentmode":is_paymentmode,
+                "date":date,
+                "cash_debit":cash_debit,
+                "bank_debit":bank_debit,
+                "cash_credit":cash_credit,    
+                "bank_credit":bank_credit, #in string   
+                "cash_balance":cash_balance, #in string   
+                "bank_balance":bank_balance, #in string   
+                "particulars":particulars, #in string   
+                "useremail":useremail, #in string   
+            }
+         
+        temp={"puchase_map":purchase_map,"cash_bank_map":cash_bank_map}
+        purchaseTableDataList.append(temp)
+        
+    
+    # print(supplierTableDataList)
+    print("/fatchsupplier Completed")
+    return {"status":status,'datalist': purchaseTableDataList},200 
 
    
 @app.route('/supplierupdate',methods=['POST'])

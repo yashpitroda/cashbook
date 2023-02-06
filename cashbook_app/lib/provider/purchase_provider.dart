@@ -1,11 +1,130 @@
 import 'dart:convert';
+import 'package:cashbook_app/models/cashbank.dart';
+import 'package:cashbook_app/models/purchase.dart';
+import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:cashbook_app/models/supplier.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../utill/utility.dart';
 
 class PurchaseProvider extends ChangeNotifier {
+  String useremail = Utility.getCurrentUserEMAILID();
+  int _a = 0;
+  void adda() {
+    _a++;
+    notifyListeners();
+  }
+
+  int get geta {
+    print("geta is call");
+    return _a;
+  }
+
+  List<Purchase> _purchaseList = [];
+  List<Purchase> _storedPurchaseList = []; //for backup
+
+  List<Purchase> get getPurchaseList {
+    return [..._purchaseList];
+  }
+
+  Purchase findSupplierByPID({required String pid}) {
+    return _purchaseList.firstWhere((element) {
+      return element.pid == pid;
+    });
+  }
+
+  List<Map> get getuniqueDateForCard {
+    List<Map> t = [];
+    for (int i = 0; i < _purchaseList.length; i++) {
+      if ((i > 0) &&
+          (_purchaseList[i].date.year == _purchaseList[i - 1].date.year &&
+              _purchaseList[i].date.month == _purchaseList[i - 1].date.month &&
+              _purchaseList[i].date.day == _purchaseList[i - 1].date.day)) {
+      } else {
+        t.add({i: _purchaseList[i].date});
+      }
+    }
+    print(t);
+    return t;
+  }
+ 
+
+  Future<void> fatchPurchase() async {
+    print("fatchPurchase is call");
+    final url = Uri.parse(Utility.BASEURL + "/fetchpurchase");
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(
+        {
+          'useremail': useremail,
+        },
+      ),
+    );
+    if (response.body == 'null') {
+      return;
+    }
+    final responseData = json.decode(response.body);
+    List responsePurchaseDataList = responseData['datalist']; //[{},{},{}]
+    final List<Purchase> tempLoadedPurchaselist = [];
+    final stirngToDateTmeFormatter =
+        DateFormat('EEE, d MMM yyyy HH:mm:ss'); // Wed, 28 Dec 2022 13:34:09 GM
+
+    if (responseData["status"] == "success") {
+      responsePurchaseDataList.forEach((element) {
+        tempLoadedPurchaselist.add(
+          Purchase(
+            pid: element["puchase_map"]["pid"].toString(),
+            isbillvalue: element["puchase_map"]["isbillvalue"].toString(),
+            firmname: element["puchase_map"]["firmname"].toString(),
+            bill_amount: element["puchase_map"]["bill_amount"].toString(),
+            paidamount: element["puchase_map"]["paidamount"].toString(),
+            outstanding_amount:
+                element["puchase_map"]["outstanding_amount"].toString(),
+            advance_amount: element["puchase_map"]["advance_amount"].toString(),
+            date:
+                stirngToDateTmeFormatter.parse(element["puchase_map"]['date']),
+            c_cr: element["puchase_map"]["c_cr"].toString(),
+            cash_bank: element["puchase_map"]["cash_bank"].toString(),
+            cbid: element["puchase_map"]["cbid"].toString(),
+            remark: element["puchase_map"]["remark"].toString(),
+            smobileno: element["puchase_map"]["smobileno"].toString(),
+            cashBankObj: CashBank(
+                cbid: element["cash_bank_map"]["cbid"].toString(),
+                is_paymentmode:
+                    element["cash_bank_map"]["is_paymentmode"].toString(),
+                cash_balance:
+                    element["cash_bank_map"]["cash_balance"].toString(),
+                cash_credit: element["cash_bank_map"]["cash_credit"].toString(),
+                cash_debit: element["cash_bank_map"]["cash_debit"].toString(),
+                bank_balance:
+                    element["cash_bank_map"]["bank_balance"].toString(),
+                bank_credit: element["cash_bank_map"]["bank_credit"].toString(),
+                bank_debit: element["cash_bank_map"]["bank_debit"].toString(),
+                date: stirngToDateTmeFormatter
+                    .parse(element["cash_bank_map"]['date']),
+                particulars: element["cash_bank_map"]["particulars"].toString(),
+                useremail: element["cash_bank_map"]["useremail"].toString()),
+            supplierObj: null,
+          ),
+        );
+      });
+
+      _purchaseList = tempLoadedPurchaselist;
+      _storedPurchaseList = _purchaseList; //for backup in searching
+      print(_purchaseList);
+
+      notifyListeners();
+    } else {
+      print("not add");
+      print(responseData["status"]);
+    }
+    print("hahs");
+  }
+
   Future<String> submit_IN_Purchase(
       {required int isBillValue,
       required int c_cr,
@@ -17,10 +136,6 @@ class PurchaseProvider extends ChangeNotifier {
       required int updatedOutstandingAmount,
       required String remark,
       required DateTime finaldateTime}) async {
-    // print(isBillValue);
-    // print(c_cr);
-    // print(cash_bank);
-    // isBillValue -- 0 or 1
     final url = Uri.parse(Utility.BASEURL + "/addinpurchase");
     final response = await http.post(
       url,

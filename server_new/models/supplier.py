@@ -27,6 +27,21 @@ class Supplier():
         except Exception as e:
             print(e)
             return "database error"
+        
+    async def findsupplier_UsingSmobile_email(smobileno,useremail):
+        try:
+            conn = await utills.createConn()
+            cur = await conn.cursor()
+            query = f"SELECT * FROM supplier WHERE smobileno={smobileno} and useremail='{useremail}'"
+            await cur.execute(query)
+            fatchData = await cur.fetchone()  # user is exist or not
+            # print("in utill", fatchData)
+            await cur.close()
+            conn.close()
+            return fatchData
+        except Exception as e:
+            print(e)
+            return "database error"
     
     
     async def insertsupplier(self):

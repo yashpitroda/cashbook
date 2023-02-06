@@ -1,3 +1,5 @@
+import 'package:cashbook_app/models/cashbank.dart';
+
 class Supplier {
   String sid;
   String sname;
@@ -9,6 +11,7 @@ class Supplier {
   String outstanding_amount_without_bill;
   String advance_amount_with_bill;
   String advance_amount_without_bill;
+  
 
   Supplier({
     required this.sid,
@@ -21,5 +24,6 @@ class Supplier {
     required this.outstanding_amount_without_bill,
     required this.advance_amount_with_bill,
     required this.advance_amount_without_bill,
+    
   });
 }

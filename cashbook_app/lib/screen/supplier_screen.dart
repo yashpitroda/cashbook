@@ -1,5 +1,5 @@
 import 'package:cashbook_app/screen/add_in_payable_screen.dart';
-import 'package:cashbook_app/screen/purchase_screen.dart';
+import 'package:cashbook_app/screen/add_update_purchase_screen.dart';
 import 'package:cashbook_app/widgets/card_ui_1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -123,97 +123,7 @@ class ClientScreen extends StatelessWidget {
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data == true) {
-              return Scaffold(
-                backgroundColor: Colors.white,
-                body: NestedScrollView(
-                    headerSliverBuilder: (context, isScrolled) {
-                  return <Widget>[
-                    scrollableAppbar(),
-                  ];
-                }, body: LayoutBuilder(builder: (context, constraint) {
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          color: Colors.grey.shade100,
-                          width: double.infinity,
-                          child: AnimatedPadding(
-                            duration: const Duration(milliseconds: 200),
-                            padding: EdgeInsets.fromLTRB(
-                                10,
-                                constraint.biggest.height ==
-                                        MediaQuery.of(context).size.height
-                                    ? padvalue
-                                    : 10,
-                                10,
-                                10),
-                            child: DefaultTabController(
-                              length: 3,
-                              initialIndex: 0,
-                              child: Column(children: [
-                                Tabs(context),
-                                Tabbarview(context)
-                              ]),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(14, 0, 14, 10),
-                        height: 60,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                    fixedSize: const Size(10, 55),
-                                    backgroundColor: Colors.green.shade800),
-                                child: const Text(
-                                  'paid',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Rubik',
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pushNamed(PurchaseScreen.routeName);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    fixedSize: const Size(10, 55),
-                                    backgroundColor: Colors.red.shade800),
-                                child: const Text(
-                                  'payable',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Rubik',
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  );
-                })),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () =>
-                      Provider.of<GauthProvider>(context, listen: false)
-                          .signOutWithGoogle(),
-                  child: Icon(Icons.exit_to_app),
-                ),
-              );
+              return _scaffold(context);
             }
           }
           return Center(
@@ -229,6 +139,100 @@ class ClientScreen extends StatelessWidget {
             ),
           );
         }));
+  }
+
+  Scaffold _scaffold(BuildContext context) {
+    return Scaffold(
+              backgroundColor: Colors.white,
+              body: NestedScrollView(
+                  headerSliverBuilder: (context, isScrolled) {
+                return <Widget>[
+                  scrollableAppbar(),
+                ];
+              }, body: LayoutBuilder(builder: (context, constraint) {
+                return Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        color: Colors.grey.shade100,
+                        width: double.infinity,
+                        child: AnimatedPadding(
+                          duration: const Duration(milliseconds: 200),
+                          padding: EdgeInsets.fromLTRB(
+                              10,
+                              constraint.biggest.height ==
+                                      MediaQuery.of(context).size.height
+                                  ? padvalue
+                                  : 10,
+                              10,
+                              10),
+                          child: DefaultTabController(
+                            length: 3,
+                            initialIndex: 0,
+                            child: Column(children: [
+                              Tabs(context),
+                              Tabbarview(context)
+                            ]),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(14, 0, 14, 10),
+                      height: 60,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(10, 55),
+                                  backgroundColor: Colors.green.shade800),
+                              child: const Text(
+                                'paid',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Rubik',
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pushNamed(
+                                    AddUpdatePurchaseScreen.routeName);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(10, 55),
+                                  backgroundColor: Colors.red.shade800),
+                              child: const Text(
+                                'payable',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Rubik',
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                );
+              })),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () =>
+                    Provider.of<GauthProvider>(context, listen: false)
+                        .signOutWithGoogle(),
+                child: Icon(Icons.exit_to_app),
+              ),
+            );
   }
 
   // ------------------------------TABS-----------------------------------

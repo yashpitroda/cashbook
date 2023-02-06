@@ -25,6 +25,12 @@ class SupplierProvider with ChangeNotifier {
     });
   }
 
+   Supplier findSupplierBymobileno({required String smobileno}) {
+    return _supplierList.firstWhere((element) {
+      return element.smobileno == smobileno;
+    });
+  }
+
 // ------------------------------filterSearchResults-----------------------------------
   void filterSearchResults({required String query}) {
     if (query.isNotEmpty) {
@@ -60,8 +66,9 @@ class SupplierProvider with ChangeNotifier {
   }
 
 // ------------------------------fatchCilentContact-----------------------------------
-  Future<void> fatchSupplier({required useremail}) async {
-    // print("hahs");
+  Future<void> fatchSupplier() async {
+    print("fatchSupplier is call");
+    String useremail = Utility.getCurrentUserEMAILID();
     final url = Uri.parse(Utility.BASEURL + "/fetchsupplier");
     final response = await http.post(
       url,
@@ -135,7 +142,7 @@ class SupplierProvider with ChangeNotifier {
     }
     final responseData = json.decode(response.body);
     print(responseData);
-    fatchSupplier(useremail: newSupplierMap['useremail']);
+    fatchSupplier();
   }
 
   // ------------------------------findClientContactByCID-----------------------------------
@@ -164,7 +171,7 @@ class SupplierProvider with ChangeNotifier {
     }
     final responseData = json.decode(response.body);
     print(responseData);
-    fatchSupplier(useremail: updateSupplierMap['useremail']);
+    fatchSupplier();
   }
 
   Future<void> deleteSupplier(
@@ -181,7 +188,7 @@ class SupplierProvider with ChangeNotifier {
       print('its products retruns data is not avalible in firebase server');
       return;
     }
-    fatchSupplier(useremail: useremail);
+    fatchSupplier();
     print("detetion done");
   }
 }

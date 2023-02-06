@@ -30,7 +30,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
         _isloading = true;
       });
       Provider.of<SupplierProvider>(context, listen: false)
-          .fatchSupplier(useremail: currentUser!.email.toString())
+          .fatchSupplier()
           .then((_) {
         setState(() {
           _isloading = false;

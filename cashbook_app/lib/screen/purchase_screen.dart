@@ -1,1156 +1,560 @@
-import 'dart:math';
-
-import 'package:cashbook_app/models/supplier.dart';
+import 'package:cashbook_app/models/purchase.dart';
 import 'package:cashbook_app/provider/purchase_provider.dart';
-import 'package:cashbook_app/screen/select_supplier_screen.dart';
+import 'package:cashbook_app/provider/supplier_provider.dart';
+import 'package:cashbook_app/screen/loading_screen.dart';
 import 'package:cashbook_app/utill/utility.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cashbook_app/widgets/scrollableappbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/customtextfield.dart';
+import 'add_update_purchase_screen.dart';
 
-class PurchaseScreen extends StatefulWidget {
-  const PurchaseScreen({super.key});
+class PurchaseScreen extends StatelessWidget {
   static const routeName = '/PurchaseScreen';
-
-  @override
-  State<PurchaseScreen> createState() => _PurchaseScreenState();
-}
-
-class _PurchaseScreenState extends State<PurchaseScreen> {
-  bool _is_INSTANT_PAYMENT = true;
-  bool _isCREDIT_ADVANCE = false;
-
-  double padvalue = 110;
-  // final currentUser = FirebaseAuth.instance.currentUser!;
-  FocusNode? billamountFocusNode;
-  FocusNode? paidamountFocusNode;
-  FocusNode? descriptionFocusNode;
-  TextEditingController billamountController = TextEditingController();
-  TextEditingController paidamountController = TextEditingController();
-  TextEditingController updatedadvanceamountController =
-      TextEditingController();
-  TextEditingController updatedoutstandingamountController =
-      TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController supplierNameController = TextEditingController();
-  TextEditingController supplierMobilenoController = TextEditingController();
-  TextEditingController firmNameController = TextEditingController();
-
-  int? _isBillValue = 1;
-  int? _iscashBankValue = 0;
-
-  DateTime? _selectedDate;
-  TimeOfDay? _selectedtime;
-  DateTime? finaldateTime;
-  Supplier? selectedSupplierobj;
-
-  @override
-  void initState() {
-    DateTime currentDate = DateTime.now();
-    finaldateTime = currentDate;
-    billamountFocusNode = FocusNode();
-    paidamountFocusNode = FocusNode();
-    descriptionFocusNode = FocusNode();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    billamountFocusNode!.dispose();
-    paidamountFocusNode!.dispose();
-    descriptionFocusNode!.dispose();
-    super.dispose();
-  }
-
-  void doEmptyController() {
-    billamountController.text = "";
-    paidamountController.text = "";
-    updatedadvanceamountController.text = "";
-    updatedoutstandingamountController.text = "";
-    // if (_isPAID) {
-    // } else {
-    //   updatedoutstandingamountController.text = "";
-    //   setState(() {});
-    // }
-
-    // if (is_payOnlyOutstanding && _isCREDIT_ADVANCE) {
-    //   billamountController.text = "0";
-    // } else {
-    //   billamountController.text = "";
-    // }
-  }
-
-  void onChangedInINSTANT_PAYMENT({required String value}) {
-    if (value.isEmpty) {
-      paidamountController.text = "";
-      updatedadvanceamountController.text = "";
-      updatedoutstandingamountController.text = "";
-    }
-    if (value == "") {
-      paidamountController.text = "";
-      updatedadvanceamountController.text = "";
-      updatedoutstandingamountController.text = "";
-    }
-
-    if (_isBillValue == 1) {
-      updatedoutstandingamountController.text =
-          selectedSupplierobj!.outstanding_amount_withbill;
-      if ((int.parse(value) >
-          int.parse((selectedSupplierobj!.advance_amount_with_bill)))) {
-        paidamountController.text = (int.parse(value) -
-                int.parse((selectedSupplierobj!.advance_amount_with_bill)))
-            .toString();
-        updatedadvanceamountController.text = "0";
-      } else {
-        updatedadvanceamountController.text = (-(int.parse(value) -
-                int.parse((selectedSupplierobj!.advance_amount_with_bill))))
-            .toString();
-        paidamountController.text = "0";
-      }
-    } else {
-      updatedoutstandingamountController.text =
-          selectedSupplierobj!.outstanding_amount_without_bill;
-      if ((int.parse(value) >
-          int.parse((selectedSupplierobj!.advance_amount_without_bill)))) {
-        paidamountController.text = (int.parse(value) -
-                int.parse((selectedSupplierobj!.advance_amount_without_bill)))
-            .toString();
-        updatedadvanceamountController.text = "0";
-      } else {
-        updatedadvanceamountController.text = (-(int.parse(value) -
-                int.parse((selectedSupplierobj!.advance_amount_without_bill))))
-            .toString();
-        paidamountController.text = "0";
-      }
-    }
-  }
-
-  void onChangedInCREDIT({required String value}) {
-    if (is_payOnlyOutstanding) {
-      billamountController.text = "0";
-    }
-    if (value.isEmpty) {
-      updatedoutstandingamountController.text = "";
-      updatedadvanceamountController.text = "";
-    }
-    String currentOutstandingAmount =
-        (int.parse(billamountController.text) - int.parse((value))).toString();
-    String totalOutstandingAmount_withbill =
-        (int.parse(currentOutstandingAmount) +
-                int.parse((selectedSupplierobj!.outstanding_amount_withbill)))
-            .toString();
-    String totalOutstandingAmount_withoutbill = (int.parse(
-                currentOutstandingAmount) +
-            int.parse((selectedSupplierobj!.outstanding_amount_without_bill)))
-        .toString();
-    if (_isBillValue == 1) {
-      if ((int.parse(totalOutstandingAmount_withbill) >
-          int.parse((selectedSupplierobj!.advance_amount_with_bill)))) {
-        updatedadvanceamountController.text = "0";
-        updatedoutstandingamountController.text =
-            (int.parse(totalOutstandingAmount_withbill) -
-                    int.parse((selectedSupplierobj!.advance_amount_with_bill)))
-                .toString();
-      } else {
-        updatedoutstandingamountController.text = "0";
-        updatedadvanceamountController.text =
-            (-(int.parse(totalOutstandingAmount_withbill) -
-                    int.parse((selectedSupplierobj!.advance_amount_with_bill))))
-                .toString();
-      }
-    } else {
-      if ((int.parse(totalOutstandingAmount_withoutbill) >
-          int.parse((selectedSupplierobj!.advance_amount_without_bill)))) {
-        updatedadvanceamountController.text = "0";
-        updatedoutstandingamountController
-            .text = (int.parse(totalOutstandingAmount_withoutbill) -
-                int.parse((selectedSupplierobj!.advance_amount_without_bill)))
-            .toString();
-      } else {
-        updatedoutstandingamountController.text = "0";
-        updatedadvanceamountController
-            .text = (-(int.parse(totalOutstandingAmount_withoutbill) -
-                int.parse((selectedSupplierobj!.advance_amount_without_bill))))
-            .toString();
-      }
-    }
-  }
-
-  void onTapOn_onlyOutstanding() {
-    setState(() {
-      is_payOnlyOutstanding = !(is_payOnlyOutstanding);
-
-      if (is_payOnlyOutstanding == true) {
-        billamountController.text = "0";
-      }
-    });
-  }
-
-  void customDatePicker() {
-    showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2019),
-            lastDate: DateTime.now())
-        .then((pickdedDate) {
-      if (pickdedDate == null) {
-        return;
-      }
-
-      setState(() {
-        _selectedDate = pickdedDate;
-        final day = _selectedDate!.day;
-        final mounth = _selectedDate!.month;
-        final year = _selectedDate!.year;
-        finaldateTime = DateTime(
-            year, mounth, day, finaldateTime!.hour, finaldateTime!.minute);
-      });
-    });
-  }
-
-  void customTimePicker() {
-    showTimePicker(context: context, initialTime: TimeOfDay.now())
-        .then((pickedtime) {
-      if (pickedtime == null) {
-        return;
-      }
-      setState(() {
-        _selectedtime = pickedtime;
-        final hourr = _selectedtime!.hour;
-        final minitt = _selectedtime!.minute;
-        finaldateTime = DateTime(finaldateTime!.year, finaldateTime!.month,
-            finaldateTime!.day, hourr, minitt);
-      });
-    });
-  }
-
-  void _gotoSelectClintScreen() {
-    Navigator.of(context)
-        .pushNamed(SelectSupplierScreen.routeName)
-        .then((value) {
-      selectedSupplierobj = value as Supplier;
-      firmNameController.text = selectedSupplierobj!.firmname;
-      supplierNameController.text = selectedSupplierobj!.sname;
-      supplierMobilenoController.text = selectedSupplierobj!.smobileno;
-      setState(() {
-        doEmptyController();
-      });
-    });
-  }
-
-  bool is_payOnlyOutstanding = false;
-  Color getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-    if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
-    }
-    return Colors.black;
-  }
-
-  int c_cr = 0;
-  Future<void> _submitHander(BuildContext context) async {
-    // print(billamountController.text);
-    // print(descriptionController.text);
-    // print(_isBillValue);
-    // print(finaldateTime.toString());
-    // print(firmNameController.text);
-    // print(supplierNameController.text);
-    // print(supplierMobilenoController.text);
-    // print(currentUser.email!);
-
-    // if (_is_INSTANT_PAYMENT) {
-    //   c_cr = 0;
-    // }
-    // if (_isCREDIT_ADVANCE) {
-    //   c_cr = 1;
-    // }
-
-    Provider.of<PurchaseProvider>(context, listen: false)
-        .submit_IN_Purchase(
-            isBillValue: _isBillValue!,
-            c_cr: c_cr,
-            cash_bank: _iscashBankValue!,
-            selectedSupplierobj: selectedSupplierobj!,
-            billAmount: int.parse(billamountController.text),
-            paidAmount: int.parse(paidamountController.text),
-            updatedAdavanceAmount:
-                int.parse(updatedadvanceamountController.text),
-            updatedOutstandingAmount:
-                int.parse(updatedoutstandingamountController.text),
-            remark: descriptionController.text,
-            finaldateTime: finaldateTime!)
-        .then((value) {
-      if (value == "success") {
-        print("done");
-      }
-    });
+  PurchaseScreen({Key? key}) : super(key: key);
+  final ScrollController _controller = ScrollController();
+  void _scrollup() {
+    _controller.animateTo(
+      _controller.position.minScrollExtent,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    var mqhight = MediaQuery.of(context).size.height;
-    var mqwidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Purchase Screen",
-          style: TextStyle(fontFamily: "Rubik"),
-        ),
-      ),
-      body: GestureDetector(
-        onTap: () {
-          Utility.removeFocus(context: context);
-        },
-        child: Container(
-          // color: Colors.grey.withOpacity(0.09),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        DateTimeSelector(mqwidth),
-                        const Divider(
-                          thickness: 1.2,
-                        ),
-                        billWithOrWithoutOption(mqwidth),
-                        cashBankOption(mqwidth),
-                        // SizedBox(
-                        //   height: mqhight * 0.02,
-                        // ),
-                        const Divider(
-                          thickness: 1.2,
-                        ),
+    return FutureBuilder(
+        future: Future.wait([
+          Provider.of<SupplierProvider>(context, listen: false).fatchSupplier(),
+          Provider.of<PurchaseProvider>(context, listen: false).fatchPurchase()
+        ]),
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            // final a = Provider.of<PurchaseProvider>(
+            //   context,
+            // ).geta;
+            final purchaselist =
+                Provider.of<PurchaseProvider>(context).getPurchaseList;
+            final uniquedatelist =
+                Provider.of<PurchaseProvider>(context).getuniqueDateForCard;
 
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: mqhight * 0.007,
-                            ),
-                            firmnameTextField(),
-                            SizedBox(
-                              height: mqhight * 0.015,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(child: clientNameTextField()),
-                                SizedBox(
-                                  width: mqwidth * 0.02,
-                                ),
-                                Expanded(child: clientPhoneTextField()),
-                              ],
-                            ),
-                            SizedBox(
-                              height: mqhight * 0.007,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: (selectedSupplierobj == null)
-                                  ? []
-                                  : [
-                                      Text(
-                                          "outstanding-bill : ${selectedSupplierobj!.outstanding_amount_withbill}"),
-                                      Text(
-                                          "outstanding-withoutbill : ${selectedSupplierobj!.outstanding_amount_without_bill}"),
-                                      Text(
-                                          "advance-bill : ${selectedSupplierobj!.advance_amount_with_bill}"),
-                                      Text(
-                                          "advance-withoutbill : ${selectedSupplierobj!.advance_amount_without_bill}"),
-                                    ],
-                            ),
-                          ],
-                        ),
-                        // SizedBox(
-                        //   height: mqhight * 0.01,
-                        // ),
-                        const Divider(
-                          thickness: 1.2,
-                        ),
+            print("nnnnn");
+            // if (snapshot.hasData == true) {
 
-                        SizedBox(
-                          height: mqhight * 0.007,
-                        ),
-                        (selectedSupplierobj == null)
-                            ? Container()
-                            : Center(
-                                child: Container(
-                                  // width: mqwidth * 1,
-                                  child: DefaultTabController(
-                                    length: 2,
-                                    initialIndex: 0,
-                                    child: Column(children: [
-                                      Tabs(context),
-                                      Container(
-                                          height: 440,
-                                          child: TabBarView(
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              children: [
-                                                INSTANT_PAYMENTtabView(mqhight),
-                                                Column(
-                                                  children: [
-                                                    SizedBox(
-                                                      height: mqhight * 0.015,
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          (is_payOnlyOutstanding)
-                                                              ? MainAxisAlignment
-                                                                  .end
-                                                              : MainAxisAlignment
-                                                                  .start,
-                                                      children: [
-                                                        (is_payOnlyOutstanding ==
-                                                                true)
-                                                            ? Container()
-                                                            : Expanded(
-                                                                child:
-                                                                    TextField(
-                                                                  //no on change
-                                                                  onChanged:
-                                                                      (value) {
-                                                                    if (value
-                                                                        .isEmpty) {
-                                                                      updatedadvanceamountController
-                                                                          .text = "";
-                                                                      updatedoutstandingamountController
-                                                                          .text = "";
-                                                                    }
-                                                                    if (paidamountController
-                                                                        .text
-                                                                        .isEmpty) {
-                                                                      return;
-                                                                    } else {
-                                                                      onChangedInCREDIT(
-                                                                          value:
-                                                                              paidamountController.text);
-                                                                    }
-                                                                  },
-                                                                  keyboardType:
-                                                                      TextInputType
-                                                                          .number,
-                                                                  controller:
-                                                                      billamountController,
-                                                                  cursorColor:
-                                                                      Colors
-                                                                          .black,
-                                                                  style: const TextStyle(
-                                                                      color: Colors
-                                                                          .black,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      fontSize:
-                                                                          16),
-                                                                  decoration:
-                                                                      const InputDecoration(
-                                                                    filled:
-                                                                        true,
-                                                                    fillColor: Color
-                                                                        .fromARGB(
-                                                                            208,
-                                                                            255,
-                                                                            255,
-                                                                            255),
-                                                                    border:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.all(
-                                                                              Radius.circular(4)),
-                                                                    ),
-                                                                    labelText:
-                                                                        "Bill Amount",
-                                                                    labelStyle: TextStyle(
-                                                                        letterSpacing:
-                                                                            1,
-                                                                        fontSize:
-                                                                            14),
-                                                                    hintStyle: TextStyle(
-                                                                        fontSize:
-                                                                            13),
-                                                                    contentPadding:
-                                                                        EdgeInsets.fromLTRB(
-                                                                            20.0,
-                                                                            15.0,
-                                                                            20.0,
-                                                                            15.0),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: [
-                                                            Checkbox(
-                                                              checkColor:
-                                                                  Colors.white,
-                                                              fillColor: MaterialStateProperty
-                                                                  .resolveWith(
-                                                                      getColor),
-                                                              value:
-                                                                  is_payOnlyOutstanding,
-                                                              onChanged: (bool?
-                                                                  value) {
-                                                                // setState(() {
-                                                                //   is_payOnlyOutstanding =
-                                                                //       value!;
-                                                                //   if (is_payOnlyOutstanding ==
-                                                                //       true) {
-                                                                //     billamountController
-                                                                //             .text =
-                                                                //         "0";
-                                                                //   }
-                                                                // });
-                                                                onTapOn_onlyOutstanding();
-                                                              },
-                                                            ),
-                                                            // SizedBox(
-                                                            //   width:
-                                                            //       mqwidth * 0.004,
-                                                            // ),
-                                                            InkWell(
-                                                              onTap: () {
-                                                                onTapOn_onlyOutstanding();
-                                                              },
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        right:
-                                                                            3),
-                                                                child: Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: const [
-                                                                    Text(
-                                                                      "pay only",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              14),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height: 1,
-                                                                    ),
-                                                                    Text(
-                                                                      "outstanding",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              15),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: mqhight * 0.015,
-                                                    ),
-                                                    TextField(
-                                                      // enabled: false,
-                                                      // readOnly: true,
-                                                      onChanged: (value) {
-                                                        onChangedInCREDIT(
-                                                            value: value);
-                                                      },
-                                                      controller:
-                                                          paidamountController,
-                                                      cursorColor: Colors.black,
-                                                      style: const TextStyle(
-                                                          // letterSpacing: 1,
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 16),
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        filled: true,
-                                                        fillColor: Colors.white,
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          4)),
-                                                        ),
-                                                        labelText:
-                                                            "paid Amount",
-                                                        labelStyle: TextStyle(
-                                                            letterSpacing: 1,
-                                                            fontSize: 14),
-                                                        hintStyle: TextStyle(
-                                                            fontSize: 13),
-                                                        contentPadding:
-                                                            EdgeInsets.fromLTRB(
-                                                                20.0,
-                                                                15.0,
-                                                                20.0,
-                                                                15.0),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: mqhight * 0.015,
-                                                    ),
-                                                    TextField(
-                                                      enabled: false,
-                                                      // readOnly: true,
-                                                      controller:
-                                                          updatedoutstandingamountController,
-                                                      cursorColor: Colors.black,
-                                                      style: const TextStyle(
-                                                          // letterSpacing: 1,
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 16),
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        filled: true,
-                                                        fillColor:
-                                                            Color.fromARGB(208,
-                                                                235, 238, 244),
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          4)),
-                                                        ),
-                                                        labelText:
-                                                            "updated Outstanding Amount",
-                                                        labelStyle: TextStyle(
-                                                            letterSpacing: 1,
-                                                            fontSize: 14),
-                                                        hintStyle: TextStyle(
-                                                            fontSize: 13),
-                                                        contentPadding:
-                                                            EdgeInsets.fromLTRB(
-                                                                20.0,
-                                                                15.0,
-                                                                20.0,
-                                                                15.0),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: mqhight * 0.015,
-                                                    ),
-                                                    TextField(
-                                                      enabled: false,
-                                                      // readOnly: true,
-                                                      controller:
-                                                          updatedadvanceamountController,
-                                                      cursorColor: Colors.black,
-                                                      style: const TextStyle(
-                                                          // letterSpacing: 1,
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 16),
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        filled: true,
-                                                        fillColor:
-                                                            Color.fromARGB(208,
-                                                                235, 238, 244),
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          4)),
-                                                        ),
-                                                        labelText:
-                                                            "updated Advance Amount",
-                                                        labelStyle: TextStyle(
-                                                            letterSpacing: 1,
-                                                            fontSize: 14),
-                                                        hintStyle: TextStyle(
-                                                            fontSize: 13),
-                                                        contentPadding:
-                                                            EdgeInsets.fromLTRB(
-                                                                20.0,
-                                                                15.0,
-                                                                20.0,
-                                                                15.0),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: mqhight * 0.015,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ])),
-                                      CustomTextField(
-                                        customtextinputaction:
-                                            TextInputAction.done,
-                                        customfocusnode: descriptionFocusNode,
-                                        textinputtype: TextInputType.name,
-                                        labeltext: "remark",
-                                        customController: descriptionController,
-                                        hinttext: "product name",
-                                        leadding_iconname: null,
-                                        triling_iconname: null,
-                                      ),
-                                    ]),
-                                  ),
-                                ),
-                              ),
-                      ],
-                    ),
-                  ),
-                ),
-                bottombuttoncard(context),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+            // }
+
+            return _scaffold(context, purchaselist);
+          } else {
+            return const LoadingScreen();
+          }
+        }));
   }
 
-  Column INSTANT_PAYMENTtabView(double mqhight) {
-    return Column(
+  Scaffold _scaffold(
+    BuildContext context,
+    List<Purchase> purchaselist,
+  ) {
+    return Scaffold(
+      appBar:
+          //  PreferredSize(
+          // preferredSize: Size.fromHeight(100.0), // here the desired height
+          // child:
+          AppBar(
+        // toolbarHeight: 50, //
+        title: Text("purchase"),
+        bottom: PreferredSize(
+            preferredSize: Size.fromHeight(8.0),
+            child: Row(
+              children: [
+                Text("fsta"),
+              ],
+            )),
+      ),
+      body: _scf_body(purchaselist, context),
+    );
+
+    // body: CustomScrollView(
+    //   slivers: [
+    // const SliverAppBar(
+    //   title: Text("title"),
+
+    //   floating: true,
+    //   flexibleSpace: Placeholder(),
+    //   // expandedHeight: 200,
+    // ),
+    //     SliverList(
+    //       delegate: SliverChildBuilderDelegate(
+    //         // (context, index) => ListTile(title: Text('Item #$index')),
+    //         // childCount: 1000,
+    //       ),
+    //     ),
+    //   ],
+    // ),
+  }
+
+  Stack _scf_body(List<Purchase> purchaselist, BuildContext context) {
+    return Stack(
       children: [
-        SizedBox(
-          height: mqhight * 0.015,
-        ),
-        TextField(
-          onChanged: (value) {
-            onChangedInINSTANT_PAYMENT(value: value);
-          },
-          keyboardType: TextInputType.number,
-          controller: billamountController,
-          cursorColor: Colors.black,
-          style: const TextStyle(
-              color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
-          decoration: const InputDecoration(
-            filled: true,
-            fillColor: Color.fromARGB(208, 255, 255, 255),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
+        Container(
+          color: Colors.grey.withOpacity(0.09),
+          child: Scrollbar(
+            // SingleChildScrollView
+            // Column
+            child: SingleChildScrollView(
+              controller: _controller,
+              // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.values,
+              child: Column(
+                children: [
+                  Container(
+                    height: 300,
+                    color: Colors.pink,
+                  ),
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: purchaselist.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          // (((index > 0) &&
+                          //         (purchaselist[index].date.year ==
+                          //                 purchaselist[index - 1].date.year &&
+                          //             purchaselist[index].date.month ==
+                          //                 purchaselist[index - 1].date.month &&
+                          //             purchaselist[index].date.day ==
+                          //                 purchaselist[index - 1].date.day)))
+                          // (((index > 0) &&
+                          //         (Utility.convertDatetimeToDateOnly(
+                          //                 souceDateTime:
+                          //                     purchaselist[index].date) ==
+                          //             Utility.convertDatetimeToDateOnly(
+                          //                 souceDateTime:
+                          //                     purchaselist[index - 1].date))))
+
+                          (((index > 0) &&
+                                  (Utility.check_is_A_sameday(
+                                      souceDateTime_1: purchaselist[index].date,
+                                      souceDateTime_2:
+                                          purchaselist[index - 1].date))))
+                              ? SizedBox(
+                                  height: 8,
+                                )
+                              : Container(
+                                  // color: Colors.amber,
+                                  padding: EdgeInsets.only(left: 16, bottom: 4),
+                                  height: 34,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        Utility.dateFormat_DD_MonthName_YYYY()
+                                            .format(purchaselist[index].date),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .caption!
+                                            .copyWith(fontSize: 14),
+                                      ),
+                                    ],
+                                  )),
+                          Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              color: Colors.white,
+                              height: 100,
+                              width: double.infinity,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      flex: 5,
+                                      child: Container(
+                                        // color: Colors.amber,
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                purchaselist[index].firmname +
+                                                    " (${purchaselist[index].supplierObj})",
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleSmall!
+                                                    .copyWith(fontSize: 16),
+                                              ),
+                                              Divider(),
+                                              (purchaselist[index].remark == "")
+                                                  ? Container()
+                                                  : Text(
+                                                      "remark: ${purchaselist[index].remark}",
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .caption!
+                                                          .copyWith(),
+                                                    ),
+                                            ]),
+                                      )),
+                                  SizedBox(
+                                    width: 3,
+                                  ),
+                                  Expanded(
+                                      flex: 6,
+                                      child: Container(
+                                        color: Colors.pink,
+                                      ))
+                                ],
+                              )),
+                        ],
+                      );
+                    },
+                  ),
+                  SizedBox(
+                    height: 86,
+                  )
+                ],
+              ),
             ),
-            labelText: "Bill Amount",
-            labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-            hintStyle: TextStyle(fontSize: 13),
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+
+            // child: StickyGroupedListView<Purchase, DateTime>(
+            //   // physics: NeverScrollableScrollPhysics(),
+            //   shrinkWrap: true,
+            //   elements: purchaselist,
+            //   groupBy: (element) {
+            //     return DateUtils.dateOnly(element.date);
+            //   },
+            //   groupSeparatorBuilder: (value) =>
+            //       Text(Utility.dateFormat_DDMMYYYY().format(value.date)),
+            //   itemBuilder: (context, dynamic element) =>
+            //       Container(height: 200, child: Card(child: Text(element.pid))),
+            //   // itemComparator: (e1, e2) => e1['name'].compareTo(e2['name']), // optional
+            //   // elementIdentifier: (element) => element.name // optional - see below for usage
+            //   // itemScrollController: itemScrollController, // optional
+            //   // order: StickyGroupedListOrder.ASC, // optional
+            // ),
           ),
         ),
-        SizedBox(
-          height: mqhight * 0.015,
-        ),
-        TextField(
-          enabled: false,
-          // readOnly: true,
-          controller: paidamountController,
-          cursorColor: Colors.black,
-          style: const TextStyle(
-              // letterSpacing: 1,
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: 16),
-          decoration: const InputDecoration(
-            filled: true,
-            fillColor: Color.fromARGB(208, 235, 238, 244),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-            ),
-            labelText: "paid Amount",
-            labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-            hintStyle: TextStyle(fontSize: 13),
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          ),
-        ),
-        SizedBox(
-          height: mqhight * 0.015,
-        ),
-        TextField(
-          enabled: false,
-          // readOnly: true,
-          controller: updatedadvanceamountController,
-          cursorColor: Colors.black,
-          style: const TextStyle(
-              // letterSpacing: 1,
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: 16),
-          decoration: const InputDecoration(
-            filled: true,
-            fillColor: Color.fromARGB(208, 235, 238, 244),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-            ),
-            labelText: "updated advance Amount",
-            labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-            hintStyle: TextStyle(fontSize: 13),
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          ),
-        ),
-        SizedBox(
-          height: mqhight * 0.015,
-        ),
-        TextField(
-          enabled: false,
-          // readOnly: true,
-          controller: updatedoutstandingamountController,
-          cursorColor: Colors.black,
-          style: const TextStyle(
-              // letterSpacing: 1,
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: 16),
-          decoration: const InputDecoration(
-            filled: true,
-            fillColor: Color.fromARGB(208, 235, 238, 244),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-            ),
-            labelText: "updated outstanding Amount",
-            labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-            hintStyle: TextStyle(fontSize: 13),
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          ),
-        ),
-        SizedBox(
-          height: mqhight * 0.015,
-        ),
+        Align(
+          alignment: AlignmentDirectional.bottomStart,
+          child: bottombuttoncard(context),
+        )
       ],
     );
   }
 
-  // ------------------------------TABS-----------------------------------
-  Widget Tabs(BuildContext context) {
+  Container bottombuttoncard(BuildContext context) {
     return Container(
-      width: 340,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: const Color.fromARGB(208, 229, 231, 236)),
-      child: TabBar(
-        onTap: (value) {
-          doEmptyController();
-          Utility.removeFocus(context: context);
-          if (value == 0) {
-            c_cr = 0;
-            _is_INSTANT_PAYMENT = true;
-            _isCREDIT_ADVANCE = false;
-          }
-          if (value == 1) {
-            c_cr = 1;
-            _is_INSTANT_PAYMENT = false;
-            _isCREDIT_ADVANCE = true;
-            // if (_isBillValue == 1) {
-            //   updatedoutstandingamountController.text =
-            //       selectedSupplierobj!.outstanding_amount_withbill;
-            // } else {
-            //   updatedoutstandingamountController.text =
-            //       selectedSupplierobj!.outstanding_amount_without_bill;
-            // }
-          }
-          // print(_isPAID);
-          // print(_isCREDIT_ADVANCE);
-          // if (value == 2) {
-          //   _isPAID = false;
-          //   _isCREDIT = false;
-          //   _isADVANCE = true;
-          // }
-          // print("--");
-          // print(_isPAID);
-          // print("--");
-          // print(_isCREDIT);
-          // print("--");
-          // print(_isADVANCE);
-        },
-        isScrollable: false,
-        labelColor: Colors.white,
-        unselectedLabelColor: Colors.black,
-        indicator: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.green.shade500),
-        tabs: const [
-          Tab(
-            child: Text(
-              'INSTANT PAYMENT',
-              style: TextStyle(fontWeight: FontWeight.w700),
+      color: Colors.white,
+      height: 80,
+      child: Column(
+        children: [
+          const Divider(
+            thickness: 1.3,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              // crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: OutlinedButton(
+                      onPressed: () {
+                        _scrollup();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        fixedSize: const Size(10, 55),
+                        // backgroundColor: Colors.purple
+                      ),
+                      child: Icon(Icons.arrow_upward_rounded)),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  flex: 5,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushNamed(AddUpdatePurchaseScreen.routeName);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(10, 55),
+                        backgroundColor: Colors.blue),
+                    child: const Text(
+                      'Add purchase',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Rubik',
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
-          Tab(
-            child: Text(
-              'CREDIT/ADVANCE',
-              style: TextStyle(fontWeight: FontWeight.w700),
-            ),
-          ),
-          // Tab(
-          //   child: Text(
-          //     'ADVANCE',
-          //     style: TextStyle(fontWeight: FontWeight.w700),
-          //   ),
-          // ),
         ],
       ),
     );
   }
-
-  Column bottombuttoncard(BuildContext context) {
-    return Column(
-      children: [
-        const Divider(
-          thickness: 1.3,
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(10, 55), backgroundColor: Colors.red),
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Rubik',
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 20,
-            ),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  _submitHander(context);
-                },
-                style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(10, 55),
-                    backgroundColor: Colors.blue),
-                child: const Text(
-                  'Save',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Rubik',
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  Row billWithOrWithoutOption(double mqwidth) {
-    return Row(
-      children: [
-        ChoiceChip(
-          backgroundColor: const Color.fromARGB(255, 192, 200, 216),
-          selectedColor: const Color.fromARGB(255, 104, 167, 255),
-          label: const Text('WITH BILL'),
-          selected: _isBillValue == 1,
-          onSelected: (bool selected) {
-            setState(() {
-              _isBillValue = selected ? 1 : null;
-              doEmptyController();
-              Utility.removeFocus(context: context);
-            });
-          },
-        ),
-        SizedBox(
-          width: mqwidth * 0.03,
-        ),
-        ChoiceChip(
-          backgroundColor: const Color.fromARGB(255, 192, 200, 216),
-          selectedColor: const Color.fromARGB(255, 104, 167, 255),
-          label: const Text('WITHOUT BILL'),
-          selected: _isBillValue == 0,
-          onSelected: (bool selected) {
-            setState(() {
-              _isBillValue = selected ? 0 : null;
-              doEmptyController();
-              Utility.removeFocus(context: context);
-            });
-          },
-        ),
-      ],
-    );
-  }
-
-  Row cashBankOption(double mqwidth) {
-    return Row(
-      children: [
-        ChoiceChip(
-          backgroundColor: const Color.fromARGB(255, 192, 200, 216),
-          selectedColor: const Color.fromARGB(255, 104, 167, 255),
-          label: const Text('CASH'),
-          selected: _iscashBankValue == 0,
-          onSelected: (bool selected) {
-            setState(() {
-              _iscashBankValue = selected ? 0 : null;
-            });
-          },
-        ),
-        SizedBox(
-          width: mqwidth * 0.03,
-        ),
-        ChoiceChip(
-          backgroundColor: const Color.fromARGB(255, 192, 200, 216),
-          selectedColor: const Color.fromARGB(255, 104, 167, 255),
-          label: const Text('Bank'),
-          selected: _iscashBankValue == 1,
-          onSelected: (bool selected) {
-            setState(() {
-              _iscashBankValue = selected ? 1 : null;
-            });
-          },
-        ),
-      ],
-    );
-  }
-
-  TextField clientPhoneTextField() {
-    return TextField(
-      enabled: false,
-      readOnly: true,
-      controller: supplierMobilenoController,
-      cursorColor: Colors.black,
-      style: const TextStyle(
-          // letterSpacing: 1,
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-          fontSize: 16),
-      decoration: const InputDecoration(
-        filled: true,
-        fillColor: Color.fromARGB(208, 235, 238, 244),
-
-        // suffixIcon: Icon(
-        //     Icons.arrow_right), //icon at tail of input
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
-        labelText: "Phone",
-        // prefixText: "Client phone:  ",
-        // hintText: "Client phone:  ",
-        labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-        hintStyle: TextStyle(fontSize: 13),
-
-        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-      ),
-    );
-  }
-
-  TextField clientNameTextField() {
-    return TextField(
-      enabled: false,
-      readOnly: true,
-      controller: supplierNameController,
-      cursorColor: Colors.black,
-      style: const TextStyle(
-          // letterSpacing: 1,
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-          fontSize: 16),
-      decoration: const InputDecoration(
-        filled: true,
-        fillColor: Color.fromARGB(208, 235, 238, 244),
-        // suffixIcon: Icon(
-        //     Icons.arrow_right), //icon at tail of input
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
-        // labelText: "client",
-        labelText: "Name",
-        labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-        hintStyle: TextStyle(fontSize: 13),
-
-        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-      ),
-    );
-  }
-
-  TextField firmnameTextField() {
-    return TextField(
-      readOnly: true,
-      onTap: () {
-        _gotoSelectClintScreen();
-      },
-      controller: firmNameController,
-      cursorColor: Colors.black,
-      style: const TextStyle(
-          // letterSpacing: 1,
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-          fontSize: 16),
-      decoration: const InputDecoration(
-        suffixIcon: Icon(Icons.arrow_right), //icon at tail of input
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
-        // labelText: "client",
-        labelText: "Firm Name",
-        labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-        hintStyle: TextStyle(fontSize: 13),
-
-        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-      ),
-    );
-  }
-
-  Row DateTimeSelector(double mqwidth) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        InkWell(
-          onTap: customDatePicker,
-          child: Row(
-            children: [
-              Icon(Icons.calendar_today_rounded),
-              SizedBox(
-                width: mqwidth * 0.013,
-              ),
-              Text(finaldateTime.toString().split(' ')[0]),
-              const Icon(
-                Icons.arrow_drop_down,
-                size: 26,
-              )
-            ],
-          ),
-        ),
-        InkWell(
-          onTap: customTimePicker,
-          child: Row(
-            children: [
-              const Icon(Icons.alarm),
-              SizedBox(
-                width: mqwidth * 0.013,
-              ),
-              Text(finaldateTime.toString().split(' ')[1].split('.')[0]),
-              const Icon(
-                Icons.arrow_drop_down,
-                size: 26,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 }
+
+//   Scaffold _scaffold(
+//     BuildContext context,
+//     List<Purchase> purchaselist,
+//   ) {
+//     return Scaffold(
+//       body: NestedScrollView(
+//         headerSliverBuilder: (context, isScrolled) {
+//           return <Widget>[
+//             const SliverAppBar(
+//               // expandedHeight: MediaQuery.of(context).size.height * 0.25,
+//               // collapsedHeight: 60,
+//               centerTitle: true,
+//               title: Text("Purchase"),
+//               floating: false,
+//               // pinned: true,
+//               flexibleSpace: FlexibleSpaceBar(
+//                   // collapseMode: CollapseMode.parallax,
+//                   // titlePadding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
+//                   // background: Column(
+//                   //   mainAxisAlignment: MainAxisAlignment.end,
+//                   //   children: [
+//                   //     Container(
+//                   //       child: Divider(),
+//                   //     ),
+//                   //   ],
+//                   // ),
+//                   ),
+//               // expandedHeight: 200,
+//             ),
+//           ];
+//         },
+//         body: Stack(
+//           children: [
+//             ListView.builder(
+//                 // shrinkWrap: true,
+//                 // physics: NeverScrollableScrollPhysics(),
+//                 // itemCount: purchaselist.length,
+//                 itemCount: 30,
+//                 itemBuilder: (BuildContext ctxt, int index) {
+//                   return
+//                       // StickyHeader(
+//                       //   header: Container(
+//                       //     height: 50.0,
+//                       //     color: Colors.blueGrey[700],
+//                       //     padding: EdgeInsets.symmetric(horizontal: 16.0),
+//                       //     alignment: Alignment.centerLeft,
+//                       //     child: Text(
+//                       //       'Header #$index',
+//                       //       style: const TextStyle(color: Colors.white),
+//                       //     ),
+//                       //   ),
+//                       //   content: Container(
+//                       //     height: 300,
+//                       //   ),
+//                       // );
+//                       StickyHeaderBuilder(
+//                           builder: (context, stuckAmount) {
+//                             print('$index - $stuckAmount');
+//                             stuckAmount = stuckAmount.clamp(0.0, 1.0);
+//                             return Container(
+//                               height: 100.0 - (50 * (1 - stuckAmount)),
+//                               color: Color.lerp(
+//                                   Colors.blue, Colors.red, stuckAmount),
+//                               padding: EdgeInsets.symmetric(horizontal: 16.0),
+//                               alignment: Alignment.centerLeft,
+//                               child: Text(
+//                                 'Title #$index',
+//                                 style: const TextStyle(color: Colors.white),
+//                               ),
+//                             );
+//                           },
+//                           content: Container(
+//                             height: 200,
+//                           ));
+//                   // StickyHeader(
+//                   //   header:
+//    ((index > 0) &&
+//           (purchaselist[index].date.year ==
+//                   purchaselist[index - 1]
+//                       .date
+//                       .year &&
+//               purchaselist[index]
+//                       .date
+//                       .month ==
+//                   purchaselist[index - 1]
+//                       .date
+//                       .month &&
+//               purchaselist[index].date.day ==
+//                   purchaselist[index - 1]
+//                       .date
+//                       .day))
+//       ? Container()
+//       :
+//   Container(
+// height: 100,
+// child: Row(
+//   children: [
+//     // Text((purchaselist[index].date)
+//     //     .toString()),
+//     Text((Utility.dateFormat_DDMMYYYY()
+//         .format(purchaselist[index].date)))
+//   ],
+// ),
+// ),
+//                   //   content: Card(
+//                   //     child: Column(
+//                   //       children: [
+//                   //         Row(
+//                   //           children: [
+//                   //             Text((purchaselist[index].pid).toString()),
+//                   //           ],
+//                   //         ),
+//                   //       ],
+//                   //     ),
+//                   //   ),
+//                   // );
+//                 }),
+//             Align(
+//               alignment: AlignmentDirectional.bottomStart,
+//               child: bottombuttoncard(context),
+//             )
+//           ],
+//         ),
+//       ),
+//     );
+
+//     // body: CustomScrollView(
+//     //   slivers: [
+//     // const SliverAppBar(
+//     //   title: Text("title"),
+
+//     //   floating: true,
+//     //   flexibleSpace: Placeholder(),
+//     //   // expandedHeight: 200,
+//     // ),
+//     //     SliverList(
+//     //       delegate: SliverChildBuilderDelegate(
+//     //         // (context, index) => ListTile(title: Text('Item #$index')),
+//     //         // childCount: 1000,
+//     //       ),
+//     //     ),
+//     //   ],
+//     // ),
+//   }
+
+//   Container bottombuttoncard(BuildContext context) {
+//     return Container(
+//       color: Colors.white,
+//       height: 80,
+//       child: Column(
+//         children: [
+//           const Divider(
+//             thickness: 1.3,
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 12),
+//             child: Row(
+//               // crossAxisAlignment: CrossAxisAlignment.end,
+//               children: [
+//                 // Expanded(
+//                 //   child: ElevatedButton(
+//                 //     onPressed: () {
+//                 //       Navigator.of(context).pop();
+//                 //     },
+//                 //     style: ElevatedButton.styleFrom(
+//                 //         fixedSize: const Size(10, 55),
+//                 //         backgroundColor: Colors.red),
+//                 //     child: const Text(
+//                 //       'Cancel',
+//                 //       style: TextStyle(
+//                 //         color: Colors.white,
+//                 //         fontFamily: 'Rubik',
+//                 //         fontSize: 16,
+//                 //       ),
+//                 //     ),
+//                 //   ),
+//                 // ),
+//                 // const SizedBox(
+//                 //   width: 20,
+//                 // ),
+//                 Expanded(
+//                   child: ElevatedButton(
+//                     onPressed: () {
+//                       Navigator.of(context)
+//                           .pushNamed(AddUpdatePurchaseScreen.routeName);
+//                     },
+//                     style: ElevatedButton.styleFrom(
+//                         fixedSize: const Size(10, 55),
+//                         backgroundColor: Colors.blue),
+//                     child: const Text(
+//                       'Add purchase',
+//                       style: TextStyle(
+//                         color: Colors.white,
+//                         fontFamily: 'Rubik',
+//                         fontSize: 16,
+//                       ),
+//                     ),
+//                   ),
+//                 )
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Card topArea() => Card(
+//         margin: EdgeInsets.all(10.0),
+//         elevation: 1.0,
+//         shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.all(Radius.circular(50.0))),
+//         child: Container(
+//             decoration: BoxDecoration(
+//                 gradient: RadialGradient(
+//                     colors: [Color(0xFF015FFF), Color(0xFF015FFF)])),
+//             padding: EdgeInsets.all(5.0),
+//             // color: Color(0xFF015FFF),
+//             child: Column(
+//               children: <Widget>[
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: <Widget>[
+//                     IconButton(
+//                       icon: Icon(
+//                         Icons.arrow_back,
+//                         color: Colors.white,
+//                       ),
+//                       onPressed: () {},
+//                     ),
+//                     Text("Savings",
+//                         style: TextStyle(color: Colors.white, fontSize: 20.0)),
+//                     IconButton(
+//                       icon: Icon(
+//                         Icons.arrow_forward,
+//                         color: Colors.white,
+//                       ),
+//                       onPressed: () {},
+//                     )
+//                   ],
+//                 ),
+//                 Center(
+//                   child: Padding(
+//                     padding: EdgeInsets.all(5.0),
+//                     child: Text(r"$ " "95,940.00",
+//                         style: TextStyle(color: Colors.white, fontSize: 24.0)),
+//                   ),
+//                 ),
+//                 SizedBox(height: 35.0),
+//               ],
+//             )),
+//       );
+// }
