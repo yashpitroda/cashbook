@@ -11,8 +11,15 @@ class Utility {
   static const BASEURL = "http://192.168.43.144:9000";
   // static const BASEURL = "http://192.168.1.33:9000";
 
-  // static void displaysnackbar( String message,{required BuildContext context}) {
-  static void displaysnackbar( 
+  static String convertToIndianCurrency(
+      {required String sourceNumber, required int decimalDigits}) {
+    var format = NumberFormat.currency(
+        locale: 'HI', symbol: "", decimalDigits: decimalDigits);
+
+    return format.format(int.parse(sourceNumber));
+  }
+
+  static void displaysnackbar(
       {required BuildContext context, required String message}) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message)));
@@ -43,6 +50,11 @@ class Utility {
   static DateFormat dateFormat_DDMMYYYY() {
     DateFormat formattedDate = DateFormat('dd/MM/yyyy');
     return formattedDate;
+  }
+
+  static String datetime_to_timeAMPM({required DateTime souceDateTime}) {
+    return DateFormat('hh:mm a').format(souceDateTime);
+    
   }
 
   static DateFormat dateFormat_DD_MonthName_YYYY() {

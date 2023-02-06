@@ -10,10 +10,8 @@ import 'package:cashbook_app/screen/supplier_screen.dart';
 import '../provider/google_auth_provider.dart';
 
 class HomeScreen extends StatelessWidget {
-  final BuildContext maincontext;
   const HomeScreen({
     Key? key,
-    required this.maincontext,
   }) : super(key: key);
   static const routeName = '/home';
   @override
@@ -58,7 +56,7 @@ class HomeScreen extends StatelessWidget {
       children: [
         ElevatedButton(
             onPressed: () {
-              Navigator.of(maincontext).pushNamed(PurchaseScreen.routeName);
+              Navigator.of(context).pushNamed(PurchaseScreen.routeName);
 //               Navigator.of(MaterialApp).push(
 //   MaterialPageRoute(builder: (MaterialAppContext) => ScreenB())
 // )

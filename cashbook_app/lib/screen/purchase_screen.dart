@@ -16,10 +16,8 @@ import 'add_update_purchase_screen.dart';
 
 class PurchaseScreen extends StatelessWidget {
   static const routeName = '/PurchaseScreen';
-  BuildContext maincontext;
   PurchaseScreen({
     Key? key,
-    required this.maincontext,
   }) : super(key: key);
   final ScrollController _controller = ScrollController();
   void _scrollup() {
@@ -53,20 +51,15 @@ class PurchaseScreen extends StatelessWidget {
     List<Purchase> purchaselist,
   ) {
     return Scaffold(
-      appBar:
-          //  PreferredSize(
-          // preferredSize: Size.fromHeight(100.0), // here the desired height
-          // child:
-          AppBar(
-        // toolbarHeight: 50, //
+      appBar: AppBar(
         title: Text("purchase"),
-        bottom: PreferredSize(
-            preferredSize: Size.fromHeight(8.0),
-            child: Row(
-              children: [
-                Text("fsta"),
-              ],
-            )),
+        // bottom: PreferredSize(
+        //     preferredSize: Size.fromHeight(8.0),
+        //     child: Row(
+        //       children: [
+        //         Text("fsta"),
+        //       ],
+        //     )),
       ),
       body: _scf_body(purchaselist, context),
     );
@@ -134,12 +127,13 @@ class PurchaseScreen extends StatelessWidget {
                                       souceDateTime_1: purchaselist[index].date,
                                       souceDateTime_2:
                                           purchaselist[index - 1].date))))
-                              ? SizedBox(
+                              ? const SizedBox(
                                   height: 8,
                                 )
                               : Container(
                                   // color: Colors.amber,
-                                  padding: EdgeInsets.only(left: 16, bottom: 4),
+                                  padding: const EdgeInsets.only(
+                                      left: 16, bottom: 4),
                                   height: 34,
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -155,54 +149,490 @@ class PurchaseScreen extends StatelessWidget {
                                     ],
                                   )),
                           Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 6),
                               color: Colors.white,
-                              height: 100,
+                              // height: 120,
                               width: double.infinity,
-                              child: Row(
+                              child: Column(
                                 children: [
-                                  Expanded(
-                                      flex: 5,
-                                      child: Container(
-                                        // color: Colors.amber,
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                purchaselist[index].firmname +
-                                                    " (${purchaselist[index].supplierObj!.sname})",
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleSmall!
-                                                    .copyWith(fontSize: 16),
-                                              ),
-                                              Divider(),
-                                              (purchaselist[index].remark == "")
-                                                  ? Container()
-                                                  : Text(
-                                                      "remark: ${purchaselist[index].remark}",
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        purchaselist[index].firmname +
+                                            " (${purchaselist[index].supplierObj!.sname})",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall!
+                                            .copyWith(fontSize: 16),
+                                      ),
+                                      Text(
+                                        "at ${Utility.datetime_to_timeAMPM(souceDateTime: purchaselist[index].date)}",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .caption!
+                                            .copyWith(fontSize: 14),
+                                      ),
+                                    ],
+                                  ),
+                                  // SizedBox(
+                                  //   height: 6,
+                                  // ),
+                                  // Divider(
+                                  //   height: 6,
+                                  // ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          flex: 4,
+                                          child: Container(
+                                            // color: Colors.amber,
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      IsBillOrWithoutBillCard(
+                                                          isCustombillvalue:
+                                                              purchaselist[
+                                                                      index]
+                                                                  .isbillvalue),
+                                                      SizedBox(
+                                                        width: 6,
+                                                      ),
+                                                      IsCashBankCard(
+                                                        isCustomCashBank:
+                                                            purchaselist[index]
+                                                                .cash_bank,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 6,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      IsInstantOrCreditAdvanceCard(
+                                                        isCustomC_cr:
+                                                            purchaselist[index]
+                                                                .c_cr,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 6,
+                                                  ),
+                                                  // (purchaselist[index].remark ==
+                                                  //         "")
+                                                  //     ? Container()
+                                                  //     : Text(
+                                                  //         "${purchaselist[index].remark}",
+                                                  //         maxLines: 1,
+                                                  //         overflow: TextOverflow
+                                                  //             .ellipsis,
+                                                  //         style:
+                                                  //             Theme.of(context)
+                                                  //                 .textTheme
+                                                  //                 .caption!
+                                                  //                 .copyWith(
+                                                  //                     fontSize:
+                                                  //                         14),
+                                                  //       ),
+                                                ]),
+                                          )),
+                                      SizedBox(
+                                        width: 3,
+                                      ),
+                                      Expanded(
+                                          flex: 6,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 2),
+                                            // color: Colors.pink.shade200,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      "Bill amt: ",
                                                       maxLines: 1,
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .caption!
-                                                          .copyWith(),
+                                                          .labelSmall!
+                                                          .copyWith(
+                                                              // fontWeight:
+                                                              //     FontWeight.w500,
+                                                              fontSize: 14),
                                                     ),
-                                            ]),
-                                      )),
-                                  SizedBox(
-                                    width: 3,
+                                                    Flexible(
+                                                      child: Text(
+                                                        Utility.convertToIndianCurrency(
+                                                            sourceNumber:
+                                                                purchaselist[
+                                                                        index]
+                                                                    .bill_amount,
+                                                            decimalDigits: 2),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .labelSmall!
+                                                            .copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 16),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      "paid amt: ",
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .labelSmall!
+                                                          .copyWith(
+                                                              // fontWeight:
+                                                              //     FontWeight.w500,
+                                                              fontSize: 14),
+                                                    ),
+                                                    Flexible(
+                                                      child: Text(
+                                                        Utility.convertToIndianCurrency(
+                                                            sourceNumber:
+                                                                purchaselist[
+                                                                        index]
+                                                                    .paidamount,
+                                                            decimalDigits: 2),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .labelSmall!
+                                                            .copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .red[400]),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Divider(),
+                                                (purchaselist[index]
+                                                                .outstanding_amount ==
+                                                            "0" &&
+                                                        purchaselist[index]
+                                                                .advance_amount ==
+                                                            "0")
+                                                    ? Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Text(
+                                                            "due & adv: ",
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .labelSmall!
+                                                                .copyWith(
+                                                                    // fontWeight:
+                                                                    //     FontWeight.w500,
+                                                                    fontSize:
+                                                                        14),
+                                                          ),
+                                                          Flexible(
+                                                            child: Text(
+                                                              Utility.convertToIndianCurrency(
+                                                                  sourceNumber:
+                                                                      purchaselist[
+                                                                              index]
+                                                                          .outstanding_amount,
+                                                                  decimalDigits:
+                                                                      2),
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .labelSmall!
+                                                                  .copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      fontSize:
+                                                                          16),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Text(
+                                                            (purchaselist[index]
+                                                                        .outstanding_amount ==
+                                                                    "0")
+                                                                ? "adv: "
+                                                                : "due: ",
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .labelSmall!
+                                                                .copyWith(
+                                                                    // fontWeight:
+                                                                    //     FontWeight.w500,
+                                                                    fontSize:
+                                                                        14),
+                                                          ),
+                                                          Flexible(
+                                                            child: Text(
+                                                              (purchaselist[index]
+                                                                          .outstanding_amount ==
+                                                                      "0")
+                                                                  ? Utility.convertToIndianCurrency(
+                                                                      sourceNumber:
+                                                                          purchaselist[index]
+                                                                              .advance_amount,
+                                                                      decimalDigits:
+                                                                          2)
+                                                                  : Utility.convertToIndianCurrency(
+                                                                      sourceNumber:
+                                                                          purchaselist[index]
+                                                                              .outstanding_amount,
+                                                                      decimalDigits:
+                                                                          2),
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .labelSmall!
+                                                                  .copyWith(
+                                                                      color: ((purchaselist[index].outstanding_amount ==
+                                                                              "0"))
+                                                                          ? Colors
+                                                                              .green
+                                                                              .shade900
+                                                                          : Colors
+                                                                              .red
+                                                                              .shade900,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      fontSize:
+                                                                          16),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                              ],
+                                            ),
+                                          ))
+                                    ],
                                   ),
-                                  Expanded(
-                                      flex: 6,
-                                      child: Container(
-                                        color: Colors.pink,
-                                      ))
+
+                                  Container(
+                                    child: Row(
+                                      children: [
+                                        (purchaselist[index].remark == "")
+                                            ? Container()
+                                            : Text(
+                                                "${purchaselist[index].remark}",
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .caption!
+                                                    .copyWith(fontSize: 14),
+                                              ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  // Divider(
+                                  //   height: 1,
+                                  // ),
+                                  Container(
+                                    // height: 30,
+                                    // color: Colors.red,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 4, vertical: 2),
+                                            // height: 26,
+                                            // width: 170,
+                                            decoration: BoxDecoration(
+                                                // border: Border.all(
+                                                //     width: 1,
+                                                //     color: Colors.black45),
+                                                color: Colors.grey
+                                                    .withOpacity(0.075),
+                                                borderRadius:
+                                                    BorderRadius.circular(6)),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "Cash balance",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .caption!
+                                                          .copyWith(
+                                                              letterSpacing: 1,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 14),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 6,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Flexible(
+                                                      child: Text(
+                                                        "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: purchaselist[index].cashBankObj.cash_balance, decimalDigits: 2)}",
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .subtitle1!
+                                                            .copyWith(
+                                                                letterSpacing:
+                                                                    1,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 18),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 24,
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 4, vertical: 2),
+                                            // height: 26,
+                                            // width: 170,
+                                            decoration: BoxDecoration(
+                                                // border: Border.all(
+                                                //     width: 1,
+                                                //     color: Colors.black45),
+                                                color: Colors.grey
+                                                    .withOpacity(0.075),
+                                                // color: Colors.red
+                                                //     .withOpacity(0.084),
+                                                borderRadius:
+                                                    BorderRadius.circular(6)),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "Bank balance",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .caption!
+                                                          .copyWith(
+                                                              letterSpacing: 1,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 14),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 6,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Flexible(
+                                                      child: Text(
+                                                        "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: purchaselist[index].cashBankObj.bank_balance, decimalDigits: 2)}",
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .subtitle1!
+                                                            .copyWith(
+                                                                letterSpacing:
+                                                                    1,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 18),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
                                 ],
                               )),
                         ],
@@ -295,6 +725,111 @@ class PurchaseScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class IsInstantOrCreditAdvanceCard extends StatelessWidget {
+  const IsInstantOrCreditAdvanceCard({
+    Key? key,
+    required this.isCustomC_cr,
+  }) : super(key: key);
+  final String isCustomC_cr;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 26,
+      width: (int.parse(isCustomC_cr) == 1) ? 130 : 130,
+      decoration: BoxDecoration(
+          // border: Border.all(
+          //     width: 1,
+          //     color: Colors.black45),
+          color: (int.parse(isCustomC_cr) == 1)
+              ? Colors.teal[50]
+              : Colors.brown[50],
+          borderRadius: BorderRadius.circular(6)),
+      child: Center(
+        child: Text(
+          (int.parse(isCustomC_cr) == 1) ? "CREDIT/ADVANCE" : "INSTANT PAYMENT",
+          style: TextStyle(
+            fontSize: (int.parse(isCustomC_cr) == 1) ? 12 : 12,
+            fontWeight: FontWeight.w600,
+            color: (int.parse(isCustomC_cr) == 1)
+                ? Colors.teal[700]
+                : Colors.brown[700],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class IsBillOrWithoutBillCard extends StatelessWidget {
+  const IsBillOrWithoutBillCard({
+    Key? key,
+    required this.isCustombillvalue,
+  }) : super(key: key);
+  final String isCustombillvalue;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 26,
+      width: (int.parse(isCustombillvalue) == 1) ? 54 : 88,
+      decoration: BoxDecoration(
+          // border: Border.all(
+          //     width: 1,
+          //     color: Colors.black45),
+          color: (int.parse(isCustombillvalue) == 1)
+              ? Colors.orange[50]
+              : Colors.deepPurple[50],
+          borderRadius: BorderRadius.circular(6)),
+      child: Center(
+        child: Text(
+          (int.parse(isCustombillvalue) == 1) ? "Bill" : "Without bill",
+          style: TextStyle(
+            fontSize: (int.parse(isCustombillvalue) == 1) ? 14 : 12,
+            fontWeight: FontWeight.w600,
+            color: (int.parse(isCustombillvalue) == 1)
+                ? Colors.orange[700]
+                : Colors.deepPurpleAccent[700],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class IsCashBankCard extends StatelessWidget {
+  const IsCashBankCard({
+    Key? key,
+    required this.isCustomCashBank,
+  }) : super(key: key);
+  final String isCustomCashBank;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 26,
+      width: 54,
+      decoration: BoxDecoration(
+          // border: Border.all(
+          //     width: 1,
+          //     color: Colors.black45),
+          color: (int.parse(isCustomCashBank) == 1)
+              ? Colors.green[50]
+              : Colors.blue[50],
+          borderRadius: BorderRadius.circular(6)),
+      child: Center(
+        child: Text(
+          (int.parse(isCustomCashBank) == 1) ? "CASH" : "BANK",
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: (int.parse(isCustomCashBank) == 1)
+                ? Colors.green[700]
+                : Colors.blue[700],
+          ),
+        ),
       ),
     );
   }

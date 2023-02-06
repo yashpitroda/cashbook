@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
             if (userSnapshot.hasData) {
               print("called2");
               return HomeScreen(
-                maincontext: context,
+              
               );
             } else {
               //and no data so not auth.. so retry
@@ -93,7 +93,7 @@ class MyApp extends StatelessWidget {
           LoadingScreen.routeName: (context) => const LoadingScreen(),
           AddInPayableScreen.routeName: (context) => const AddInPayableScreen(),
           HomeScreen.routeName: (context) => HomeScreen(
-                maincontext: context,
+              
               ),
           ClientScreen.routeName: (context) => ClientScreen(),
           SelectSupplierScreen.routeName: (context) => SelectSupplierScreen(),
@@ -104,7 +104,7 @@ class MyApp extends StatelessWidget {
           AddUpdatePurchaseScreen.routeName: (context) =>
               AddUpdatePurchaseScreen(),
           PurchaseScreen.routeName: (context) => PurchaseScreen(
-                maincontext: context,
+              
               ),
         },
       ),
