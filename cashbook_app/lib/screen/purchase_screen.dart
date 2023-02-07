@@ -488,12 +488,12 @@ class PurchaseScreen extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 6,
-                                  ),
-                                  // Divider(
-                                  //   height: 1,
+                                  // SizedBox(
+                                  //   height: 6,
                                   // ),
+                                  Divider(
+                                      // height: 1,
+                                      ),
                                   Container(
                                     // height: 30,
                                     // color: Colors.red,
@@ -553,7 +553,7 @@ class PurchaseScreen extends StatelessWidget {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w600,
-                                                                fontSize: 18),
+                                                                fontSize: 16),
                                                       ),
                                                     ),
                                                   ],
@@ -621,7 +621,7 @@ class PurchaseScreen extends StatelessWidget {
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w600,
-                                                                fontSize: 18),
+                                                                fontSize: 16),
                                                       ),
                                                     ),
                                                   ],

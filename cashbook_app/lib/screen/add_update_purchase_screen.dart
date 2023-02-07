@@ -393,12 +393,14 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                                     child: Column(children: [
                                       Tabs(context),
                                       Container(
-                                          height: 440,
+                                          // color: Colors.pink,
+                                          height: 197,
                                           child: TabBarView(
                                               physics:
                                                   NeverScrollableScrollPhysics(),
                                               children: [
-                                                INSTANT_PAYMENTtabView(mqhight),
+                                                INSTANT_PAYMENTtabView(
+                                                    mqhight, mqwidth),
                                                 Column(
                                                   children: [
                                                     SizedBox(
@@ -608,91 +610,118 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                                                     SizedBox(
                                                       height: mqhight * 0.015,
                                                     ),
-                                                    TextField(
-                                                      enabled: false,
-                                                      // readOnly: true,
-                                                      controller:
-                                                          updatedoutstandingamountController,
-                                                      cursorColor: Colors.black,
-                                                      style: const TextStyle(
-                                                          // letterSpacing: 1,
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 16),
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        filled: true,
-                                                        fillColor:
-                                                            Color.fromARGB(208,
-                                                                235, 238, 244),
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          4)),
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: TextField(
+                                                            enabled: false,
+                                                            // readOnly: true,
+                                                            controller:
+                                                                updatedoutstandingamountController,
+                                                            cursorColor:
+                                                                Colors.black,
+                                                            style: const TextStyle(
+                                                                // letterSpacing: 1,
+                                                                color: Colors.black,
+                                                                // fontWeight:
+                                                                //     FontWeight
+                                                                //         .w500,
+                                                                fontSize: 16),
+                                                            decoration:
+                                                                const InputDecoration(
+                                                              filled: true,
+                                                              fillColor: Color
+                                                                  .fromARGB(
+                                                                      208,
+                                                                      235,
+                                                                      238,
+                                                                      244),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            4)),
+                                                              ),
+                                                              labelText:
+                                                                  "Now Outstanding Amount",
+                                                              labelStyle: TextStyle(
+                                                                  letterSpacing:
+                                                                      1,
+                                                                  fontSize: 14),
+                                                              hintStyle:
+                                                                  TextStyle(
+                                                                      fontSize:
+                                                                          13),
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .fromLTRB(
+                                                                          20.0,
+                                                                          15.0,
+                                                                          20.0,
+                                                                          15.0),
+                                                            ),
+                                                          ),
                                                         ),
-                                                        labelText:
-                                                            "updated Outstanding Amount",
-                                                        labelStyle: TextStyle(
-                                                            letterSpacing: 1,
-                                                            fontSize: 14),
-                                                        hintStyle: TextStyle(
-                                                            fontSize: 13),
-                                                        contentPadding:
-                                                            EdgeInsets.fromLTRB(
-                                                                20.0,
-                                                                15.0,
-                                                                20.0,
-                                                                15.0),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: mqhight * 0.015,
-                                                    ),
-                                                    TextField(
-                                                      enabled: false,
-                                                      // readOnly: true,
-                                                      controller:
-                                                          updatedadvanceamountController,
-                                                      cursorColor: Colors.black,
-                                                      style: const TextStyle(
-                                                          // letterSpacing: 1,
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 16),
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        filled: true,
-                                                        fillColor:
-                                                            Color.fromARGB(208,
-                                                                235, 238, 244),
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          4)),
+                                                        SizedBox(
+                                                          width: mqwidth * 0.02,
                                                         ),
-                                                        labelText:
-                                                            "updated Advance Amount",
-                                                        labelStyle: TextStyle(
-                                                            letterSpacing: 1,
-                                                            fontSize: 14),
-                                                        hintStyle: TextStyle(
-                                                            fontSize: 13),
-                                                        contentPadding:
-                                                            EdgeInsets.fromLTRB(
-                                                                20.0,
-                                                                15.0,
-                                                                20.0,
-                                                                15.0),
-                                                      ),
+                                                        Expanded(
+                                                          child: TextField(
+                                                            enabled: false,
+                                                            // readOnly: true,
+                                                            controller:
+                                                                updatedadvanceamountController,
+                                                            cursorColor:
+                                                                Colors.black,
+                                                            style: const TextStyle(
+                                                                // letterSpacing: 1,
+                                                                color: Colors.black,
+                                                                // fontWeight:
+                                                                //     FontWeight
+                                                                //         .w500,
+                                                                fontSize: 16),
+                                                            decoration:
+                                                                const InputDecoration(
+                                                              filled: true,
+                                                              fillColor: Color
+                                                                  .fromARGB(
+                                                                      208,
+                                                                      235,
+                                                                      238,
+                                                                      244),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            4)),
+                                                              ),
+                                                              labelText:
+                                                                  "Now Advance Amount",
+                                                              labelStyle: TextStyle(
+                                                                  letterSpacing:
+                                                                      1,
+                                                                  fontSize: 14),
+                                                              hintStyle:
+                                                                  TextStyle(
+                                                                      fontSize:
+                                                                          13),
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .fromLTRB(
+                                                                          20.0,
+                                                                          15.0,
+                                                                          20.0,
+                                                                          15.0),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
+                                                    // SizedBox(
+                                                    //   height: mqhight * 0.015,
+                                                    // ),
                                                     SizedBox(
                                                       height: mqhight * 0.015,
                                                     ),
@@ -727,7 +756,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     );
   }
 
-  Column INSTANT_PAYMENTtabView(double mqhight) {
+  Column INSTANT_PAYMENTtabView(double mqhight, double mqwidth) {
     return Column(
       children: [
         SizedBox(
@@ -782,52 +811,111 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
         SizedBox(
           height: mqhight * 0.015,
         ),
-        TextField(
-          enabled: false,
-          // readOnly: true,
-          controller: updatedadvanceamountController,
-          cursorColor: Colors.black,
-          style: const TextStyle(
-              // letterSpacing: 1,
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: 16),
-          decoration: const InputDecoration(
-            filled: true,
-            fillColor: Color.fromARGB(208, 235, 238, 244),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
+        // TextField(
+        //   enabled: false,
+        //   // readOnly: true,
+        //   controller: updatedadvanceamountController,
+        //   cursorColor: Colors.black,
+        //   style: const TextStyle(
+        //       // letterSpacing: 1,
+        //       color: Colors.black,
+        //       fontWeight: FontWeight.w500,
+        //       fontSize: 16),
+        //   decoration: const InputDecoration(
+        //     filled: true,
+        //     fillColor: Color.fromARGB(208, 235, 238, 244),
+        //     border: OutlineInputBorder(
+        //       borderRadius: BorderRadius.all(Radius.circular(4)),
+        //     ),
+        //     labelText: "updated advance Amount",
+        //     labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+        //     hintStyle: TextStyle(fontSize: 13),
+        //     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        //   ),
+        // ),
+        // SizedBox(
+        //   height: mqhight * 0.015,
+        // ),
+        // TextField(
+        //   enabled: false,
+        //   // readOnly: true,
+        //   controller: updatedoutstandingamountController,
+        //   cursorColor: Colors.black,
+        //   style: const TextStyle(
+        //       // letterSpacing: 1,
+        //       color: Colors.black,
+        //       fontWeight: FontWeight.w500,
+        //       fontSize: 16),
+        //   decoration: const InputDecoration(
+        //     filled: true,
+        //     fillColor: Color.fromARGB(208, 235, 238, 244),
+        //     border: OutlineInputBorder(
+        //       borderRadius: BorderRadius.all(Radius.circular(4)),
+        //     ),
+        //     labelText: "updated outstanding Amount",
+        //     labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+        //     hintStyle: TextStyle(fontSize: 13),
+        //     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        //   ),
+        // ),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                enabled: false,
+                // readOnly: true,
+                controller: updatedoutstandingamountController,
+                cursorColor: Colors.black,
+                style: const TextStyle(
+                    // letterSpacing: 1,
+                    color: Colors.black,
+                    // fontWeight:
+                    //     FontWeight
+                    //         .w500,
+                    fontSize: 16),
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Color.fromARGB(208, 235, 238, 244),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                  ),
+                  labelText: "Now Outstanding Amount",
+                  labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+                  hintStyle: TextStyle(fontSize: 13),
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                ),
+              ),
             ),
-            labelText: "updated advance Amount",
-            labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-            hintStyle: TextStyle(fontSize: 13),
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          ),
-        ),
-        SizedBox(
-          height: mqhight * 0.015,
-        ),
-        TextField(
-          enabled: false,
-          // readOnly: true,
-          controller: updatedoutstandingamountController,
-          cursorColor: Colors.black,
-          style: const TextStyle(
-              // letterSpacing: 1,
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: 16),
-          decoration: const InputDecoration(
-            filled: true,
-            fillColor: Color.fromARGB(208, 235, 238, 244),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
+            SizedBox(
+              width: mqwidth * 0.02,
             ),
-            labelText: "updated outstanding Amount",
-            labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-            hintStyle: TextStyle(fontSize: 13),
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          ),
+            Expanded(
+              child: TextField(
+                enabled: false,
+                // readOnly: true,
+                controller: updatedadvanceamountController,
+                cursorColor: Colors.black,
+                style: const TextStyle(
+                    // letterSpacing: 1,
+                    color: Colors.black,
+                    // fontWeight:
+                    //     FontWeight
+                    //         .w500,
+                    fontSize: 16),
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Color.fromARGB(208, 235, 238, 244),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                  ),
+                  labelText: "Now Advance Amount",
+                  labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+                  hintStyle: TextStyle(fontSize: 13),
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                ),
+              ),
+            ),
+          ],
         ),
         SizedBox(
           height: mqhight * 0.015,
