@@ -59,7 +59,7 @@ class Utility {
 
   static Future<void> refreshSupplier(BuildContext context) async {
     await Provider.of<SupplierProvider>(context, listen: false).fatchSupplier();
-    // print('refresh done');
+    // print('refresh1 done');
   }
 
   static Future<void> refreshPurchase(BuildContext context) async {
@@ -90,5 +90,13 @@ class Utility {
       {required DateTime souceDateTime_1, required DateTime souceDateTime_2}) {
     // return DateUtils.dateOnly( souceDateTime);
     return DateUtils.isSameDay(souceDateTime_1, souceDateTime_2);
+  }
+
+  static void scrollUp({required ScrollController customScrollController}) {
+    customScrollController.animateTo(
+      customScrollController.position.minScrollExtent,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.fastOutSlowIn,
+    );
   }
 }

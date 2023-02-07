@@ -274,12 +274,12 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     // if (_isCREDIT_ADVANCE) {
     //   c_cr = 1;
     // }
-    print("qq1");
-    print(c_cr);
-    print("qq2");
-    print(_isBillValue);
-    print("qq3");
-    print(_iscashBankValue);
+    // print("qq1");
+    // print(c_cr);
+    // print("qq2");
+    // print(_isBillValue);
+    // print("qq3");
+    // print(_iscashBankValue);
     if (firmNameController.text.isEmpty) {
       Utility.displaysnackbar(context: context, message: "Select firm first");
       return;
@@ -295,7 +295,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
           context: context, message: "Enter paid-amount first");
       return;
     }
-    print("done");
+    // print("done");
     // if (firmnameController.text.isEmpty) {
     //   FocusScope.of(context).requestFocus(firmnameFocusNode);
     //   return;
@@ -304,6 +304,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     //   FocusScope.of(context).requestFocus(smobilenoFocusNode);
     //   return;
     // }
+    Utility.removeFocus(context: context);
     try {
       await Provider.of<PurchaseProvider>(context, listen: false)
           .submit_IN_Purchase(
