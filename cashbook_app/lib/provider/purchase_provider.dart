@@ -13,15 +13,9 @@ import '../utill/utility.dart';
 class PurchaseProvider extends ChangeNotifier {
   SupplierProvider? supplierProviderOBJ;
   String useremail = Utility.getCurrentUserEMAILID();
-  int _a = 0;
+
   void update({required SupplierProvider supplierProvider_obj}) {
     supplierProviderOBJ = supplierProvider_obj;
-    // notifyListeners();
-  }
-
-  int get geta {
-    print("geta is call");
-    return _a;
   }
 
   List<Purchase> _purchaseList = [];
@@ -37,20 +31,20 @@ class PurchaseProvider extends ChangeNotifier {
     });
   }
 
-  List<Map> get getuniqueDateForCard {
-    List<Map> t = [];
-    for (int i = 0; i < _purchaseList.length; i++) {
-      if ((i > 0) &&
-          (_purchaseList[i].date.year == _purchaseList[i - 1].date.year &&
-              _purchaseList[i].date.month == _purchaseList[i - 1].date.month &&
-              _purchaseList[i].date.day == _purchaseList[i - 1].date.day)) {
-      } else {
-        t.add({i: _purchaseList[i].date});
-      }
-    }
-    print(t);
-    return t;
-  }
+  // List<Map> get getuniqueDateForCard {
+  //   List<Map> t = [];
+  //   for (int i = 0; i < _purchaseList.length; i++) {
+  //     if ((i > 0) &&
+  //         (_purchaseList[i].date.year == _purchaseList[i - 1].date.year &&
+  //             _purchaseList[i].date.month == _purchaseList[i - 1].date.month &&
+  //             _purchaseList[i].date.day == _purchaseList[i - 1].date.day)) {
+  //     } else {
+  //       t.add({i: _purchaseList[i].date});
+  //     }
+  //   }
+  //   print(t);
+  //   return t;
+  // }
 
   Future<void> fatchPurchase() async {
     print("fatchPurchase is call");
@@ -123,7 +117,7 @@ class PurchaseProvider extends ChangeNotifier {
     print("hahs");
   }
 
-  Future<String> submit_IN_Purchase(
+  Future<void> submit_IN_Purchase(
       {required int isBillValue,
       required int c_cr,
       required int cash_bank,
@@ -134,35 +128,44 @@ class PurchaseProvider extends ChangeNotifier {
       required int updatedOutstandingAmount,
       required String remark,
       required DateTime finaldateTime}) async {
-    final url = Uri.parse(Utility.BASEURL + "/addinpurchase");
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: json.encode(
-        {
-          "isbillvalue": isBillValue,
-          'c_cr': c_cr, //instant
-          'cash_bank': cash_bank,
-          "paidamount": paidAmount,
-          'bill_amount': billAmount,
-          'updated_outstanding_amount': updatedOutstandingAmount,
-          'updated_advance_amount': updatedAdavanceAmount,
-          "sid": selectedSupplierobj.sid,
-          'firmname': selectedSupplierobj.firmname,
-          'smobileno': selectedSupplierobj.smobileno,
-          'useremail': Utility.getCurrentUserEMAILID(),
-          'date': finaldateTime.toString(),
-          'remark': remark,
-        },
-      ),
-    );
-    if (response.body == 'null') {
-      // print('its products retruns data is not avalible in firebase server');
-      return "error";
+    try {
+      // final url = Uri.parse(Utility.BASEURL + "/addinpurchas");
+      final url = Uri.parse(Utility.BASEURL + "/addinpurchase");
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(
+          {
+            "isbillvalue": isBillValue,
+            'c_cr': c_cr, //instant
+            'cash_bank': cash_bank,
+            "paidamount": paidAmount,
+            'bill_amount': billAmount,
+            'updated_outstanding_amount': updatedOutstandingAmount,
+            'updated_advance_amount': updatedAdavanceAmount,
+            "sid": selectedSupplierobj.sid,
+            'firmname': selectedSupplierobj.firmname,
+            'smobileno': selectedSupplierobj.smobileno,
+            'useremail': Utility.getCurrentUserEMAILID(),
+            'date': finaldateTime.toString(),
+            'remark': remark,
+          },
+        ),
+      );
+      if (response.body == 'null') {
+        return;
+      }
+      final responseData = json.decode(response.body);
+      final status = responseData["status"];
+      if (status == Utility.CHECK_STATUS) {
+        fatchPurchase();
+      }
+    } catch (e) {
+      print(e);
+      throw e;
     }
-    final responseData = json.decode(response.body);
-    final status = responseData["status"];
-    print(status);
-    return status; //success
+
+    // print(status);
+    // return status; //success
   }
 }

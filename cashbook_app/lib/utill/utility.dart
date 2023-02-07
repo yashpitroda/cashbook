@@ -1,3 +1,4 @@
+import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +10,7 @@ class Utility {
   // final currentUser = FirebaseAuth.instance.currentUser;
 
   static const BASEURL = "http://192.168.43.144:9000";
+  static const CHECK_STATUS = "success";
   // static const BASEURL = "http://192.168.1.33:9000";
 
   static String convertToIndianCurrency(
@@ -21,8 +23,21 @@ class Utility {
 
   static void displaysnackbar(
       {required BuildContext context, required String message}) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
+    final snackBar_ = SnackBar(
+      content: Text(message,
+          style: Theme.of(context).textTheme.displaySmall!.copyWith(
+              fontSize: 16, color: Color.fromARGB(250, 243, 243, 243))),
+      elevation: 3,
+      margin: EdgeInsets.symmetric(vertical: 80, horizontal: 12),
+      behavior: SnackBarBehavior.floating,
+      // backgroundColor: Color.fromARGB(250, 243, 243, 243),
+      backgroundColor: Colors.grey.shade800,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar_);
+
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+
+    // ));
   }
 
   static void SearchInSupplierListInProvider(
@@ -47,6 +62,11 @@ class Utility {
     // print('refresh done');
   }
 
+  static Future<void> refreshPurchase(BuildContext context) async {
+    await Provider.of<PurchaseProvider>(context, listen: false).fatchPurchase();
+    // print('refresh done');
+  }
+
   static DateFormat dateFormat_DDMMYYYY() {
     DateFormat formattedDate = DateFormat('dd/MM/yyyy');
     return formattedDate;
@@ -54,7 +74,6 @@ class Utility {
 
   static String datetime_to_timeAMPM({required DateTime souceDateTime}) {
     return DateFormat('hh:mm a').format(souceDateTime);
-    
   }
 
   static DateFormat dateFormat_DD_MonthName_YYYY() {

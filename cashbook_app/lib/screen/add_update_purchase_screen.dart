@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cashbook_app/models/supplier.dart';
@@ -41,6 +42,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
 
   int? _isBillValue = 1;
   int? _iscashBankValue = 0;
+  int c_cr = 0;
 
   DateTime? _selectedDate;
   TimeOfDay? _selectedtime;
@@ -256,7 +258,6 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     return Colors.black;
   }
 
-  int c_cr = 0;
   Future<void> _submitHander(BuildContext context) async {
     // print(billamountController.text);
     // print(descriptionController.text);
@@ -273,26 +274,73 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     // if (_isCREDIT_ADVANCE) {
     //   c_cr = 1;
     // }
-
-    Provider.of<PurchaseProvider>(context, listen: false)
-        .submit_IN_Purchase(
-            isBillValue: _isBillValue!,
-            c_cr: c_cr,
-            cash_bank: _iscashBankValue!,
-            selectedSupplierobj: selectedSupplierobj!,
-            billAmount: int.parse(billamountController.text),
-            paidAmount: int.parse(paidamountController.text),
-            updatedAdavanceAmount:
-                int.parse(updatedadvanceamountController.text),
-            updatedOutstandingAmount:
-                int.parse(updatedoutstandingamountController.text),
-            remark: descriptionController.text,
-            finaldateTime: finaldateTime!)
-        .then((value) {
-      if (value == "success") {
-        print("done");
-      }
-    });
+    print("qq1");
+    print(c_cr);
+    print("qq2");
+    print(_isBillValue);
+    print("qq3");
+    print(_iscashBankValue);
+    if (firmNameController.text.isEmpty) {
+      Utility.displaysnackbar(context: context, message: "Select firm first");
+      return;
+    }
+    if (billamountController.text.isEmpty) {
+      Utility.displaysnackbar(
+          context: context, message: "Enter bill-amount first");
+      return;
+    }
+    if (_isCREDIT_ADVANCE && paidamountController.text.isEmpty) {
+      print("object");
+      Utility.displaysnackbar(
+          context: context, message: "Enter paid-amount first");
+      return;
+    }
+    print("done");
+    // if (firmnameController.text.isEmpty) {
+    //   FocusScope.of(context).requestFocus(firmnameFocusNode);
+    //   return;
+    // }
+    // if (smobilenoController.text.isEmpty) {
+    //   FocusScope.of(context).requestFocus(smobilenoFocusNode);
+    //   return;
+    // }
+    try {
+      await Provider.of<PurchaseProvider>(context, listen: false)
+          .submit_IN_Purchase(
+              isBillValue: _isBillValue!,
+              c_cr: c_cr,
+              cash_bank: _iscashBankValue!,
+              selectedSupplierobj: selectedSupplierobj!,
+              billAmount: int.parse(billamountController.text),
+              paidAmount: int.parse(paidamountController.text),
+              updatedAdavanceAmount:
+                  int.parse(updatedadvanceamountController.text),
+              updatedOutstandingAmount:
+                  int.parse(updatedoutstandingamountController.text),
+              remark: descriptionController.text,
+              finaldateTime: finaldateTime!)
+          .then((_) {
+        Navigator.of(context).pop();
+      });
+    } catch (e) {
+      await showDialog(
+          // showDialog is also future fuction
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: const Text('A error occurred!'),
+              content: Text('somethings wents wrong.${e}'),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: Text("okey"),
+                ),
+              ],
+            );
+          });
+    }
   }
 
   @override
@@ -1059,7 +1107,8 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
           selected: _isBillValue == 1,
           onSelected: (bool selected) {
             setState(() {
-              _isBillValue = selected ? 1 : null;
+              // _isBillValue = selected ? 1 : null;
+              _isBillValue = 1;
               doEmptyController();
               Utility.removeFocus(context: context);
             });
@@ -1075,7 +1124,8 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
           selected: _isBillValue == 0,
           onSelected: (bool selected) {
             setState(() {
-              _isBillValue = selected ? 0 : null;
+              // _isBillValue = selected ? 0 : null;
+              _isBillValue = 0;
               doEmptyController();
               Utility.removeFocus(context: context);
             });
@@ -1095,7 +1145,8 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
           selected: _iscashBankValue == 0,
           onSelected: (bool selected) {
             setState(() {
-              _iscashBankValue = selected ? 0 : null;
+              // _iscashBankValue = selected ? 0 : null;
+              _iscashBankValue = 0;
             });
           },
         ),
@@ -1105,11 +1156,12 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
         ChoiceChip(
           backgroundColor: const Color.fromARGB(255, 192, 200, 216),
           selectedColor: const Color.fromARGB(255, 104, 167, 255),
-          label: const Text('Bank'),
+          label: const Text('BANK'),
           selected: _iscashBankValue == 1,
           onSelected: (bool selected) {
             setState(() {
-              _iscashBankValue = selected ? 1 : null;
+              // _iscashBankValue = selected ? 1 : null;
+              _iscashBankValue = 1;
             });
           },
         ),

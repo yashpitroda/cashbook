@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
         theme: ThemeData(
-          fontFamily: 'Rubik',
+          // fontFamily: 'Rubik',
           appBarTheme: const AppBarTheme(
             elevation: 0,
             backgroundColor: Colors.white,
@@ -79,9 +79,7 @@ class MyApp extends StatelessWidget {
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
               print("called2");
-              return HomeScreen(
-              
-              );
+              return HomeScreen();
             } else {
               //and no data so not auth.. so retry
               return const AuthScreen();
@@ -92,9 +90,7 @@ class MyApp extends StatelessWidget {
         routes: {
           LoadingScreen.routeName: (context) => const LoadingScreen(),
           AddInPayableScreen.routeName: (context) => const AddInPayableScreen(),
-          HomeScreen.routeName: (context) => HomeScreen(
-              
-              ),
+          HomeScreen.routeName: (context) => HomeScreen(),
           ClientScreen.routeName: (context) => ClientScreen(),
           SelectSupplierScreen.routeName: (context) => SelectSupplierScreen(),
           AddupdateSupplierScreen.routeName: (context) =>
@@ -103,9 +99,7 @@ class MyApp extends StatelessWidget {
           SelectContactScreen.routeName: (context) => SelectContactScreen(),
           AddUpdatePurchaseScreen.routeName: (context) =>
               AddUpdatePurchaseScreen(),
-          PurchaseScreen.routeName: (context) => PurchaseScreen(
-              
-              ),
+          PurchaseScreen.routeName: (context) => PurchaseScreen(),
         },
       ),
     );
