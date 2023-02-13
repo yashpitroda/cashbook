@@ -11,33 +11,26 @@ prt = 9000
 app = Flask(__name__)
 CORS(app)
 
-# app.config["PROPAGATE_EXCEPTIONS"] = True
-# app.config["API_TITLE"] = "Stores REST API"
-# app.config["API_VERSION"] = "v1"
-# app.config["OPENAPI_VERSION"] = "3.0.3"
-# app.config["OPENAPI_URL_PREFIX"] = "/"
-# app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
-# app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
 
 @app.route('/addinpurchase',methods=['POST'])
 async def addinpurchase():
     value=request.get_json()
-    isbillvalue =value [ "isbillvalue"]
-    c_cr =value ['c_cr']
-    bill_amount  =value ['bill_amount']
-    updated_outstanding_amount  =value ['updated_outstanding_amount']
+    isBill =value [ "isBill"]
+    cOrCr =value ['cOrCr']
+    cashOrBank  =value ['cashOrBank']
+    paidAmount  =value ['paidAmount']
+    billAmount =value [ "billAmount"]
+    updatedAdavanceAmount   =value['updatedAdavanceAmount']
+    updatedOutstandingAmount   =value['updatedOutstandingAmount']
+    sid  =value[ "sid"]
     firmname =value ['firmname']
+    smobileno  =value ['smobileno']
     useremail  =value ['useremail']
     date =value ['date']
-    cash_bank  =value ['cash_bank']
-    paidamount =value [ "paidamount"]
-    updated_advance_amount   =value['updated_advance_amount']
-    sid  =value[ "sid"]
-    smobileno  =value ['smobileno']
     remark  =value ['remark']
-    new_purchase_obj=Purchase(cash_bank=cash_bank,bill_amount=bill_amount,c_cr=c_cr,date=date,firmname=firmname,isbillvalue=isbillvalue,paidamount=paidamount,useremail=useremail,smobileno=smobileno,remark=remark)
+    new_purchase_obj=Purchase(biilAmount=billAmount,cashOrBank=cashOrBank,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
     status=await new_purchase_obj.insert_IN_purchase_2()
-    print("!!!!")
+   
     print(status)
     if(status=="success"):
         return {'status':status},200
@@ -123,10 +116,22 @@ async def fetchsupplier():
     useremail=value['useremail']
     
     result=await Supplier.fetchAllItemInsupplierTable(useremail=useremail) #result hold list of tupple -- [(),(),()]
-
+   
     supplierTableDataList=[]
     for i in result:
-        sid,sname,firmname,smobileno,semail,useremail,entrydatetime,outstanding_amount_withbill,outstanding_amount_without_bill,advance_amount_with_bill,advance_amount_without_bill=i # i is tupple
+        sid,sname,firmname,smobileno,semail,useremail,entrydatetime=i # i is tupple
+        # outstanding_amount_withbill,outstanding_amount_without_bill,advance_amount_with_bill,advance_amount_without_bill
+        outstanding_amount_withbill=0
+        outstanding_amount_without_bill=0
+        advance_amount_with_bill=0
+        advance_amount_without_bill=0
+        res_withoutbill=await Purchase.find_advAmt_and_outstandingAmt(isBill=0,supplierId=sid)
+        for row in res_withoutbill:
+            advance_amount_without_bill,outstanding_amount_without_bill=row
+            
+        res_withbill=await Purchase.find_advAmt_and_outstandingAmt(isBill=1,supplierId=sid)
+        for row1 in res_withbill:
+            advance_amount_with_bill,outstanding_amount_withbill=row1
         temp={
             "sid":sid,
             "sname":sname,
@@ -150,6 +155,22 @@ async def fetchpurchase():
     """body
     {"useremail":"yashpitroda200@gmail.com"}
     """
+    
+    """
+     useremail:element["puchase_map"]["useremail"].toString() ,
+          pid: element["puchase_map"]["pid"].toString(),
+          isBill: element["puchase_map"]["isBill"].toString(),
+          biilAmount: element["puchase_map"]["biilAmount"].toString(),
+          paidAmount: element["puchase_map"]["paidAmount"].toString(),
+          outstandingAmount:
+              element["puchase_map"]["outstandingAmount"].toString(),
+          advanceAmount: element["puchase_map"]["advanceAmount"].toString(),
+          date: stirngToDateTmeFormatter.parse(element["puchase_map"]['date']),
+          cOrCr: element["puchase_map"]["cOrCr"].toString(),
+          cashOrBank: element["puchase_map"]["cashOrBank"].toString(),
+          cashBankId: element["puchase_map"]["cashBankId"].toString(),
+          remark: element["puchase_map"]["remark"].toString(),
+    """
     value=request.get_json()
     requird=['useremail']
     if not all(key in value for key in requird):
@@ -157,28 +178,28 @@ async def fetchpurchase():
     useremail=value['useremail']
     
     result=await Purchase.fetchAllItemInpurchaseTable(useremail=useremail) #result hold list of tupple -- [(),(),()]
+    print("ss6")
     status=""
     purchaseTableDataList=[]
     for row in result:
-        pid,isbillvalue,firmname,bill_amount,paidamount,advance_amount,outstanding_amount,c_cr,remark,smobileno,useremail,date,cbid,cash_bank=row # i is tupple
+        pid,supplierId,biilAmount,paidAmount,advanceAmount,outstandingAmount,date,remark,isBill,cOrCr,cashOrBank,cashBankId,useremail=row # i is tupple
         purchase_map={
             "pid":pid,
-            "isbillvalue":isbillvalue,
-            "firmname":firmname,
-            "bill_amount":bill_amount,
-            "paidamount":paidamount,
-            "advance_amount":advance_amount,    
-            "outstanding_amount":outstanding_amount, #in string   
-            "c_cr":c_cr, #in string   
-            "remark":remark, #in string   
-            "smobileno":smobileno, #in string   
-            "useremail":useremail, #in string   
+            "supplierId":supplierId,
+            "biilAmount":biilAmount,
+            "paidAmount":paidAmount,
+            "advanceAmount":advanceAmount,    
+            "outstandingAmount":outstandingAmount, #in string   
             "date":date, #in string   
-            "cbid":cbid, #in string   
-            "cash_bank":cash_bank, #in string   
+            "remark":remark, #in string   
+            "isBill":isBill, #in string   
+            "cOrCr":cOrCr, #in string   
+            "cashOrBank":cashOrBank, #in string   
+            "cashBankId":cashBankId, #in string   
+            "useremail":useremail, #in string   
         }
        
-        result_cashbank=await CashBankClass.find_one_IN_CashBank_BY_CBID(cbid=cbid)
+        result_cashbank=await CashBankClass.find_one_IN_CashBank_BY_CBID(cbid=cashBankId)
         if(result=="database error" or result_cashbank=="database error"):
             status="error"
         else:
@@ -203,7 +224,6 @@ async def fetchpurchase():
         temp={"puchase_map":purchase_map,"cash_bank_map":cash_bank_map}
         purchaseTableDataList.append(temp)
         
-    
     # print(supplierTableDataList)
     print("/fatchsupplier Completed")
     return {"status":status,'datalist': purchaseTableDataList},200 

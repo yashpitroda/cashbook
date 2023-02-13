@@ -1,26 +1,26 @@
 import time
 import utills
+
 class Purchase():
-    def __init__(self,isbillvalue,firmname,bill_amount,c_cr,cash_bank,remark,smobileno,useremail,date,paidamount):
-        self.isbillvalue=isbillvalue
-        self.firmname=firmname
-        self.smobileno=smobileno
-        self.useremail=useremail
+    def __init__(self,biilAmount,paidAmount,cashOrBank,remark,date,cOrCr,isBill,supplierId,useremail):
+        self.biilAmount=biilAmount
+        self.paidAmount=paidAmount
+        self.advanceAmount=0
+        self.outstandingAmount=0
         self.date=date
-        self.cash_bank=cash_bank
-        self.bill_amount=bill_amount
-        self.outstanding_amount=0
-        self.advance_amount=0
-        self.paidamount=paidamount
-        self.c_cr=c_cr
         self.remark=remark
+        self.cashOrBank=cashOrBank
+        self.cOrCr=cOrCr
+        self.isBill=isBill
+        self.useremail=useremail
+        self.supplierId=supplierId
     
     async def fetchAllItemInpurchaseTable(useremail):
         try:
             print(useremail)
             conn = await utills.createConn()
             cur = await conn.cursor()
-            query = f"SELECT * FROM purchase_entry WHERE useremail='{useremail}' ORDER BY date DESC"
+            query = f"SELECT * FROM purchase WHERE useremail='{useremail}' ORDER BY date DESC"
             await cur.execute(query)
             fetchdata = await cur.fetchall()
             await cur.close()
@@ -30,67 +30,65 @@ class Purchase():
             print(e)
             return "database error"
         
-    async def insert_IN_purchase(self):
-        try:
-            conn = await utills.createConn()
-            cur = await conn.cursor()
+    # async def insert_IN_purchase(self):
+    #     try:
+    #         conn = await utills.createConn()
+    #         cur = await conn.cursor()
           
-            query = f"INSERT INTO purchase_entry(cash_bank,firmname,isbillvalue,bill_amount,paidamount,advance_amount,outstanding_amount,c_cr,remark,smobileno,useremail,date,cbid) values({self.cash_bank},'{self.firmname}',{self.isbillvalue},{self.bill_amount},{self.paidamount},{self.advance_amount},{self.outstanding_amount},{self.c_cr},'{self.remark}','{self.smobileno}','{self.useremail}','{self.date}',{1})"
-            await cur.execute(query)
-            await conn.commit()
-            # print(cur.lastrowid)
-            # print(cur.rowcount)
-            pid=cur.lastrowid
-            await cur.close()
-            conn.close()
-            # return "success"
-            return pid
-        except Exception as e:
-            print(e)
-            return "database error"
+    #         query = f"INSERT INTO purchase(cash_bank,isbillvalue,bill_amount,paidamount,advance_amount,outstanding_amount,c_cr,remark,smobileno,useremail,date,cbid) values({self.cash_bank},{self.isbillvalue},{self.bill_amount},{self.paidamount},{self.advance_amount},{self.outstanding_amount},{self.c_cr},'{self.remark}','{self.smobileno}','{self.useremail}','{self.date}',{1})"
+    #         await cur.execute(query)
+    #         await conn.commit()
+    #         # print(cur.lastrowid)
+    #         # print(cur.rowcount)
+    #         pid=cur.lastrowid
+    #         await cur.close()
+    #         conn.close()
+    #         # return "success"
+    #         return pid
+    #     except Exception as e:
+    #         print(e)
+    #         return "database error"
         
     async def insert_IN_purchase_2(self):
         try:
             conn = await utills.createConn()
             cur = await conn.cursor()
-            print(self.cash_bank)
-            query = f"INSERT INTO purchase_entry(cash_bank,firmname,isbillvalue,bill_amount,paidamount,c_cr,remark,smobileno,useremail,date,cbid) values({self.cash_bank},'{self.firmname}',{self.isbillvalue},{self.bill_amount},{self.paidamount},{self.c_cr},'{self.remark}','{self.smobileno}','{self.useremail}','{self.date}',{1})"
+            # print(self.cash_bank)
+            query = f"INSERT INTO purchase(supplierId,cashOrBank,isBill,biilAmount,paidAmount,cOrCr,remark,useremail,date,cashBankId) values({self.supplierId},{self.cashOrBank},{self.isBill},{self.biilAmount},{self.paidAmount},{self.cOrCr},'{self.remark}','{self.useremail}','{self.date}',{1})"
             await cur.execute(query)
             await conn.commit()
             current_pid=cur.lastrowid
             print(current_pid)
             await cur.close()
             conn.close()
+            
             # print(cur.lastrowid)
             # print(cur.rowcount)
-            
             conn = await utills.createConn()
             cur = await conn.cursor()
-            query=f"SELECT advance_amount,outstanding_amount FROM purchase_entry WHERE pid = (SELECT MAX(pid) FROM purchase_entry WHERE pid<{current_pid} and isbillvalue={self.isbillvalue} and smobileno='{self.smobileno}' and useremail='{self.useremail}')"
+            query=f"SELECT advanceAmount,outstandingAmount FROM purchase WHERE pid = (SELECT MAX(pid) FROM purchase WHERE pid<{current_pid} and isBill={self.isBill} and supplierId='{self.supplierId}' and useremail='{self.useremail}')"
             await cur.execute(query)
             fetchdata = await cur.fetchall()
             await cur.close()
             conn.close()
             old_advance_amount=0
             old_outstanding_amount=0
-            
             for row in fetchdata:
                 old_advance_amount,old_outstanding_amount=row
-            current_outstanding_amount=self.bill_amount-self.paidamount+old_outstanding_amount
+            current_outstanding_amount=self.biilAmount-self.paidAmount+old_outstanding_amount
             if(current_outstanding_amount>old_advance_amount):
-                self.advance_amount=0
-                self.outstanding_amount=current_outstanding_amount-old_advance_amount
+                self.advanceAmount=0
+                self.outstandingAmount=current_outstanding_amount-old_advance_amount
             else:
-                self.outstanding_amount=0
-                self.advance_amount=-(current_outstanding_amount-old_advance_amount)
+                self.outstandingAmount=0
+                self.advanceAmount=-(current_outstanding_amount-old_advance_amount)
             # print("-------")
             # print(self.advance_amount)
             # print(self.outstanding_amount)
             
-            
             conn = await utills.createConn()
             cur = await conn.cursor()
-            query=f"UPDATE purchase_entry SET advance_amount={self.advance_amount},outstanding_amount={self.outstanding_amount}  WHERE pid={current_pid}"
+            query=f"UPDATE purchase SET advanceAmount={self.advanceAmount},outstandingAmount={self.outstandingAmount}  WHERE pid={current_pid}"
             await cur.execute(query)
             await conn.commit()    
             await cur.close()
@@ -108,7 +106,6 @@ class Purchase():
                 current_cbid,=row
             # print(current_cbid)
             
-            
             conn = await utills.createConn()
             cur = await conn.cursor()
             query=f"SELECT cash_balance,bank_balance FROM cash_bank where cbid=(SELECT max(cash_bank.cbid) FROM cash_bank where cbid<{current_cbid})"
@@ -120,27 +117,42 @@ class Purchase():
             old_cash_balance=0 
             for row in fetchdata:
                 old_cash_balance,old_bank_balance=row
-            
+                
             conn = await utills.createConn()
             cur = await conn.cursor()
             query=""
-            if(self.cash_bank==1):
+            if(self.cashOrBank==1):
                 query=f"UPDATE cash_bank SET cash_debit=0,cash_balance={old_cash_balance},bank_balance={old_bank_balance}-bank_balance WHERE cbid={current_cbid}"
-            if(self.cash_bank==0):
+            if(self.cashOrBank==0):
                 query=f"UPDATE cash_bank SET bank_debit=0,cash_balance={old_cash_balance}-cash_balance,bank_balance={old_bank_balance} WHERE cbid={current_cbid}"
             await cur.execute(query)
             await conn.commit()    
             await cur.close()
             conn.close()
-                     
+            
             conn = await utills.createConn()
             cur = await conn.cursor()
-            query=f"UPDATE purchase_entry SET cbid={current_cbid} WHERE pid={current_pid}"
+            query=f"UPDATE purchase SET cashBankId={current_cbid} WHERE pid={current_pid}"
             await cur.execute(query)
             await conn.commit()    
             await cur.close()
             conn.close()
             return "success"
+        except Exception as e:
+            print(e)
+            return "database error"
+        
+    async def find_advAmt_and_outstandingAmt(isBill,supplierId):
+        try:
+            # print(useremail)
+            conn = await utills.createConn()
+            cur = await conn.cursor()
+            query = f"SELECT advanceAmount,outstandingAmount FROM purchase WHERE pid = (SELECT MAX(pid) FROM purchase WHERE isBill={isBill} and supplierId={supplierId})  ORDER BY date DESC"
+            await cur.execute(query)
+            fetchdata = await cur.fetchall()
+            await cur.close()
+            conn.close()
+            return fetchdata
         except Exception as e:
             print(e)
             return "database error"

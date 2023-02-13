@@ -1,4 +1,5 @@
 import 'package:cashbook_app/models/supplier.dart';
+import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
 import 'package:cashbook_app/widgets/customtextfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -100,7 +101,7 @@ class _AddupdateSupplierScreenState extends State<AddupdateSupplierScreen> {
     });
   }
 
-  void _onSubmitHandler() {
+  Future<void> _onSubmitHandler() async {
     if (snameController.text.isEmpty) {
       FocusScope.of(context).requestFocus(snameFocusNode);
       return;
@@ -129,18 +130,24 @@ class _AddupdateSupplierScreenState extends State<AddupdateSupplierScreen> {
 
     if (isUpdate == false) {
       //add client
-      Provider.of<SupplierProvider>(context, listen: false)
-          .addNewSupplier(newSupplierMap: finalsupplierMap);
+      await Provider.of<SupplierProvider>(context, listen: false)
+          .addNewSupplier(newSupplierMap: finalsupplierMap)
+          .then((_) {
+        Navigator.of(context).pop();
+      });
       // print("add client com");
-      Navigator.of(context).pop();
     } else {
       //update client
-      Provider.of<SupplierProvider>(context, listen: false)
+      await Provider.of<SupplierProvider>(context, listen: false)
           .updateExistingSupplier(
               updateSupplierMap: finalsupplierMap,
-              oldcMobileNo: suppilerOldMobileno!);
+              oldcMobileNo: suppilerOldMobileno!)
+          .then((_) {
+        Provider.of<PurchaseProvider>(context, listen: false).fatchPurchase();
+        Navigator.of(context).pop();
+      });
       // print("update client com");
-      Navigator.of(context).pop();
+
     }
   }
 
@@ -239,7 +246,9 @@ class _AddupdateSupplierScreenState extends State<AddupdateSupplierScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _onSubmitHandler,
+        onPressed: () async {
+          await _onSubmitHandler();
+        },
         label: Text((isUpdate == true) ? "Update" : 'Submit'),
         icon: const Icon(Icons.check_sharp),
       ),

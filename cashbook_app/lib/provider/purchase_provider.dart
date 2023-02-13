@@ -63,64 +63,63 @@ class PurchaseProvider extends ChangeNotifier {
     }
     final responseData = json.decode(response.body);
     List responsePurchaseDataList = responseData['datalist']; //[{},{},{}]
+    print(responseData);
     final List<Purchase> tempLoadedPurchaselist = [];
     final stirngToDateTmeFormatter =
         DateFormat('EEE, d MMM yyyy HH:mm:ss'); // Wed, 28 Dec 2022 13:34:09 GM
 
-    if (responseData["status"] == "success") {
-      responsePurchaseDataList.forEach((element) {
-        tempLoadedPurchaselist.add(Purchase(
-          pid: element["puchase_map"]["pid"].toString(),
-          isbillvalue: element["puchase_map"]["isbillvalue"].toString(),
-          firmname: element["puchase_map"]["firmname"].toString(),
-          bill_amount: element["puchase_map"]["bill_amount"].toString(),
-          paidamount: element["puchase_map"]["paidamount"].toString(),
-          outstanding_amount:
-              element["puchase_map"]["outstanding_amount"].toString(),
-          advance_amount: element["puchase_map"]["advance_amount"].toString(),
-          date: stirngToDateTmeFormatter.parse(element["puchase_map"]['date']),
-          c_cr: element["puchase_map"]["c_cr"].toString(),
-          cash_bank: element["puchase_map"]["cash_bank"].toString(),
-          cbid: element["puchase_map"]["cbid"].toString(),
-          remark: element["puchase_map"]["remark"].toString(),
-          smobileno: element["puchase_map"]["smobileno"].toString(),
-          cashBankObj: CashBank(
-              cbid: element["cash_bank_map"]["cbid"].toString(),
-              is_paymentmode:
-                  element["cash_bank_map"]["is_paymentmode"].toString(),
-              cash_balance: element["cash_bank_map"]["cash_balance"].toString(),
-              cash_credit: element["cash_bank_map"]["cash_credit"].toString(),
-              cash_debit: element["cash_bank_map"]["cash_debit"].toString(),
-              bank_balance: element["cash_bank_map"]["bank_balance"].toString(),
-              bank_credit: element["cash_bank_map"]["bank_credit"].toString(),
-              bank_debit: element["cash_bank_map"]["bank_debit"].toString(),
-              date: stirngToDateTmeFormatter
-                  .parse(element["cash_bank_map"]['date']),
-              particulars: element["cash_bank_map"]["particulars"].toString(),
-              useremail: element["cash_bank_map"]["useremail"].toString()),
-          supplierObj: supplierProviderOBJ!.findSupplierBymobileno(
-              smobileno: element["puchase_map"]["smobileno"].toString()),
-        )
-            // supplierObj: null),
-            );
-      });
+    // if (responseData["status"] == "success") {
+    responsePurchaseDataList.forEach((element) {
+      tempLoadedPurchaselist.add(Purchase(
+        useremail: element["puchase_map"]["useremail"].toString(),
+        supplierId: element["puchase_map"]["supplierId"].toString(),
+        pid: element["puchase_map"]["pid"].toString(),
+        isBill: element["puchase_map"]["isBill"].toString(),
+        biilAmount: element["puchase_map"]["biilAmount"].toString(),
+        paidAmount: element["puchase_map"]["paidAmount"].toString(),
+        outstandingAmount:
+            element["puchase_map"]["outstandingAmount"].toString(),
+        advanceAmount: element["puchase_map"]["advanceAmount"].toString(),
+        date: stirngToDateTmeFormatter.parse(element["puchase_map"]['date']),
+        cOrCr: element["puchase_map"]["cOrCr"].toString(),
+        cashOrBank: element["puchase_map"]["cashOrBank"].toString(),
+        cashBankId: element["puchase_map"]["cashBankId"].toString(),
+        remark: element["puchase_map"]["remark"].toString(),
+        cashBankObj: CashBank(
+            cbid: element["cash_bank_map"]["cbid"].toString(),
+            is_paymentmode:
+                element["cash_bank_map"]["is_paymentmode"].toString(),
+            cash_balance: element["cash_bank_map"]["cash_balance"].toString(),
+            cash_credit: element["cash_bank_map"]["cash_credit"].toString(),
+            cash_debit: element["cash_bank_map"]["cash_debit"].toString(),
+            bank_balance: element["cash_bank_map"]["bank_balance"].toString(),
+            bank_credit: element["cash_bank_map"]["bank_credit"].toString(),
+            bank_debit: element["cash_bank_map"]["bank_debit"].toString(),
+            date: stirngToDateTmeFormatter
+                .parse(element["cash_bank_map"]['date']),
+            particulars: element["cash_bank_map"]["particulars"].toString(),
+            useremail: element["cash_bank_map"]["useremail"].toString()),
+        supplierObj: supplierProviderOBJ!.findSupplierBySID(
+            sid: element["puchase_map"]["supplierId"].toString()),
+      ));
+    });
 
-      _purchaseList = tempLoadedPurchaselist;
-      _storedPurchaseList = _purchaseList; //for backup in searching
-      print(_purchaseList);
+    _purchaseList = tempLoadedPurchaselist;
+    _storedPurchaseList = _purchaseList; //for backup in searching
+    print(_purchaseList);
 
-      notifyListeners();
-    } else {
-      print("not add");
-      print(responseData["status"]);
-    }
+    notifyListeners();
+    // } else {
+    //   print("not add");
+    //   print(responseData["status"]);
+    // }
     print("hahs");
   }
 
   Future<void> submit_IN_Purchase(
-      {required int isBillValue,
-      required int c_cr,
-      required int cash_bank,
+      {required int isBill,
+      required int cOrCr,
+      required int cashOrBank,
       required Supplier selectedSupplierobj,
       required int billAmount,
       required int paidAmount,
@@ -136,13 +135,13 @@ class PurchaseProvider extends ChangeNotifier {
         headers: {"Content-Type": "application/json"},
         body: json.encode(
           {
-            "isbillvalue": isBillValue,
-            'c_cr': c_cr, //instant
-            'cash_bank': cash_bank,
-            "paidamount": paidAmount,
-            'bill_amount': billAmount,
-            'updated_outstanding_amount': updatedOutstandingAmount,
-            'updated_advance_amount': updatedAdavanceAmount,
+            "isBill": isBill,
+            'cOrCr': cOrCr, //instant
+            'cashOrBank': cashOrBank,
+            "paidAmount": paidAmount,
+            'billAmount': billAmount,
+            'updatedOutstandingAmount': updatedOutstandingAmount,
+            'updatedAdavanceAmount': updatedAdavanceAmount,
             "sid": selectedSupplierobj.sid,
             'firmname': selectedSupplierobj.firmname,
             'smobileno': selectedSupplierobj.smobileno,
@@ -158,6 +157,7 @@ class PurchaseProvider extends ChangeNotifier {
       final responseData = json.decode(response.body);
       final status = responseData["status"];
       if (status == Utility.CHECK_STATUS) {
+        supplierProviderOBJ!.fatchSupplier();
         fatchPurchase();
       }
     } catch (e) {

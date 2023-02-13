@@ -26,7 +26,7 @@ class PurchaseCard extends StatelessWidget {
               children: [
                 Flexible(
                   child: Text(
-                    purchaseObj.firmname +
+                    purchaseObj.supplierObj!.firmname +
                         " (${purchaseObj.supplierObj!.sname})",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -68,12 +68,12 @@ class PurchaseCard extends StatelessWidget {
                             Row(
                               children: [
                                 IsBillOrWithoutBillCard(
-                                    isCustombillvalue: purchaseObj.isbillvalue),
+                                    isCustombillvalue: purchaseObj.isBill),
                                 SizedBox(
                                   width: 6,
                                 ),
                                 IsCashBankCard(
-                                  isCustomCashBank: purchaseObj.cash_bank,
+                                  isCustomCashBank: purchaseObj.cashOrBank,
                                 ),
                               ],
                             ),
@@ -83,7 +83,7 @@ class PurchaseCard extends StatelessWidget {
                             Row(
                               children: [
                                 IsInstantOrCreditAdvanceCard(
-                                  isCustomC_cr: purchaseObj.c_cr,
+                                  isCustomC_cr: purchaseObj.cOrCr,
                                 ),
                               ],
                             ),
@@ -137,7 +137,7 @@ class PurchaseCard extends StatelessWidget {
                               Flexible(
                                 child: Text(
                                   Utility.convertToIndianCurrency(
-                                      sourceNumber: purchaseObj.bill_amount,
+                                      sourceNumber: purchaseObj.biilAmount,
                                       decimalDigits: 2),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -169,7 +169,7 @@ class PurchaseCard extends StatelessWidget {
                               Flexible(
                                 child: Text(
                                   Utility.convertToIndianCurrency(
-                                      sourceNumber: purchaseObj.paidamount,
+                                      sourceNumber: purchaseObj.paidAmount,
                                       decimalDigits: 2),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -185,8 +185,8 @@ class PurchaseCard extends StatelessWidget {
                             ],
                           ),
                           Divider(),
-                          (purchaseObj.outstanding_amount == "0" &&
-                                  purchaseObj.advance_amount == "0")
+                          (purchaseObj.outstandingAmount == "0" &&
+                                  purchaseObj.advanceAmount == "0")
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -206,7 +206,7 @@ class PurchaseCard extends StatelessWidget {
                                       child: Text(
                                         Utility.convertToIndianCurrency(
                                             sourceNumber:
-                                                purchaseObj.outstanding_amount,
+                                                purchaseObj.outstandingAmount,
                                             decimalDigits: 2),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -224,7 +224,7 @@ class PurchaseCard extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      (purchaseObj.outstanding_amount == "0")
+                                      (purchaseObj.outstandingAmount == "0")
                                           ? "adv: "
                                           : "due: ",
                                       maxLines: 1,
@@ -239,14 +239,14 @@ class PurchaseCard extends StatelessWidget {
                                     ),
                                     Flexible(
                                       child: Text(
-                                        (purchaseObj.outstanding_amount == "0")
+                                        (purchaseObj.outstandingAmount == "0")
                                             ? Utility.convertToIndianCurrency(
                                                 sourceNumber:
-                                                    purchaseObj.advance_amount,
+                                                    purchaseObj.advanceAmount,
                                                 decimalDigits: 2)
                                             : Utility.convertToIndianCurrency(
                                                 sourceNumber: purchaseObj
-                                                    .outstanding_amount,
+                                                    .outstandingAmount,
                                                 decimalDigits: 2),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -255,7 +255,7 @@ class PurchaseCard extends StatelessWidget {
                                             .labelSmall!
                                             .copyWith(
                                                 color: ((purchaseObj
-                                                            .outstanding_amount ==
+                                                            .outstandingAmount ==
                                                         "0"))
                                                     ? Colors.green.shade900
                                                     : Colors.red.shade900,

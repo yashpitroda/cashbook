@@ -4,37 +4,35 @@ import 'cashbank.dart';
 
 class Purchase {
   String pid;
-  String isbillvalue;
-  String firmname;
-  String bill_amount;
-  String paidamount;
-  String advance_amount;
-  String outstanding_amount;
-  String c_cr;
-  String remark;
-  String smobileno;
-  String cbid;
+  String supplierId;
+  String biilAmount;
+  String paidAmount;
+  String advanceAmount;
+  String outstandingAmount;
   DateTime date;
-  String cash_bank;
+  String remark;
+  String cOrCr;
+  String isBill;
+  String cashOrBank;
+  String cashBankId;
+  String useremail;
   CashBank cashBankObj;
   Supplier? supplierObj;
 
   Purchase({
+    required this.useremail,
+    required this.supplierId,
     required this.pid,
-    required this.isbillvalue,
-    required this.firmname,
-    required this.bill_amount,
-    required this.paidamount,
-    required this.
-    outstanding_amount,
-    required this.
-    advance_amount,
+    required this.isBill,
+    required this.biilAmount,
+    required this.paidAmount,
+    required this.outstandingAmount,
+    required this.advanceAmount,
     required this.date,
-    required this.c_cr,
-    required this.cash_bank,
-    required this.cbid,
+    required this.cOrCr,
+    required this.cashOrBank,
+    required this.cashBankId,
     required this.remark,
-    required this.smobileno,
     required this.cashBankObj,
     required this.supplierObj,
   });

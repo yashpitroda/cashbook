@@ -308,9 +308,9 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     try {
       await Provider.of<PurchaseProvider>(context, listen: false)
           .submit_IN_Purchase(
-              isBillValue: _isBillValue!,
-              c_cr: c_cr,
-              cash_bank: _iscashBankValue!,
+              isBill: _isBillValue!,
+              cOrCr: c_cr,
+              cashOrBank: _iscashBankValue!,
               selectedSupplierobj: selectedSupplierobj!,
               billAmount: int.parse(billamountController.text),
               paidAmount: int.parse(paidamountController.text),
@@ -321,6 +321,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               remark: descriptionController.text,
               finaldateTime: finaldateTime!)
           .then((_) {
+          
         Navigator.of(context).pop();
       });
     } catch (e) {
@@ -1114,7 +1115,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               Utility.removeFocus(context: context);
             });
           },
-        ),
+        ), 
         SizedBox(
           width: mqwidth * 0.03,
         ),
