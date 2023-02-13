@@ -54,6 +54,31 @@ async def useradd():
         return {'status':status},200
     return {'status':fetchdata},200 #user is already exisit so retrun user
 
+@app.route('/getcurrentuserinfo',methods=['POST'])
+async def getcurrentuserinfo():
+    value=request.get_json()
+    requird=['useremail']
+    if not all(key in value for key in requird):
+         return {'error':'cname or cmobile will be None or null','status':'fail'},400  
+    useremail=value["useremail"] 
+    
+    fetchdata=await UserModel.findThisUserwithUserEmail(useremail=useremail) 
+    uid,username,useremail,userimageurl=fetchdata
+    
+    result_cb=await CashBankClass.find_cash_bal_and_bank_bal_by_latest_row_in_cashbook_by_useremail(useremail=useremail)
+    for row in result_cb:
+        cash_balance,bank_balance=row
+    
+    responsedata={
+        "uid":uid,
+        "username":username,
+        "useremail":useremail,
+        "userimageurl":userimageurl,
+        "cash_balance":cash_balance,
+        "bank_balance":bank_balance
+    } 
+    return {'data':responsedata},200 #user is already exisit so retrun user
+
 
 @app.route('/supplieradd',methods=['POST'])
 async def supplieradd():

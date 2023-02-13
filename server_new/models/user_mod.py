@@ -30,6 +30,21 @@ class UserModel():
             except Exception as e:
                 print(e)
                 return "database error"
+            
+    async def findThisUserwithUserEmail(useremail):
+            try:
+                conn = await utills.createConn()
+                cur = await conn.cursor()
+                query = f"SELECT * FROM users WHERE useremail='{useremail}'"
+                await cur.execute(query)
+                fatchData = await cur.fetchone()  # user is exist or not
+                await cur.close()
+                conn.close()
+                # print(fatchData)
+                return fatchData
+            except Exception as e:
+                print(e)
+                return "database error"
     
     async def inserThisUser(self):
         try:

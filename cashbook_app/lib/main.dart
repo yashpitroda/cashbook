@@ -1,3 +1,4 @@
+import 'package:cashbook_app/provider/current_user_provider.dart';
 import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:cashbook_app/screen/add_supplier_screen.dart';
@@ -34,6 +35,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (BuildContext ctx) => GauthProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext ctx) => CurrentUserProvider(),
         ),
         ChangeNotifierProvider(
           create: (BuildContext ctx) => SupplierProvider(),
