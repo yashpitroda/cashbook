@@ -10,7 +10,7 @@ class UserModel():
         self.useremail=useremail
         self.userimageurl=userimageurl
     
-    def json(self) -> UserJSON:
+    def toJSON(self) -> UserJSON:
         return {
             "username": self.username,
             "useremail": self.useremail,
