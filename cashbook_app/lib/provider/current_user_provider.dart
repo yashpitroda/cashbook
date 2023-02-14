@@ -8,8 +8,8 @@ import '../utill/utility.dart';
 
 class CurrentUserProvider with ChangeNotifier {
   CurrentUser? _currentUserObj;
-  CurrentUser get getCurrentUserObj {
-    return _currentUserObj!;
+  CurrentUser? get getCurrentUserObj {
+    return _currentUserObj ?? null;
   }
 
   // // ------------------------------findClientContactByCID-----------------------------------
@@ -20,7 +20,7 @@ class CurrentUserProvider with ChangeNotifier {
   // }
   Future<void> fatchCurrentuserInfo() async {
     print("fatchCurrentInfo is call");
-    final url = Uri.parse(Utility.BASEURL + "/getcurrentuserinfo");
+    final url = Uri.parse(Utility.BASEURL + "/users/currentuser");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},

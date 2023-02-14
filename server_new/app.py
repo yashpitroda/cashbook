@@ -11,7 +11,7 @@ prt = 9000
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/user/addone',methods=['POST'])
+@app.route('/users/addone',methods=['POST'])
 async def useraddone():
     value=request.get_json()
     requird=['username','useremail','userimageurl']
@@ -28,7 +28,7 @@ async def useraddone():
     return {'status':fetchdata},200 #user is already exisit so retrun user
 
 
-@app.route('/user/currentuser',methods=['POST'])
+@app.route('/users/currentuser',methods=['POST'])
 async def usercurrentuser():
     value=request.get_json()
     requird=['useremail']

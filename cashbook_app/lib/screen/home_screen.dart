@@ -83,31 +83,35 @@ class HomeScreen extends StatelessWidget {
     //  __child(context);
   }
 
-  Column __child(BuildContext context) {
-    CurrentUser cUser =
+  Container __child(BuildContext context) {
+    CurrentUser? cUser =
         Provider.of<CurrentUserProvider>(context).getCurrentUserObj;
-    return Column(
-      children: [
-        Text(cUser.bank_balance.toString()),
-        Text(cUser.useremail.toString()),
-        Image.network(cUser.userimageurl.toString()),
-        ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(PurchaseScreen.routeName);
+    return Container(
+      child: (cUser == null)
+          ? Center(child: Text("data"))
+          : Column(
+              children: [
+                Text(cUser.bank_balance.toString()),
+                Text(cUser.useremail.toString()),
+                Image.network(cUser.userimageurl.toString()),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(PurchaseScreen.routeName);
 //               Navigator.of(MaterialApp).push(
 //   MaterialPageRoute(builder: (MaterialAppContext) => ScreenB())
 // )
-            },
-            child: Text("go to purchase screen")),
-        ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(ClientScreen.routeName);
-            },
-            child: Text("go to purchase screen")),
-        Center(
-          child: Text("home"),
-        ),
-      ],
+                    },
+                    child: Text("go to purchase screen")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(ClientScreen.routeName);
+                    },
+                    child: Text("go to purchase screen")),
+                Center(
+                  child: Text("home"),
+                ),
+              ],
+            ),
     );
   }
 }
