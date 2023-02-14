@@ -11,35 +11,8 @@ prt = 9000
 app = Flask(__name__)
 CORS(app)
 
-
-@app.route('/addinpurchase',methods=['POST'])
-async def addinpurchase():
-    value=request.get_json()
-    isBill =value [ "isBill"]
-    cOrCr =value ['cOrCr']
-    cashOrBank  =value ['cashOrBank']
-    paidAmount  =value ['paidAmount']
-    billAmount =value [ "billAmount"]
-    updatedAdavanceAmount   =value['updatedAdavanceAmount']
-    updatedOutstandingAmount   =value['updatedOutstandingAmount']
-    sid  =value[ "sid"]
-    firmname =value ['firmname']
-    smobileno  =value ['smobileno']
-    useremail  =value ['useremail']
-    date =value ['date']
-    remark  =value ['remark']
-    new_purchase_obj=Purchase(biilAmount=billAmount,cashOrBank=cashOrBank,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
-    status=await new_purchase_obj.insert_IN_purchase_2()
-   
-    print(status)
-    if(status=="success"):
-        return {'status':status},200
-    else:
-         return {'status':"database error"},200
-    
-
-@app.route('/useradd',methods=['POST'])
-async def useradd():
+@app.route('/user/addone',methods=['POST'])
+async def useraddone():
     value=request.get_json()
     requird=['username','useremail','userimageurl']
     if not all(key in value for key in requird):
@@ -54,8 +27,9 @@ async def useradd():
         return {'status':status},200
     return {'status':fetchdata},200 #user is already exisit so retrun user
 
-@app.route('/getcurrentuserinfo',methods=['POST'])
-async def getcurrentuserinfo():
+
+@app.route('/user/currentuser',methods=['POST'])
+async def usercurrentuser():
     value=request.get_json()
     requird=['useremail']
     if not all(key in value for key in requird):
@@ -80,8 +54,8 @@ async def getcurrentuserinfo():
     return {'data':responsedata},200 #user is already exisit so retrun user
 
 
-@app.route('/supplieradd',methods=['POST'])
-async def supplieradd():
+@app.route('/supplier/addone',methods=['POST'])
+async def supplieraddone():
     """
     {
     "cname": "keval",
@@ -107,9 +81,25 @@ async def supplieradd():
     print("/supplieradd Completed") 
     return {'status':fetchdata},200 #user is already exisit so retrun user
 
-       
-@app.route('/supplierdelete',methods=['POST'])
-async def supplierdelete():
+@app.route('/supplier/updateone',methods=['POST'])
+async def supplierupdateone():
+    """
+   
+    """
+    value=request.get_json()
+    requird=['sname','smobileno','semail','useremail',"entrydatetime","firmname","oldcmobileno"]
+    if not all(key in value for key in requird):
+         return {'error':'cname or cmobile will be None or null','status':'fail'},400
+     
+    updated_supplier=Supplier(firmname=value['firmname'],sname=value['sname'],semail=value['semail'],smobileno=value['smobileno'],entrydatetime=value['entrydatetime'],useremail=value['useremail'])
+    oldcmobileno=value['oldcmobileno']
+
+    status=await updated_supplier.updatesupplier(oldcmobileno)
+    print("/supplierupdate Completed") 
+    return {'status':status},200
+
+@app.route('/supplier/deleteone',methods=['POST'])
+async def supplierdeleteone():
     """
      {
     "cmobileno": "1234",
@@ -129,8 +119,8 @@ async def supplierdelete():
 
     return {'status':status},200 #user delted
 
-@app.route('/fetchsupplier',methods=['POST'])
-async def fetchsupplier():
+@app.route('/supplier/fetchall',methods=['POST'])
+async def supplierfetchall():
     """body
     {"useremail":"yashpitroda200@gmail.com"}
     """
@@ -175,8 +165,8 @@ async def fetchsupplier():
     print("/fatchsupplier Completed")
     return {'datalist': supplierTableDataList},200 
 
-@app.route('/fetchpurchase',methods=['POST'])
-async def fetchpurchase():
+@app.route('/purchase/fetchall',methods=['POST'])
+async def purchasefetchall():
     """body
     {"useremail":"yashpitroda200@gmail.com"}
     """
@@ -253,23 +243,32 @@ async def fetchpurchase():
     print("/fatchsupplier Completed")
     return {"status":status,'datalist': purchaseTableDataList},200 
 
-   
-@app.route('/supplierupdate',methods=['POST'])
-async def supplierupdate():
-    """
-   
-    """
+@app.route('/purchase/addone',methods=['POST'])
+async def purchaseaddone():
     value=request.get_json()
-    requird=['sname','smobileno','semail','useremail',"entrydatetime","firmname","oldcmobileno"]
-    if not all(key in value for key in requird):
-         return {'error':'cname or cmobile will be None or null','status':'fail'},400
-     
-    updated_supplier=Supplier(firmname=value['firmname'],sname=value['sname'],semail=value['semail'],smobileno=value['smobileno'],entrydatetime=value['entrydatetime'],useremail=value['useremail'])
-    oldcmobileno=value['oldcmobileno']
+    isBill =value [ "isBill"]
+    cOrCr =value ['cOrCr']
+    cashOrBank  =value ['cashOrBank']
+    paidAmount  =value ['paidAmount']
+    billAmount =value [ "billAmount"]
+    updatedAdavanceAmount   =value['updatedAdavanceAmount']
+    updatedOutstandingAmount   =value['updatedOutstandingAmount']
+    sid  =value[ "sid"]
+    firmname =value ['firmname']
+    smobileno  =value ['smobileno']
+    useremail  =value ['useremail']
+    date =value ['date']
+    remark  =value ['remark']
+    new_purchase_obj=Purchase(biilAmount=billAmount,cashOrBank=cashOrBank,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
+    status=await new_purchase_obj.insert_IN_purchase_2()
+    print(status)
+    if(status=="success"):
+        return {'status':status},200
+    else:
+         return {'status':"database error"},200
 
-    status=await updated_supplier.updatesupplier(oldcmobileno)
-    print("/supplierupdate Completed") 
-    return {'status':status},200
+   
+
 
 if __name__ == "__main__":
     app.run(port=prt, debug=True,host='0.0.0.0')

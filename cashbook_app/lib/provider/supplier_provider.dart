@@ -69,7 +69,7 @@ class SupplierProvider with ChangeNotifier {
   Future<void> fatchSupplier() async {
     print("fatchSupplier is call");
     String useremail = Utility.getCurrentUserEMAILID();
-    final url = Uri.parse(Utility.BASEURL + "/fetchsupplier");
+    final url = Uri.parse(Utility.BASEURL + "/supplier/fetchall");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
@@ -121,7 +121,7 @@ class SupplierProvider with ChangeNotifier {
 // ------------------------------addNewClient-----------------------------------
   Future<void> addNewSupplier({required Map newSupplierMap}) async {
     print(newSupplierMap['useremail']);
-    final url = Uri.parse(Utility.BASEURL + "/supplieradd");
+    final url = Uri.parse(Utility.BASEURL + "/supplier/addone");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
@@ -149,7 +149,7 @@ class SupplierProvider with ChangeNotifier {
   Future<void> updateExistingSupplier(
       {required Map updateSupplierMap, required String oldcMobileNo}) async {
     print(updateSupplierMap['useremail']);
-    final url = Uri.parse(Utility.BASEURL + "/supplierupdate");
+    final url = Uri.parse(Utility.BASEURL + "/supplier/updateone");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
@@ -176,7 +176,7 @@ class SupplierProvider with ChangeNotifier {
 
   Future<void> deleteSupplier(
       {required String smobileno, required String useremail}) async {
-    final url = Uri.parse(Utility.BASEURL + "/supplierdelete");
+    final url = Uri.parse(Utility.BASEURL + "/supplier/deleteone");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},

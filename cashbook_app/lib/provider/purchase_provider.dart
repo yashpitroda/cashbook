@@ -48,7 +48,7 @@ class PurchaseProvider extends ChangeNotifier {
 
   Future<void> fatchPurchase() async {
     print("fatchPurchase is call");
-    final url = Uri.parse(Utility.BASEURL + "/fetchpurchase");
+    final url = Uri.parse(Utility.BASEURL + "/purchase/fetchall");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
@@ -129,7 +129,7 @@ class PurchaseProvider extends ChangeNotifier {
       required DateTime finaldateTime}) async {
     try {
       // final url = Uri.parse(Utility.BASEURL + "/addinpurchas");
-      final url = Uri.parse(Utility.BASEURL + "/addinpurchase");
+      final url = Uri.parse(Utility.BASEURL + "/purchase/addone");
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},

@@ -36,7 +36,7 @@ class GauthProvider extends ChangeNotifier {
 
   Future<bool> adduserindatabase(BuildContext context, String username,
       String useremail, String userimageurl) async {
-    final url = Uri.parse(Utility.BASEURL + "/useradd");
+    final url = Uri.parse(Utility.BASEURL + "/user/addone");
     print("called");
     final response = await http.post(
       url,
