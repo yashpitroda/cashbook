@@ -83,7 +83,8 @@ class MyApp extends StatelessWidget {
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
               print("called2");
-              return HomeScreen();
+              // return HomeScreen();
+              return AddUpdatePurchaseScreen();
             } else {
               //and no data so not auth.. so retry
               return const AuthScreen();

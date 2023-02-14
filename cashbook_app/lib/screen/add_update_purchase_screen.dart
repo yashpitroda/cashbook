@@ -7,6 +7,7 @@ import 'package:cashbook_app/screen/select_supplier_screen.dart';
 import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/customtextfield.dart';
@@ -351,6 +352,67 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     }
   }
 
+  Future<void> addNewAccount() async {
+    TextEditingController accountNameController = TextEditingController();
+    TextEditingController intialAmountController = TextEditingController();
+    await showDialog(
+        // showDialog is also future fuction
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Center(child: const Text('Add new account')),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomTextField(
+                    customController: accountNameController,
+                    labeltext: "Account name",
+                    hinttext: null,
+                    triling_iconname: null,
+                    leadding_iconname: null,
+                    textinputtype: TextInputType.name,
+                    customfocusnode: null,
+                    customtextinputaction: null)
+              ],
+            ),
+            actions: [
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.of(ctx).pop();
+              //   },
+              //   child: Text("Done"),
+              // ),
+              TextButton(
+                style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                        EdgeInsets.symmetric(vertical: 12, horizontal: 14)),
+                    backgroundColor: MaterialStateProperty.all(
+                        Colors.blue.withOpacity(0.2))),
+                child: const Text('No,Keep it'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                        EdgeInsets.symmetric(vertical: 12, horizontal: 14)),
+                    backgroundColor: MaterialStateProperty.all(Colors.red)),
+                child: const Text(
+                  'Yes,Delete',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  // Provider.of<SupplierProvider>(context, listen: false)
+                  //     .deleteSupplier(smobileno: smobileno, useremail: useremail);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     var mqhight = MediaQuery.of(context).size.height;
@@ -377,6 +439,15 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            await addNewAccount();
+                          },
+                          child: Text("add new account"),
+                        ),
+                        const Divider(
+                          thickness: 1.2,
+                        ),
                         DateTimeSelector(mqwidth),
                         const Divider(
                           thickness: 1.2,
