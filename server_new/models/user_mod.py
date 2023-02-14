@@ -16,7 +16,7 @@ class UserModel():
             "useremail": self.useremail,
             "userimageurl": self.userimageurl,
         }
-        
+
     async def findThisUser(self):
             try:
                 conn = await utills.createConn()

@@ -28,15 +28,18 @@ class CashBankClass():
             return "database error"
     
     async def find_cash_bal_and_bank_bal_by_latest_row_in_cashbook_by_useremail(useremail):
-        try:
-            conn = await utills.createConn()
-            cur = await conn.cursor()
-            query = f"SELECT cash_balance,bank_balance FROM cash_bank where cbid=(SELECT max(cash_bank.cbid) FROM cash_bank where useremail='{useremail}')"
-            await cur.execute(query) 
-            fetchdata = await cur.fetchall()
-            await cur.close()
-            conn.close()
-            return fetchdata
-        except Exception as e:
-            print(e)
-            return "database error"
+        query = f"SELECT cash_balance,bank_balance FROM cash_bank where cbid=(SELECT max(cash_bank.cbid) FROM cash_bank where useremail='{useremail}')"
+        r=await utills.SELECT_QUERY_FETCHALL(query)
+        return r
+        # try:
+        #     conn = await utills.createConn()
+        #     cur = await conn.cursor()
+        #     query = f"SELECT cash_balance,bank_balance FROM cash_bank where cbid=(SELECT max(cash_bank.cbid) FROM cash_bank where useremail='{useremail}')"
+        #     await cur.execute(query) 
+        #     fetchdata = await cur.fetchall()
+        #     await cur.close()
+        #     conn.close()
+        #     return fetchdata
+        # except Exception as e:
+        #     print(e)
+        #     return "database error"
