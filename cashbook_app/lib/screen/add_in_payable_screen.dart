@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cashbook_app/models/supplier.dart';
 import 'package:cashbook_app/screen/select_supplier_screen.dart';
+import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -401,7 +402,7 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
               SizedBox(
                 width: mqwidth * 0.013,
               ),
-              Text(finaldateTime.toString().split(' ')[1].split('.')[0]),
+              Text(Utility.datetime_to_timeAMPM(souceDateTime: finaldateTime!)),
               const Icon(
                 Icons.arrow_drop_down,
                 size: 26,

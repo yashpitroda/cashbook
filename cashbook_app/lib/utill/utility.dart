@@ -8,6 +8,13 @@ import '../provider/supplier_provider.dart';
 
 class Utility {
   // final currentUser = FirebaseAuth.instance.currentUser;
+  static Widget loadingIndicator() {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
 
   static const BASEURL = "http://192.168.43.144:9000";
   // static const BASEURL = "http://192.168.137.45:9000";

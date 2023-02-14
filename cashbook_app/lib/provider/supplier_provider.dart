@@ -21,11 +21,11 @@ class SupplierProvider with ChangeNotifier {
   // ------------------------------findClientContactByCID-----------------------------------
   Supplier findSupplierBySID({required String sid}) {
     return _supplierList.firstWhere((element) {
-      return element.sid == sid;
+      return int.parse(element.sid) == int.parse(sid);
     });
   }
 
-   Supplier findSupplierBymobileno({required String smobileno}) {
+  Supplier findSupplierBymobileno({required String smobileno}) {
     return _supplierList.firstWhere((element) {
       return element.smobileno == smobileno;
     });
@@ -114,7 +114,7 @@ class SupplierProvider with ChangeNotifier {
     });
     _supplierList = tempLoadedSupplierlist;
     _storedSupplierList = _supplierList; //for backup in searching
-
+    print(_supplierList);
     notifyListeners();
   }
 

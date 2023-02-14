@@ -258,6 +258,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     return Colors.black;
   }
 
+  bool _isloading = false;
   Future<void> _submitHander(BuildContext context) async {
     // print(billamountController.text);
     // print(descriptionController.text);
@@ -295,6 +296,9 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
           context: context, message: "Enter paid-amount first");
       return;
     }
+    setState(() {
+      _isloading = true;
+    });
     // print("done");
     // if (firmnameController.text.isEmpty) {
     //   FocusScope.of(context).requestFocus(firmnameFocusNode);
@@ -321,7 +325,9 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               remark: descriptionController.text,
               finaldateTime: finaldateTime!)
           .then((_) {
-          
+        setState(() {
+          _isloading = false;
+        });
         Navigator.of(context).pop();
       });
     } catch (e) {
@@ -353,7 +359,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
       appBar: AppBar(
         title: const Text(
           "Add purchase",
-          style: TextStyle(fontFamily: "Rubik"),
+          // style: TextStyle(fontFamily: "Rubik"),
         ),
       ),
       body: GestureDetector(
@@ -1077,19 +1083,30 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
-                  _submitHander(context);
-                },
+                onPressed: (_isloading)
+                    ? null
+                    : () {
+                        _submitHander(context);
+                      },
                 style: ElevatedButton.styleFrom(
                     fixedSize: const Size(10, 55),
                     backgroundColor: Colors.blue),
-                child: const Text(
-                  'Save',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Rubik',
-                    fontSize: 16,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    (_isloading)
+                        ? CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : Text(
+                            'Save',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Rubik',
+                              fontSize: 16,
+                            ),
+                          ),
+                  ],
                 ),
               ),
             )
@@ -1115,7 +1132,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               Utility.removeFocus(context: context);
             });
           },
-        ), 
+        ),
         SizedBox(
           width: mqwidth * 0.03,
         ),
@@ -1271,7 +1288,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               SizedBox(
                 width: mqwidth * 0.013,
               ),
-              Text(finaldateTime.toString().split(' ')[0]),
+              Text(Utility.dateFormat_DDMMYYYY().format(finaldateTime!)),
               const Icon(
                 Icons.arrow_drop_down,
                 size: 26,
@@ -1287,7 +1304,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               SizedBox(
                 width: mqwidth * 0.013,
               ),
-              Text(finaldateTime.toString().split(' ')[1].split('.')[0]),
+              Text(Utility.datetime_to_timeAMPM(souceDateTime: finaldateTime!)),
               const Icon(
                 Icons.arrow_drop_down,
                 size: 26,
