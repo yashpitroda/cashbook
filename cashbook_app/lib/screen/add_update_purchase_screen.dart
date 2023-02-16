@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/supplier_provider.dart';
 import '../widgets/customtextfield.dart';
 
 class AddUpdatePurchaseScreen extends StatefulWidget {
@@ -435,14 +436,17 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                     backgroundColor: MaterialStateProperty.all(
                         Colors.blue.withOpacity(0.9))),
                 child: (_isloading)
-                    ? CircularProgressIndicator()
+                    ? CircularProgressIndicator(
+                        color: Colors.white,
+                      )
                     : const Text(
                         'Save',
                         style: TextStyle(color: Colors.white),
                       ),
                 onPressed: () async {
-                  _isloading = true;
-                  setState(() {});
+                  setState(() {
+                    _isloading = true;
+                  });
                   try {
                     await Provider.of<accountProvider>(context, listen: false)
                         .submit_In_add_New_account(
@@ -499,12 +503,13 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
           List<Account> accountlist =
               Provider.of<accountProvider>(ctx).getAccountList;
           return Container(
-            // height: 400,
+            height: 400,
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   ListView.builder(
                     shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     // itemCount: list.length,
                     itemCount: accountlist.length,
                     itemBuilder: (context, index) {
@@ -599,17 +604,18 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
         onTap: () {
           Utility.removeFocus(context: context);
         },
-        child: Container(
-          // color: Colors.grey.withOpacity(0.09),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Column(
-              children: [
-                (_isloading)
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : Expanded(
+        child: (_isloading)
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(
+                // color: Colors.grey.withOpacity(0.09),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Column(
+                    children: [
+                      Expanded(
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1067,11 +1073,11 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                           ),
                         ),
                       ),
-                bottombuttoncard(context),
-              ],
-            ),
-          ),
-        ),
+                      bottombuttoncard(context),
+                    ],
+                  ),
+                ),
+              ),
       ),
     );
   }
@@ -1327,8 +1333,21 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
+                onPressed: () async {
+                  setState(() {
+                    _isloading = true;
+                  });
+                  await Provider.of<SupplierProvider>(context, listen: false)
+                      .fatchSupplier()
+                      .then((_) async {
+                    await Provider.of<PurchaseProvider>(context, listen: false)
+                        .fatchPurchase();
+                  }).then((_) {
+                    setState(() {
+                      _isloading = false;
+                    });
+                    Navigator.of(context).pop();
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                     fixedSize: const Size(10, 55), backgroundColor: Colors.red),
@@ -1358,18 +1377,19 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    (_isloading)
-                        ? CircularProgressIndicator(
-                            color: Colors.white,
-                          )
-                        : Text(
-                            'Save',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Rubik',
-                              fontSize: 16,
-                            ),
-                          ),
+                    // (_isloading)
+                    //     ? CircularProgressIndicator(
+                    //         color: Colors.white,
+                    //       )
+                    //     :
+                    Text(
+                      'Save',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Rubik',
+                        fontSize: 16,
+                      ),
+                    ),
                   ],
                 ),
               ),
