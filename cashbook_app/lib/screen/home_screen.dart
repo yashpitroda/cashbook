@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data == true) {
-              return scafold_body(context);
+              return __child(context);
             }
           }
           return Column(
@@ -57,61 +57,64 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  FutureBuilder scafold_body(BuildContext context) {
-    return FutureBuilder(
-      future: Provider.of<CurrentUserProvider>(context, listen: false)
-          .fatchCurrentuserInfo(),
-      builder: ((context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return __child(context);
-        }
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-                onPressed: () =>
-                    Provider.of<GauthProvider>(context, listen: false)
-                        .signOutWithGoogle(),
-                child: Text("Logout")),
-            Center(
-              child: CircularProgressIndicator(),
-            )
-          ],
-        );
-      }),
-    );
-    //  __child(context);
-  }
+  // FutureBuilder scafold_body(BuildContext context) {
+  //   return FutureBuilder(
+  //     future:
+  //     //  Provider.of<CurrentUserProvider>(context, listen: false)
+  //     //     .fatchCurrentuserInfo(),
+  //     builder: ((context, snapshot) {
+  //       if (snapshot.connectionState == ConnectionState.done) {
+  //         return __child(context);
+  //       }
+  //       return Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           ElevatedButton(
+  //               onPressed: () =>
+  //                   Provider.of<GauthProvider>(context, listen: false)
+  //                       .signOutWithGoogle(),
+  //               child: Text("Logout")),
+  //           Center(
+  //             child: CircularProgressIndicator(),
+  //           )
+  //         ],
+  //       );
+  //     }),
+  //   );
+  //   //  __child(context);
+  // }
 
   Container __child(BuildContext context) {
-    CurrentUser? cUser =
-        Provider.of<CurrentUserProvider>(context).getCurrentUserObj;
+    // CurrentUser? cUser =
+    //     Provider.of<CurrentUserProvider>(context).getCurrentUserObj;
     return Container(
-      child: (cUser == null)
-          ? Center(child: Text("data"))
-          : Column(
-              children: [
-                Text(cUser.bank_balance.toString()),
-                Text(cUser.useremail.toString()),
-                Image.network(cUser.userimageurl.toString()),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(PurchaseScreen.routeName);
+      child:
+          //  (cUser == null)
+          //     ? Center(child: Text("data"))
+          //     :
+          Column(
+        children: [
+          //   Text(cUser.bank_balance.toString()),
+          //   Text(cUser.useremail.toString()),
+          //   Image.network(cUser.userimageurl.toString()),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(PurchaseScreen.routeName);
 //               Navigator.of(MaterialApp).push(
 //   MaterialPageRoute(builder: (MaterialAppContext) => ScreenB())
 // )
-                    },
-                    child: Text("go to purchase screen")),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(ClientScreen.routeName);
-                    },
-                    child: Text("go to purchase screen")),
-                Center(
-                  child: Text("home"),
-                ),
-              ],
-            ),
+              },
+              child: Text("go to purchase screen")),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(ClientScreen.routeName);
+              },
+              child: Text("go to purchase screen")),
+          Center(
+            child: Text("home"),
+          ),
+        ],
+      ),
     );
   }
 }

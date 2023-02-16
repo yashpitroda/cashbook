@@ -1,3 +1,4 @@
+import 'package:cashbook_app/provider/account_provider.dart';
 import 'package:cashbook_app/provider/current_user_provider.dart';
 import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
@@ -36,11 +37,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (BuildContext ctx) => GauthProvider(),
         ),
-        ChangeNotifierProvider(
-          create: (BuildContext ctx) => CurrentUserProvider(),
-        ),
+        // ChangeNotifierProvider(
+        //   create: (BuildContext ctx) => CurrentUserProvider(),
+        // ),
         ChangeNotifierProvider(
           create: (BuildContext ctx) => SupplierProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext ctx) => accountProvider(),
         ),
         // ChangeNotifierProvider(
         //   create: (ctx) => PurchaseProvider(),
@@ -83,8 +87,8 @@ class MyApp extends StatelessWidget {
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
               print("called2");
-              // return HomeScreen();
-              return AddUpdatePurchaseScreen();
+              return HomeScreen();
+              // return AddUpdatePurchaseScreen();
             } else {
               //and no data so not auth.. so retry
               return const AuthScreen();

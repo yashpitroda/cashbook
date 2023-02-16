@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:cashbook_app/models/cashbank.dart';
+import 'package:cashbook_app/models/account.dart';
+import 'package:cashbook_app/models/cashflow.dart';
 import 'package:cashbook_app/models/purchase.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:http/http.dart' as http;
@@ -67,7 +68,7 @@ class PurchaseProvider extends ChangeNotifier {
     final List<Purchase> tempLoadedPurchaselist = [];
     final stirngToDateTmeFormatter =
         DateFormat('EEE, d MMM yyyy HH:mm:ss'); // Wed, 28 Dec 2022 13:34:09 GM
-
+    print("sd");
     // if (responseData["status"] == "success") {
     responsePurchaseDataList.forEach((element) {
       tempLoadedPurchaselist.add(Purchase(
@@ -82,32 +83,35 @@ class PurchaseProvider extends ChangeNotifier {
         advanceAmount: element["puchase_map"]["advanceAmount"].toString(),
         date: stirngToDateTmeFormatter.parse(element["puchase_map"]['date']),
         cOrCr: element["puchase_map"]["cOrCr"].toString(),
-        cashOrBank: element["puchase_map"]["cashOrBank"].toString(),
-        cashBankId: element["puchase_map"]["cashBankId"].toString(),
+        accountId: element["puchase_map"]["accountId"].toString(),
+        cashflowId: element["puchase_map"]["cashflowId"].toString(),
         remark: element["puchase_map"]["remark"].toString(),
-        cashBankObj: CashBank(
-            cbid: element["cash_bank_map"]["cbid"].toString(),
-            is_paymentmode:
-                element["cash_bank_map"]["is_paymentmode"].toString(),
-            cash_balance: element["cash_bank_map"]["cash_balance"].toString(),
-            cash_credit: element["cash_bank_map"]["cash_credit"].toString(),
-            cash_debit: element["cash_bank_map"]["cash_debit"].toString(),
-            bank_balance: element["cash_bank_map"]["bank_balance"].toString(),
-            bank_credit: element["cash_bank_map"]["bank_credit"].toString(),
-            bank_debit: element["cash_bank_map"]["bank_debit"].toString(),
-            date: stirngToDateTmeFormatter
-                .parse(element["cash_bank_map"]['date']),
-            particulars: element["cash_bank_map"]["particulars"].toString(),
-            useremail: element["cash_bank_map"]["useremail"].toString()),
+        cashflowObj: Cashflow(
+            cashflowId: element["cashflow_map"]["cashflowId"].toString(),
+            credit: element["cashflow_map"]["credit"].toString(),
+            balance: element["cashflow_map"]["balance"].toString(),
+            debit: element["cashflow_map"]["debit"].toString(),
+            accountId: element["cashflow_map"]["accountId"].toString(),
+            accountObj: Account(
+              accountId: element["account_map"]["accountId"].toString(),
+              accountName: element["account_map"]["accountName"].toString(),
+              useremail: element["account_map"]["useremail"].toString(),
+              balance: null,
+              date: stirngToDateTmeFormatter.parse(
+                element["account_map"]["date"],
+              ),
+            ),
+            date:
+                stirngToDateTmeFormatter.parse(element["cashflow_map"]['date']),
+            particulars: element["cashflow_map"]["particulars"].toString(),
+            useremail: element["cashflow_map"]["useremail"].toString()),
         supplierObj: supplierProviderOBJ!.findSupplierBySID(
-            sid: element["puchase_map"]["supplierId"].toString()),
+          sid: element["puchase_map"]["supplierId"].toString(),
+        ),
       ));
     });
-
     _purchaseList = tempLoadedPurchaselist;
     _storedPurchaseList = _purchaseList; //for backup in searching
-    print(_purchaseList);
-
     notifyListeners();
     // } else {
     //   print("not add");
@@ -119,7 +123,7 @@ class PurchaseProvider extends ChangeNotifier {
   Future<void> submit_IN_Purchase(
       {required int isBill,
       required int cOrCr,
-      required int cashOrBank,
+      required String accountId,
       required Supplier selectedSupplierobj,
       required int billAmount,
       required int paidAmount,
@@ -137,7 +141,7 @@ class PurchaseProvider extends ChangeNotifier {
           {
             "isBill": isBill,
             'cOrCr': cOrCr, //instant
-            'cashOrBank': cashOrBank,
+            'accountId': accountId,
             "paidAmount": paidAmount,
             'billAmount': billAmount,
             'updatedOutstandingAmount': updatedOutstandingAmount,

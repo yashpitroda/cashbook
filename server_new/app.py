@@ -5,7 +5,9 @@ from flask_smorest import Api
 from models.user_mod import UserModel
 from models.supplier import Supplier
 from models.purchase import Purchase 
-from models.cashbank import CashBankClass
+# from models.cashbank import CashBankClass
+
+import utills
 
 prt = 9000
 app = Flask(__name__)
@@ -28,30 +30,30 @@ async def useraddone():
     return {'status':fetchdata},200 #user is already exisit so retrun user
 
 
-@app.route('/users/currentuser',methods=['POST'])
-async def usercurrentuser():
-    value=request.get_json()
-    requird=['useremail']
-    if not all(key in value for key in requird):
-         return {'error':'cname or cmobile will be None or null','status':'fail'},400  
-    useremail=value["useremail"] 
+# @app.route('/users/currentuser',methods=['POST'])
+# async def usercurrentuser():
+#     value=request.get_json()
+#     requird=['useremail']
+#     if not all(key in value for key in requird):
+#          return {'error':'cname or cmobile will be None or null','status':'fail'},400  
+#     useremail=value["useremail"] 
     
-    fetchdata=await UserModel.findThisUserwithUserEmail(useremail=useremail) 
-    uid,username,useremail,userimageurl=fetchdata
+#     fetchdata=await UserModel.findThisUserwithUserEmail(useremail=useremail) 
+#     uid,username,useremail,userimageurl=fetchdata
     
-    result_cb=await CashBankClass.find_cash_bal_and_bank_bal_by_latest_row_in_cashbook_by_useremail(useremail=useremail)
-    for row in result_cb:
-        cash_balance,bank_balance=row
+#     result_cb=await CashBankClass.find_cash_bal_and_bank_bal_by_latest_row_in_cashbook_by_useremail(useremail=useremail)
+#     for row in result_cb:
+#         cash_balance,bank_balance=row
     
-    responsedata={
-        "uid":uid,
-        "username":username,
-        "useremail":useremail,
-        "userimageurl":userimageurl,
-        "cash_balance":cash_balance,
-        "bank_balance":bank_balance
-    } 
-    return {'data':responsedata},200 #user is already exisit so retrun user
+#     responsedata={
+#         "uid":uid,
+#         "username":username,
+#         "useremail":useremail,
+#         "userimageurl":userimageurl,
+#         "cash_balance":cash_balance,
+#         "bank_balance":bank_balance
+#     } 
+#     return {'data':responsedata},200 #user is already exisit so retrun user
 
 
 @app.route('/supplier/addone',methods=['POST'])
@@ -197,7 +199,7 @@ async def purchasefetchall():
     status=""
     purchaseTableDataList=[]
     for row in result:
-        pid,supplierId,biilAmount,paidAmount,advanceAmount,outstandingAmount,date,remark,isBill,cOrCr,cashOrBank,cashBankId,useremail=row # i is tupple
+        pid,supplierId,accountId,biilAmount,paidAmount,advanceAmount,outstandingAmount,date,remark,cOrCr,isBill,cashflowId,useremail=row # i is tupple
         purchase_map={
             "pid":pid,
             "supplierId":supplierId,
@@ -209,49 +211,85 @@ async def purchasefetchall():
             "remark":remark, #in string   
             "isBill":isBill, #in string   
             "cOrCr":cOrCr, #in string   
-            "cashOrBank":cashOrBank, #in string   
-            "cashBankId":cashBankId, #in string   
+            "accountId":accountId, #in string   
+            "cashflowId":cashflowId, #in string   
             "useremail":useremail, #in string   
         }
-       
-        result_cashbank=await CashBankClass.find_one_IN_CashBank_BY_CBID(cbid=cashBankId)
-        if(result=="database error" or result_cashbank=="database error"):
+        query = f"SELECT * FROM cashflow WHERE cashflowId={cashflowId}"
+        
+        result_cashflow=await utills.SELECT_QUERY_FETCHALL(query=query)
+        if(result=="database error" or result_cashflow=="database error"):
             status="error"
         else:
             status="success"
         # print(result_cashbank)
-        for row1 in result_cashbank:
-            cbid,is_paymentmode,date,cash_debit,bank_debit,cash_credit,bank_credit,cash_balance,bank_balance,particulars,useremail=row1
-            cash_bank_map={
-                "cbid":cbid,
-                "is_paymentmode":is_paymentmode,
+        for row1 in result_cashflow:
+            cashflowId,date,accountId,debit,credit,balance,particulars,useremail=row1
+            cashflow_map={
+                "cashflowId":cashflowId,
+                "accountId":accountId,
                 "date":date,
-                "cash_debit":cash_debit,
-                "bank_debit":bank_debit,
-                "cash_credit":cash_credit,    
-                "bank_credit":bank_credit, #in string   
-                "cash_balance":cash_balance, #in string   
-                "bank_balance":bank_balance, #in string   
-                "particulars":particulars, #in string   
-                "useremail":useremail, #in string   
+                "debit":debit,
+                "credit":credit,
+                "balance":balance,    
+                "particulars":particulars,
+                "useremail":useremail,
+            }
+            
+        query = f"SELECT * FROM account WHERE accountId={accountId}"
+        result_account=await utills.SELECT_QUERY_FETCHALL(query=query)
+        for row2 in result_account:
+            accountId,accountName,date,useremail=row2
+            account_map={
+                "accountId":accountId,
+                "date":date,
+                "accountName":accountName,
+                "balance":balance,    
+                "useremail":useremail, 
             }
          
-        temp={"puchase_map":purchase_map,"cash_bank_map":cash_bank_map}
+        temp={"puchase_map":purchase_map,"cashflow_map":cashflow_map,"account_map":account_map}
         purchaseTableDataList.append(temp)
         
-    # print(supplierTableDataList)
+    print(purchaseTableDataList)
     print("/fatchsupplier Completed")
     return {"status":status,'datalist': purchaseTableDataList},200 
 
+
+
+# @app.route('/purchase/addone/old',methods=['POST'])
+# async def purchaseaddone():
+#     value=request.get_json()
+#     isBill =value [ "isBill"]
+#     cOrCr =value ['cOrCr']
+#     cashOrBank  =value ['cashOrBank']
+#     paidAmount  =value ['paidAmount']
+#     billAmount =value [ "billAmount"]
+#     updatedAdavanceAmount   =value['updatedAdavanceAmount']
+#     updatedOutstandingAmount   =value['updatedOutstandingAmount']
+#     sid  =value[ "sid"]
+#     firmname =value ['firmname']
+#     smobileno  =value ['smobileno']
+#     useremail  =value ['useremail']
+#     date =value ['date']
+#     remark  =value ['remark']
+#     new_purchase_obj=Purchase(biilAmount=billAmount,cashOrBank=cashOrBank,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
+#     status=await new_purchase_obj.insert_IN_purchase_2()
+#     print(status)
+#     if(status=="success"):
+#         return {'status':status},200
+#     else:
+#          return {'status':"database error"},200
+     
 @app.route('/purchase/addone',methods=['POST'])
 async def purchaseaddone():
     value=request.get_json()
     isBill =value [ "isBill"]
     cOrCr =value ['cOrCr']
-    cashOrBank  =value ['cashOrBank']
+    accountId  =value ['accountId']
     paidAmount  =value ['paidAmount']
     billAmount =value [ "billAmount"]
-    updatedAdavanceAmount   =value['updatedAdavanceAmount']
+    updatedAdavanceAmount  =value['updatedAdavanceAmount']
     updatedOutstandingAmount   =value['updatedOutstandingAmount']
     sid  =value[ "sid"]
     firmname =value ['firmname']
@@ -259,13 +297,68 @@ async def purchaseaddone():
     useremail  =value ['useremail']
     date =value ['date']
     remark  =value ['remark']
-    new_purchase_obj=Purchase(biilAmount=billAmount,cashOrBank=cashOrBank,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
+    new_purchase_obj=Purchase(biilAmount=billAmount,accountId=accountId,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
     status=await new_purchase_obj.insert_IN_purchase_2()
     print(status)
     if(status=="success"):
         return {'status':status},200
     else:
          return {'status':"database error"},200
+     
+@app.route('/account/addone',methods=['POST'])
+async def accountaddone():
+    value=request.get_json()
+    print(value)
+    accountName =value [ "accountName"]
+    initialAmount =value ['initialAmount']
+    date  =value ['date']
+    useremail  =value ['useremail']
+    
+    # insert in account
+    query=f"INSERT INTO account (accountName, date, useremail) VALUES ('{accountName}', '{date}', '{useremail}');"
+    res_map1= await utills.INSERT_DELETE_UPDATE_QUERY(query=query)
+    accountId=res_map1['id']
+    print(accountId)
+    
+    query2=f"INSERT INTO cashflow(date,accountId,useremail,credit,balance) VALUES ('{date}','{accountId}','{useremail}','{initialAmount}','{initialAmount}');"
+    res_map2= await utills.INSERT_DELETE_UPDATE_QUERY(query=query2)
+    
+    if((res_map1['status']=="success") and (res_map2['status']=="success")):
+        return {'status':"success"},200
+    else:
+        return {'status':"database error"},200
+    
+@app.route('/account/fetchall',methods=['POST'])
+async def accountfetchall():
+    """body
+    {"useremail":"yashpitroda200@gmail.com"}
+    """
+    value=request.get_json()
+    requird=['useremail']
+    if not all(key in value for key in requird):
+         return {'error':'cmobile will be None or null','status':'fail'},400
+    useremail=value['useremail']
+    
+    query=f"SELECT * FROM account WHERE useremail='{useremail}' ORDER BY accountName ASC"
+    result=await utills.SELECT_QUERY_FETCHALL(query=query) #result hold list of tupple -- [(),(),()]
+    accountTableDataList=[]
+    for row in result:
+        accountId,accountName,date,useremail=row # i is tupple
+        query=f"SELECT balance FROM cashflow WHERE cashflowId = (SELECT MAX(cashflowId) FROM cashflow WHERE accountId={accountId} and useremail='{useremail}')"
+        result2=await utills.SELECT_QUERY_FETCHALL(query=query) #result hold list of tupple -- [(),(),()]
+        for row in result2:
+                balance,=row
+        temp={
+            "accountId":accountId,
+            "accountName":accountName,
+            "date":date,
+            "balance":balance,
+            "useremail":useremail,    
+        }
+        accountTableDataList.append(temp)
+    # print(supplierTableDataList)
+    print("/fatchsupplier Completed")
+    return {'datalist': accountTableDataList},200 
 
    
 

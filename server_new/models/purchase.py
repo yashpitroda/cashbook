@@ -2,14 +2,14 @@ import time
 import utills
 
 class Purchase():
-    def __init__(self,biilAmount,paidAmount,cashOrBank,remark,date,cOrCr,isBill,supplierId,useremail):
+    def __init__(self,biilAmount,paidAmount,accountId,remark,date,cOrCr,isBill,supplierId,useremail):
         self.biilAmount=biilAmount
         self.paidAmount=paidAmount
         self.advanceAmount=0
         self.outstandingAmount=0
         self.date=date
         self.remark=remark
-        self.cashOrBank=cashOrBank
+        self.accountId=accountId
         self.cOrCr=cOrCr
         self.isBill=isBill
         self.useremail=useremail
@@ -53,15 +53,27 @@ class Purchase():
         try:
             conn = await utills.createConn()
             cur = await conn.cursor()
-            # print(self.cash_bank)
-            query = f"INSERT INTO purchase(supplierId,cashOrBank,isBill,biilAmount,paidAmount,cOrCr,remark,useremail,date,cashBankId) values({self.supplierId},{self.cashOrBank},{self.isBill},{self.biilAmount},{self.paidAmount},{self.cOrCr},'{self.remark}','{self.useremail}','{self.date}',{1})"
+            query=f"SELECT cashflowId FROM cashflow where cashflowId=(SELECT max(cashflowId) FROM cashflow where accountId={self.accountId} and useremail='{self.useremail}')"
             await cur.execute(query)
+            fetchdata = await cur.fetchall()
+            await cur.close()
+            conn.close()
+            cashflowId=0 
+            for row in fetchdata:
+                cashflowId,=row
+            print("qw")
+            conn = await utills.createConn()
+            cur = await conn.cursor()
+            print(self.supplierId)
+            query = f"INSERT INTO purchase(accountId,supplierId,isBill,biilAmount,paidAmount,cOrCr,remark,useremail,date,cashflowId) values({self.accountId},{self.supplierId},{self.isBill},{self.biilAmount},{self.paidAmount},{self.cOrCr},'{self.remark}','{self.useremail}','{self.date}',{cashflowId});"
+            await cur.execute(query)
+            print(self.supplierId)
             await conn.commit()
             current_pid=cur.lastrowid
             print(current_pid)
             await cur.close()
             conn.close()
-            
+            print("hehe")
             # print(cur.lastrowid)
             # print(cur.rowcount)
             conn = await utills.createConn()
@@ -96,35 +108,30 @@ class Purchase():
             
             conn = await utills.createConn()
             cur = await conn.cursor()
-            query=f"SELECT max(cash_bank.cbid) FROM cash_bank where useremail='{self.useremail}'"
+            query=f"SELECT max(cashflow.cashflowId) FROM cashflow where useremail='{self.useremail}'"
             await cur.execute(query)
             fetchdata = await cur.fetchall()
             await cur.close()
             conn.close()
-            current_cbid=0 
+            current_cashflowId=0 
             for row in fetchdata:
-                current_cbid,=row
+                current_cashflowId,=row
             # print(current_cbid)
             
             conn = await utills.createConn()
             cur = await conn.cursor()
-            query=f"SELECT cash_balance,bank_balance FROM cash_bank where cbid=(SELECT max(cash_bank.cbid) FROM cash_bank where cbid<{current_cbid})"
+            query=f"SELECT balance FROM cashflow where cashflowId=(SELECT max(cashflowId) FROM cashflow where cashflowId<{current_cashflowId} and accountId={self.accountId} and useremail='{self.useremail}')"
             await cur.execute(query)
             fetchdata = await cur.fetchall()
             await cur.close()
             conn.close()
-            old_bank_balance=0 
-            old_cash_balance=0 
+            old_balance=0 
             for row in fetchdata:
-                old_cash_balance,old_bank_balance=row
+                old_balance,=row
                 
             conn = await utills.createConn()
             cur = await conn.cursor()
-            query=""
-            if(self.cashOrBank==1):
-                query=f"UPDATE cash_bank SET cash_debit=0,cash_balance={old_cash_balance},bank_balance={old_bank_balance}-bank_balance WHERE cbid={current_cbid}"
-            if(self.cashOrBank==0):
-                query=f"UPDATE cash_bank SET bank_debit=0,cash_balance={old_cash_balance}-cash_balance,bank_balance={old_bank_balance} WHERE cbid={current_cbid}"
+            query=f"UPDATE cashflow SET balance={old_balance}-balance WHERE cashflowId={current_cashflowId}"
             await cur.execute(query)
             await conn.commit()    
             await cur.close()
@@ -132,7 +139,7 @@ class Purchase():
             
             conn = await utills.createConn()
             cur = await conn.cursor()
-            query=f"UPDATE purchase SET cashBankId={current_cbid} WHERE pid={current_pid}"
+            query=f"UPDATE purchase SET cashflowId={current_cashflowId} WHERE pid={current_pid}"
             await cur.execute(query)
             await conn.commit()    
             await cur.close()

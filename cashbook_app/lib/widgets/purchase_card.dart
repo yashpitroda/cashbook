@@ -1,3 +1,4 @@
+import 'package:cashbook_app/models/cashflow.dart';
 import 'package:flutter/material.dart';
 
 import '../models/purchase.dart';
@@ -5,6 +6,7 @@ import '../utill/utility.dart';
 import 'IsBillOrWithoutBillCard.dart';
 import 'IsCashBankCard.dart';
 import 'IsInstantOrCreditAdvanceCard.dart';
+import 'accountNameAndBalanceCard.dart';
 
 class PurchaseCard extends StatelessWidget {
   const PurchaseCard({
@@ -72,9 +74,9 @@ class PurchaseCard extends StatelessWidget {
                                 SizedBox(
                                   width: 6,
                                 ),
-                                IsCashBankCard(
-                                  isCustomCashBank: purchaseObj.cashOrBank,
-                                ),
+                                // IsCashBankCard(
+                                //   isCustomCashBank: purchaseObj.cashOrBank,
+                                // ),
                               ],
                             ),
                             SizedBox(
@@ -288,128 +290,78 @@ class PurchaseCard extends StatelessWidget {
                 ],
               ),
             ),
-            // SizedBox(
-            //   height: 6,
-            // ),
-            Divider(
-                // height: 1,
-                ),
+
+            Divider(),
             Container(
               // height: 30,
               // color: Colors.red,
               child: Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      // height: 26,
-                      // width: 170,
-                      decoration: BoxDecoration(
-                          // border: Border.all(
-                          //     width: 1,
-                          //     color: Colors.black45),
-                          color: Colors.grey.withOpacity(0.075),
-                          borderRadius: BorderRadius.circular(6)),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "Cash balance",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption!
-                                    .copyWith(
-                                        letterSpacing: 1,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: purchaseObj.cashBankObj.cash_balance, decimalDigits: 2)}",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(
-                                          letterSpacing: 1,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 24,
+                    child: accountNameAndBalanceCard(
+                        cashflowObj: purchaseObj.cashflowObj),
                   ),
                   Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      // height: 26,
-                      // width: 170,
-                      decoration: BoxDecoration(
-                          // border: Border.all(
-                          //     width: 1,
-                          //     color: Colors.black45),
-                          color: Colors.grey.withOpacity(0.075),
-                          // color: Colors.red
-                          //     .withOpacity(0.084),
-                          borderRadius: BorderRadius.circular(6)),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "Bank balance",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption!
-                                    .copyWith(
-                                        letterSpacing: 1,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: purchaseObj.cashBankObj.bank_balance, decimalDigits: 2)}",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(
-                                          letterSpacing: 1,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+                    child: Container(),
                   ),
+                  // SizedBox(
+                  //   width: 24,
+                  // ),
+                  // Expanded(
+                  //   child: Container(
+                  //     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  //     // height: 26,
+                  //     // width: 170,
+                  //     decoration: BoxDecoration(
+                  //         // border: Border.all(
+                  //         //     width: 1,
+                  //         //     color: Colors.black45),
+                  //         color: Colors.grey.withOpacity(0.075),
+                  //         // color: Colors.red
+                  //         //     .withOpacity(0.084),
+                  //         borderRadius: BorderRadius.circular(6)),
+                  //     child: Column(
+                  //       children: [
+                  //         Row(
+                  //           children: [
+                  //             Text(
+                  //               "Bank balance",
+                  //               style: Theme.of(context)
+                  //                   .textTheme
+                  //                   .caption!
+                  //                   .copyWith(
+                  //                       letterSpacing: 1,
+                  //                       fontWeight: FontWeight.w600,
+                  //                       fontSize: 14),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         SizedBox(
+                  //           height: 6,
+                  //         ),
+                  //         Row(
+                  //           mainAxisAlignment: MainAxisAlignment.end,
+                  //           children: [
+                  //             Flexible(
+                  //               child: Text(
+                  //                 "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: purchaseObj.cashflowObj.debit!, decimalDigits: 2)}",
+                  //                 maxLines: 1,
+                  //                 overflow: TextOverflow.ellipsis,
+                  //                 style: Theme.of(context)
+                  //                     .textTheme
+                  //                     .subtitle1!
+                  //                     .copyWith(
+                  //                         letterSpacing: 1,
+                  //                         fontWeight: FontWeight.w600,
+                  //                         fontSize: 16),
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             )
