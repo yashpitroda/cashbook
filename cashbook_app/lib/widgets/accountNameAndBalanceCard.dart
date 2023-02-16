@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/cashflow.dart';
 import '../utill/utility.dart';
+
 class accountNameAndBalanceCard extends StatelessWidget {
   const accountNameAndBalanceCard({
     Key? key,
@@ -20,7 +21,8 @@ class accountNameAndBalanceCard extends StatelessWidget {
           // border: Border.all(
           //     width: 1,
           //     color: Colors.black45),
-          color: Colors.grey.withOpacity(0.075),
+          // color: Colors.grey.withOpacity(0.075),
+          color: Color.fromARGB(200, 243, 243, 243),
           borderRadius: BorderRadius.circular(6)),
       child: Column(
         children: [
