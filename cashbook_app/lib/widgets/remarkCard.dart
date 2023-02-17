@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models/purchase.dart';
 
-class remarkCard extends StatelessWidget {
-  const remarkCard({
+class RemarkCard extends StatelessWidget {
+  const RemarkCard({
     Key? key,
     required this.purchaseObj,
   }) : super(key: key);

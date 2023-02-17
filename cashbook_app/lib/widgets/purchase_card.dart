@@ -30,7 +30,7 @@ class PurchaseCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                titleCard(purchaseObj: purchaseObj),
+                TitleCard(purchaseObj: purchaseObj),
                 SizedBox(
                   width: 12,
                 ),
@@ -52,7 +52,7 @@ class PurchaseCard extends StatelessWidget {
                       // color: Colors.amber,
                       child: Column(
                         children: [
-                          remarkCard(purchaseObj: purchaseObj),
+                          RemarkCard(purchaseObj: purchaseObj),
                           const SizedBox(
                             height: 6,
                           ),

@@ -2,9 +2,9 @@
 import "package:flutter/material.dart";
 
 import '../models/purchase.dart';
-
-class titleCard extends StatelessWidget {
-  const titleCard({
+//supplier title card
+class TitleCard extends StatelessWidget {
+  const TitleCard({
     Key? key,
     required this.purchaseObj,
   }) : super(key: key);

@@ -70,11 +70,9 @@ class PurchaseScreen extends StatelessWidget {
                   });
                 },
                 child: Scrollbar(
-                  // SingleChildScrollView
-                  // Column
+                
                   child: SingleChildScrollView(
                     controller: _scrollcontroller,
-                    // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.values,
                     child: Column(
                       children: [
                         Container(
