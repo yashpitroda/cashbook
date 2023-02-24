@@ -376,6 +376,109 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     }
   }
 
+  Account? selectedAccountObj;
+
+  Future<void> selectAccount(BuildContext ctx
+      //  List<Account> list
+      ) async {
+    // await Provider.of<accountProvider>(ctx, listen: false).fetchAccount();
+
+    await showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          List<Account> accountlist =
+              Provider.of<accountProvider>(ctx).getAccountList;
+          return Container(
+            height: 400,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  (accountlist.isEmpty)
+                      ? Center(
+                          child: Text("Empty List"),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          // itemCount: list.length,
+                          itemCount: accountlist.length,
+                          itemBuilder: (context, index) {
+                            return
+                                // ListTile(
+                                //   title: Text(list[index].accountName!),
+                                //   subtitle: Text(list[index].balance!),
+                                // );
+                                Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              elevation: 0,
+                              color: Colors.white,
+                              child: RadioListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 0),
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "${accountlist[index].accountName!}",
+                                      // "${list[index].accountName!}",
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "Rubik"),
+                                    ),
+                                    Text(
+                                      Utility.dateFormat_DD_MonthName_YYYY()
+                                          .format(accountlist[index].date!),
+                                      // .format(list[index].date!),
+                                      style: const TextStyle(
+                                          fontSize: 12, fontFamily: "Rubik"),
+                                    ),
+                                  ],
+                                ),
+
+                                // "${items[index].cname} AND cid=${items[index].cid}"
+
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${accountlist[index].balance!}",
+                                      // "",
+                                      style:
+                                          const TextStyle(fontFamily: "Rubik"),
+                                    ),
+                                  ],
+                                ),
+                                // subtitle: Text(" ${items[index].entrydatetime}"),
+                                value: accountlist[index],
+                                groupValue: selectedAccountObj,
+                                // toggleable: true,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedAccountObj = value;
+                                  });
+                                  // print(selectedSuppilerObj);
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await addNewAccount();
+                    },
+                    child: Text("add new account"),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   Future<void> addNewAccount() async {
     TextEditingController accountNameController = TextEditingController();
     TextEditingController intialAmountController = TextEditingController();
@@ -444,9 +547,9 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                         style: TextStyle(color: Colors.white),
                       ),
                 onPressed: () async {
-                  setState(() {
-                    _isloading = true;
-                  });
+                  // setState(() {
+                  //   _isloading = true;
+                  // });
                   try {
                     await Provider.of<accountProvider>(context, listen: false)
                         .submit_In_add_New_account(
@@ -457,9 +560,9 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                       await Provider.of<accountProvider>(context, listen: false)
                           .fetchAccount()
                           .then((_) {
-                        setState(() {
-                          _isloading = false;
-                        });
+                        // setState(() {
+                        //   _isloading = false;
+                        // });
                         Navigator.of(ctx).pop();
                       });
                     });
@@ -470,13 +573,13 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                         builder: (ctx) {
                           return AlertDialog(
                             title: const Text('A error occurred!'),
-                            content: Text('somethings wents wrong.${e}'),
+                            content: Text('somethings wents wrong.$e'),
                             actions: [
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.of(ctx).pop();
                                 },
-                                child: Text("okey"),
+                                child: const Text("okey"),
                               ),
                             ],
                           );
@@ -490,402 +593,185 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
         });
   }
 
-  Account? selectedAccountObj;
-
-  Future<void> selectAccount(BuildContext ctx
-      //  List<Account> list
-      ) async {
-    // await Provider.of<accountProvider>(ctx, listen: false).fetchAccount();
-
-    await showModalBottomSheet(
-        context: ctx,
-        builder: (_) {
-          List<Account> accountlist =
-              Provider.of<accountProvider>(ctx).getAccountList;
-          return Container(
-            height: 400,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    // itemCount: list.length,
-                    itemCount: accountlist.length,
-                    itemBuilder: (context, index) {
-                      return
-                          // ListTile(
-                          //   title: Text(list[index].accountName!),
-                          //   subtitle: Text(list[index].balance!),
-                          // );
-                          Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        elevation: 0,
-                        color: Colors.white,
-                        child: RadioListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 0),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "${accountlist[index].accountName!}",
-                                // "${list[index].accountName!}",
-                                style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Rubik"),
-                              ),
-                              Text(
-                                Utility.dateFormat_DD_MonthName_YYYY()
-                                    .format(accountlist[index].date!),
-                                // .format(list[index].date!),
-                                style: const TextStyle(
-                                    fontSize: 12, fontFamily: "Rubik"),
-                              ),
-                            ],
-                          ),
-
-                          // "${items[index].cname} AND cid=${items[index].cid}"
-
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "${accountlist[index].balance!}",
-                                // "",
-                                style: const TextStyle(fontFamily: "Rubik"),
-                              ),
-                            ],
-                          ),
-                          // subtitle: Text(" ${items[index].entrydatetime}"),
-                          value: accountlist[index],
-                          groupValue: selectedAccountObj,
-                          // toggleable: true,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedAccountObj = value;
-                            });
-                            // print(selectedSuppilerObj);
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await addNewAccount();
-                    },
-                    child: Text("add new account"),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     var mqhight = MediaQuery.of(context).size.height;
     var mqwidth = MediaQuery.of(context).size.width;
-    // List<Account> accountlist =
-    //     Provider.of<accountProvider>(context).getAccountList;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           "Add purchase",
-          // style: TextStyle(fontFamily: "Rubik"),
         ),
       ),
-      body: GestureDetector(
-        onTap: () {
-          Utility.removeFocus(context: context);
-        },
-        child: (_isloading)
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Container(
-                // color: Colors.grey.withOpacity(0.09),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      body: Visibility(
+          visible: (!_isloading),
+          replacement: Utility.loadingIndicator(),
+          child: _body(mqwidth, context, mqhight)),
+    );
+  }
+
+  GestureDetector _body(double mqwidth, BuildContext context, double mqhight) {
+    return GestureDetector(
+      onTap: () {
+        Utility.removeFocus(context: context);
+      },
+      child: Container(
+        // color: Colors.grey.withOpacity(0.09),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                      // ElevatedButton(
+                      //   onPressed: () async {
+                      //     await addNewAccount();
+                      //   },
+                      //   child: Text("add new account"),
+                      // ),
+                      // const Divider(
+                      //   thickness: 1.2,
+                      // ),
+
+                      DateTimeSelector(mqwidth),
+                      const Divider(
+                        thickness: 1.2,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          await selectAccount(context);
+                          print(selectedAccountObj!.accountName);
+                        },
+                        child: Text("select account"),
+                      ),
+
+                      billWithOrWithoutOption(mqwidth),
+                      // cashBankOption(mqwidth),
+                      // SizedBox(
+                      //   height: mqhight * 0.02,
+                      // ),
+                      const Divider(
+                        thickness: 1.2,
+                      ),
+
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: mqhight * 0.007,
+                          ),
+                          firmnameTextField(),
+                          SizedBox(
+                            height: mqhight * 0.015,
+                          ),
+                          Row(
                             children: [
-                              // ElevatedButton(
-                              //   onPressed: () async {
-                              //     await addNewAccount();
-                              //   },
-                              //   child: Text("add new account"),
-                              // ),
-                              // const Divider(
-                              //   thickness: 1.2,
-                              // ),
-
-                              DateTimeSelector(mqwidth),
-                              const Divider(
-                                thickness: 1.2,
-                              ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  await selectAccount(context);
-                                  print(selectedAccountObj!.accountName);
-                                },
-                                child: Text("select account"),
-                              ),
-
-                              billWithOrWithoutOption(mqwidth),
-                              // cashBankOption(mqwidth),
-                              // SizedBox(
-                              //   height: mqhight * 0.02,
-                              // ),
-                              const Divider(
-                                thickness: 1.2,
-                              ),
-
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    height: mqhight * 0.007,
-                                  ),
-                                  firmnameTextField(),
-                                  SizedBox(
-                                    height: mqhight * 0.015,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(child: clientNameTextField()),
-                                      SizedBox(
-                                        width: mqwidth * 0.02,
-                                      ),
-                                      Expanded(child: clientPhoneTextField()),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: mqhight * 0.007,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: (selectedSupplierobj == null)
-                                        ? []
-                                        : [
-                                            Text(
-                                                "outstanding-bill : ${selectedSupplierobj!.outstanding_amount_withbill}"),
-                                            Text(
-                                                "outstanding-withoutbill : ${selectedSupplierobj!.outstanding_amount_without_bill}"),
-                                            Text(
-                                                "advance-bill : ${selectedSupplierobj!.advance_amount_with_bill}"),
-                                            Text(
-                                                "advance-withoutbill : ${selectedSupplierobj!.advance_amount_without_bill}"),
-                                          ],
-                                  ),
-                                ],
-                              ),
-                              // SizedBox(
-                              //   height: mqhight * 0.01,
-                              // ),
-                              const Divider(
-                                thickness: 1.2,
-                              ),
-
+                              Expanded(child: clientNameTextField()),
                               SizedBox(
-                                height: mqhight * 0.007,
+                                width: mqwidth * 0.02,
                               ),
-                              (selectedSupplierobj == null)
-                                  ? Container()
-                                  : Center(
-                                      child: Container(
-                                        // width: mqwidth * 1,
-                                        child: DefaultTabController(
-                                          length: 2,
-                                          initialIndex: 0,
-                                          child: Column(children: [
-                                            Tabs(context),
-                                            Container(
-                                                // color: Colors.pink,
-                                                height: 197,
-                                                child: TabBarView(
-                                                    physics:
-                                                        NeverScrollableScrollPhysics(),
+                              Expanded(child: clientPhoneTextField()),
+                            ],
+                          ),
+                          SizedBox(
+                            height: mqhight * 0.007,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: (selectedSupplierobj == null)
+                                ? []
+                                : [
+                                    Text(
+                                        "outstanding-bill : ${selectedSupplierobj!.outstanding_amount_withbill}"),
+                                    Text(
+                                        "outstanding-withoutbill : ${selectedSupplierobj!.outstanding_amount_without_bill}"),
+                                    Text(
+                                        "advance-bill : ${selectedSupplierobj!.advance_amount_with_bill}"),
+                                    Text(
+                                        "advance-withoutbill : ${selectedSupplierobj!.advance_amount_without_bill}"),
+                                  ],
+                          ),
+                        ],
+                      ),
+                      // SizedBox(
+                      //   height: mqhight * 0.01,
+                      // ),
+                      const Divider(
+                        thickness: 1.2,
+                      ),
+
+                      SizedBox(
+                        height: mqhight * 0.007,
+                      ),
+                      (selectedSupplierobj == null)
+                          ? Container()
+                          : Center(
+                              child: Container(
+                                // width: mqwidth * 1,
+                                child: DefaultTabController(
+                                  length: 2,
+                                  initialIndex: 0,
+                                  child: Column(children: [
+                                    Tabs(context),
+                                    Container(
+                                        // color: Colors.pink,
+                                        height: 197,
+                                        child: TabBarView(
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            children: [
+                                              INSTANT_PAYMENTtabView(
+                                                  mqhight, mqwidth),
+                                              Column(
+                                                children: [
+                                                  SizedBox(
+                                                    height: mqhight * 0.015,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        (is_payOnlyOutstanding)
+                                                            ? MainAxisAlignment
+                                                                .end
+                                                            : MainAxisAlignment
+                                                                .start,
                                                     children: [
-                                                      INSTANT_PAYMENTtabView(
-                                                          mqhight, mqwidth),
-                                                      Column(
-                                                        children: [
-                                                          SizedBox(
-                                                            height:
-                                                                mqhight * 0.015,
-                                                          ),
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                (is_payOnlyOutstanding)
-                                                                    ? MainAxisAlignment
-                                                                        .end
-                                                                    : MainAxisAlignment
-                                                                        .start,
-                                                            children: [
-                                                              (is_payOnlyOutstanding ==
-                                                                      true)
-                                                                  ? Container()
-                                                                  : Expanded(
-                                                                      child:
-                                                                          TextField(
-                                                                        //no on change
-                                                                        onChanged:
-                                                                            (value) {
-                                                                          if (value
-                                                                              .isEmpty) {
-                                                                            updatedadvanceamountController.text =
-                                                                                "";
-                                                                            updatedoutstandingamountController.text =
-                                                                                "";
-                                                                          }
-                                                                          if (paidamountController
-                                                                              .text
-                                                                              .isEmpty) {
-                                                                            return;
-                                                                          } else {
-                                                                            onChangedInCREDIT(value: paidamountController.text);
-                                                                          }
-                                                                        },
-                                                                        keyboardType:
-                                                                            TextInputType.number,
-                                                                        controller:
-                                                                            billamountController,
-                                                                        cursorColor:
-                                                                            Colors.black,
-                                                                        style: const TextStyle(
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontWeight: FontWeight.w500,
-                                                                            fontSize: 16),
-                                                                        decoration:
-                                                                            const InputDecoration(
-                                                                          filled:
-                                                                              true,
-                                                                          fillColor: Color.fromARGB(
-                                                                              208,
-                                                                              255,
-                                                                              255,
-                                                                              255),
-                                                                          border:
-                                                                              OutlineInputBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.all(Radius.circular(4)),
-                                                                          ),
-                                                                          labelText:
-                                                                              "Bill Amount",
-                                                                          labelStyle: TextStyle(
-                                                                              letterSpacing: 1,
-                                                                              fontSize: 14),
-                                                                          hintStyle:
-                                                                              TextStyle(fontSize: 13),
-                                                                          contentPadding: EdgeInsets.fromLTRB(
-                                                                              20.0,
-                                                                              15.0,
-                                                                              20.0,
-                                                                              15.0),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .end,
-                                                                children: [
-                                                                  Checkbox(
-                                                                    checkColor:
-                                                                        Colors
-                                                                            .white,
-                                                                    fillColor: MaterialStateProperty
-                                                                        .resolveWith(
-                                                                            getColor),
-                                                                    value:
-                                                                        is_payOnlyOutstanding,
-                                                                    onChanged:
-                                                                        (bool?
-                                                                            value) {
-                                                                      // setState(() {
-                                                                      //   is_payOnlyOutstanding =
-                                                                      //       value!;
-                                                                      //   if (is_payOnlyOutstanding ==
-                                                                      //       true) {
-                                                                      //     billamountController
-                                                                      //             .text =
-                                                                      //         "0";
-                                                                      //   }
-                                                                      // });
-                                                                      onTapOn_onlyOutstanding();
-                                                                    },
-                                                                  ),
-                                                                  // SizedBox(
-                                                                  //   width:
-                                                                  //       mqwidth * 0.004,
-                                                                  // ),
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      onTapOn_onlyOutstanding();
-                                                                    },
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: const EdgeInsets
-                                                                              .only(
-                                                                          right:
-                                                                              3),
-                                                                      child:
-                                                                          Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        children: const [
-                                                                          Text(
-                                                                            "pay only",
-                                                                            style:
-                                                                                TextStyle(fontSize: 14),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            height:
-                                                                                1,
-                                                                          ),
-                                                                          Text(
-                                                                            "outstanding",
-                                                                            style:
-                                                                                TextStyle(fontSize: 15),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            height:
-                                                                mqhight * 0.015,
-                                                          ),
-                                                          TextField(
-                                                            // enabled: false,
-                                                            // readOnly: true,
-                                                            onChanged: (value) {
-                                                              onChangedInCREDIT(
-                                                                  value: value);
-                                                            },
-                                                            controller:
-                                                                paidamountController,
-                                                            cursorColor:
-                                                                Colors.black,
-                                                            style:
-                                                                const TextStyle(
-                                                                    // letterSpacing: 1,
+                                                      (is_payOnlyOutstanding ==
+                                                              true)
+                                                          ? Container()
+                                                          : Expanded(
+                                                              child: TextField(
+                                                                //no on change
+                                                                onChanged:
+                                                                    (value) {
+                                                                  if (value
+                                                                      .isEmpty) {
+                                                                    updatedadvanceamountController
+                                                                        .text = "";
+                                                                    updatedoutstandingamountController
+                                                                        .text = "";
+                                                                  }
+                                                                  if (paidamountController
+                                                                      .text
+                                                                      .isEmpty) {
+                                                                    return;
+                                                                  } else {
+                                                                    onChangedInCREDIT(
+                                                                        value: paidamountController
+                                                                            .text);
+                                                                  }
+                                                                },
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                controller:
+                                                                    billamountController,
+                                                                cursorColor:
+                                                                    Colors
+                                                                        .black,
+                                                                style: const TextStyle(
                                                                     color: Colors
                                                                         .black,
                                                                     fontWeight:
@@ -893,191 +779,301 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                                                                             .w500,
                                                                     fontSize:
                                                                         16),
-                                                            decoration:
-                                                                const InputDecoration(
-                                                              filled: true,
-                                                              fillColor:
-                                                                  Colors.white,
-                                                              border:
-                                                                  OutlineInputBorder(
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            4)),
-                                                              ),
-                                                              labelText:
-                                                                  "paid Amount",
-                                                              labelStyle: TextStyle(
-                                                                  letterSpacing:
-                                                                      1,
-                                                                  fontSize: 14),
-                                                              hintStyle:
-                                                                  TextStyle(
+                                                                decoration:
+                                                                    const InputDecoration(
+                                                                  filled: true,
+                                                                  fillColor: Color
+                                                                      .fromARGB(
+                                                                          208,
+                                                                          255,
+                                                                          255,
+                                                                          255),
+                                                                  border:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(4)),
+                                                                  ),
+                                                                  labelText:
+                                                                      "Bill Amount",
+                                                                  labelStyle: TextStyle(
+                                                                      letterSpacing:
+                                                                          1,
                                                                       fontSize:
-                                                                          13),
-                                                              contentPadding:
-                                                                  EdgeInsets
-                                                                      .fromLTRB(
+                                                                          14),
+                                                                  hintStyle:
+                                                                      TextStyle(
+                                                                          fontSize:
+                                                                              13),
+                                                                  contentPadding:
+                                                                      EdgeInsets.fromLTRB(
                                                                           20.0,
                                                                           15.0,
                                                                           20.0,
                                                                           15.0),
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                          SizedBox(
-                                                            height:
-                                                                mqhight * 0.015,
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              Expanded(
-                                                                child:
-                                                                    TextField(
-                                                                  enabled:
-                                                                      false,
-                                                                  // readOnly: true,
-                                                                  controller:
-                                                                      updatedoutstandingamountController,
-                                                                  cursorColor:
-                                                                      Colors
-                                                                          .black,
-                                                                  style: const TextStyle(
-                                                                      // letterSpacing: 1,
-                                                                      color: Colors.black,
-                                                                      // fontWeight:
-                                                                      //     FontWeight
-                                                                      //         .w500,
-                                                                      fontSize: 16),
-                                                                  decoration:
-                                                                      const InputDecoration(
-                                                                    filled:
-                                                                        true,
-                                                                    fillColor: Color
-                                                                        .fromARGB(
-                                                                            208,
-                                                                            235,
-                                                                            238,
-                                                                            244),
-                                                                    border:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.all(
-                                                                              Radius.circular(4)),
-                                                                    ),
-                                                                    labelText:
-                                                                        "Now Outstanding Amount",
-                                                                    labelStyle: TextStyle(
-                                                                        letterSpacing:
-                                                                            1,
-                                                                        fontSize:
-                                                                            14),
-                                                                    hintStyle: TextStyle(
-                                                                        fontSize:
-                                                                            13),
-                                                                    contentPadding:
-                                                                        EdgeInsets.fromLTRB(
-                                                                            20.0,
-                                                                            15.0,
-                                                                            20.0,
-                                                                            15.0),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: mqwidth *
-                                                                    0.02,
-                                                              ),
-                                                              Expanded(
-                                                                child:
-                                                                    TextField(
-                                                                  enabled:
-                                                                      false,
-                                                                  // readOnly: true,
-                                                                  controller:
-                                                                      updatedadvanceamountController,
-                                                                  cursorColor:
-                                                                      Colors
-                                                                          .black,
-                                                                  style: const TextStyle(
-                                                                      // letterSpacing: 1,
-                                                                      color: Colors.black,
-                                                                      // fontWeight:
-                                                                      //     FontWeight
-                                                                      //         .w500,
-                                                                      fontSize: 16),
-                                                                  decoration:
-                                                                      const InputDecoration(
-                                                                    filled:
-                                                                        true,
-                                                                    fillColor: Color
-                                                                        .fromARGB(
-                                                                            208,
-                                                                            235,
-                                                                            238,
-                                                                            244),
-                                                                    border:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.all(
-                                                                              Radius.circular(4)),
-                                                                    ),
-                                                                    labelText:
-                                                                        "Now Advance Amount",
-                                                                    labelStyle: TextStyle(
-                                                                        letterSpacing:
-                                                                            1,
-                                                                        fontSize:
-                                                                            14),
-                                                                    hintStyle: TextStyle(
-                                                                        fontSize:
-                                                                            13),
-                                                                    contentPadding:
-                                                                        EdgeInsets.fromLTRB(
-                                                                            20.0,
-                                                                            15.0,
-                                                                            20.0,
-                                                                            15.0),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Checkbox(
+                                                            checkColor:
+                                                                Colors.white,
+                                                            fillColor:
+                                                                MaterialStateProperty
+                                                                    .resolveWith(
+                                                                        getColor),
+                                                            value:
+                                                                is_payOnlyOutstanding,
+                                                            onChanged:
+                                                                (bool? value) {
+                                                              // setState(() {
+                                                              //   is_payOnlyOutstanding =
+                                                              //       value!;
+                                                              //   if (is_payOnlyOutstanding ==
+                                                              //       true) {
+                                                              //     billamountController
+                                                              //             .text =
+                                                              //         "0";
+                                                              //   }
+                                                              // });
+                                                              onTapOn_onlyOutstanding();
+                                                            },
                                                           ),
                                                           // SizedBox(
-                                                          //   height: mqhight * 0.015,
+                                                          //   width:
+                                                          //       mqwidth * 0.004,
                                                           // ),
-                                                          SizedBox(
-                                                            height:
-                                                                mqhight * 0.015,
+                                                          InkWell(
+                                                            onTap: () {
+                                                              onTapOn_onlyOutstanding();
+                                                            },
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      right: 3),
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: const [
+                                                                  Text(
+                                                                    "pay only",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 1,
+                                                                  ),
+                                                                  Text(
+                                                                    "outstanding",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            15),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
-                                                    ])),
-                                            CustomTextField(
-                                              customtextinputaction:
-                                                  TextInputAction.done,
-                                              customfocusnode:
-                                                  descriptionFocusNode,
-                                              textinputtype: TextInputType.name,
-                                              labeltext: "remark",
-                                              customController:
-                                                  descriptionController,
-                                              hinttext: "product name",
-                                              leadding_iconname: null,
-                                              triling_iconname: null,
-                                            ),
-                                          ]),
-                                        ),
-                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: mqhight * 0.015,
+                                                  ),
+                                                  TextField(
+                                                    // enabled: false,
+                                                    // readOnly: true,
+                                                    onChanged: (value) {
+                                                      onChangedInCREDIT(
+                                                          value: value);
+                                                    },
+                                                    controller:
+                                                        paidamountController,
+                                                    cursorColor: Colors.black,
+                                                    style: const TextStyle(
+                                                        // letterSpacing: 1,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 16),
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      filled: true,
+                                                      fillColor: Colors.white,
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    4)),
+                                                      ),
+                                                      labelText: "paid Amount",
+                                                      labelStyle: TextStyle(
+                                                          letterSpacing: 1,
+                                                          fontSize: 14),
+                                                      hintStyle: TextStyle(
+                                                          fontSize: 13),
+                                                      contentPadding:
+                                                          EdgeInsets.fromLTRB(
+                                                              20.0,
+                                                              15.0,
+                                                              20.0,
+                                                              15.0),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: mqhight * 0.015,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: TextField(
+                                                          enabled: false,
+                                                          // readOnly: true,
+                                                          controller:
+                                                              updatedoutstandingamountController,
+                                                          cursorColor:
+                                                              Colors.black,
+                                                          style: const TextStyle(
+                                                              // letterSpacing: 1,
+                                                              color: Colors.black,
+                                                              // fontWeight:
+                                                              //     FontWeight
+                                                              //         .w500,
+                                                              fontSize: 16),
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            filled: true,
+                                                            fillColor:
+                                                                Color.fromARGB(
+                                                                    208,
+                                                                    235,
+                                                                    238,
+                                                                    244),
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .all(Radius
+                                                                          .circular(
+                                                                              4)),
+                                                            ),
+                                                            labelText:
+                                                                "Now Outstanding Amount",
+                                                            labelStyle: TextStyle(
+                                                                letterSpacing:
+                                                                    1,
+                                                                fontSize: 14),
+                                                            hintStyle:
+                                                                TextStyle(
+                                                                    fontSize:
+                                                                        13),
+                                                            contentPadding:
+                                                                EdgeInsets
+                                                                    .fromLTRB(
+                                                                        20.0,
+                                                                        15.0,
+                                                                        20.0,
+                                                                        15.0),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: mqwidth * 0.02,
+                                                      ),
+                                                      Expanded(
+                                                        child: TextField(
+                                                          enabled: false,
+                                                          // readOnly: true,
+                                                          controller:
+                                                              updatedadvanceamountController,
+                                                          cursorColor:
+                                                              Colors.black,
+                                                          style: const TextStyle(
+                                                              // letterSpacing: 1,
+                                                              color: Colors.black,
+                                                              // fontWeight:
+                                                              //     FontWeight
+                                                              //         .w500,
+                                                              fontSize: 16),
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            filled: true,
+                                                            fillColor:
+                                                                Color.fromARGB(
+                                                                    208,
+                                                                    235,
+                                                                    238,
+                                                                    244),
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .all(Radius
+                                                                          .circular(
+                                                                              4)),
+                                                            ),
+                                                            labelText:
+                                                                "Now Advance Amount",
+                                                            labelStyle: TextStyle(
+                                                                letterSpacing:
+                                                                    1,
+                                                                fontSize: 14),
+                                                            hintStyle:
+                                                                TextStyle(
+                                                                    fontSize:
+                                                                        13),
+                                                            contentPadding:
+                                                                EdgeInsets
+                                                                    .fromLTRB(
+                                                                        20.0,
+                                                                        15.0,
+                                                                        20.0,
+                                                                        15.0),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  // SizedBox(
+                                                  //   height: mqhight * 0.015,
+                                                  // ),
+                                                  SizedBox(
+                                                    height: mqhight * 0.015,
+                                                  ),
+                                                ],
+                                              ),
+                                            ])),
+                                    CustomTextField(
+                                      customtextinputaction:
+                                          TextInputAction.done,
+                                      customfocusnode: descriptionFocusNode,
+                                      textinputtype: TextInputType.name,
+                                      labeltext: "remark",
+                                      customController: descriptionController,
+                                      hinttext: "product name",
+                                      leadding_iconname: null,
+                                      triling_iconname: null,
                                     ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      bottombuttoncard(context),
+                                  ]),
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                 ),
               ),
+              bottombuttoncard(context),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -1564,6 +1560,17 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
       readOnly: true,
       onTap: () {
         _gotoSelectClintScreen();
+        // showModalBottomSheet(
+
+        //   enableDrag: true,
+        //   // useRootNavigator: true,
+        //   context: context,
+        //   builder: (context) {
+        //     return SelectSupplierScreen();
+        //   },
+        //   // routeSettings:
+        // );
+        //
       },
       controller: firmNameController,
       cursorColor: Colors.black,

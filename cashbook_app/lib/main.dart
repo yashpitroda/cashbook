@@ -1,5 +1,4 @@
 import 'package:cashbook_app/provider/account_provider.dart';
-import 'package:cashbook_app/provider/current_user_provider.dart';
 import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:cashbook_app/screen/add_supplier_screen.dart';
@@ -24,7 +23,7 @@ import 'screen/supplier_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -63,7 +62,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
         theme: ThemeData(
-          // fontFamily: 'Rubik',
           appBarTheme: const AppBarTheme(
             elevation: 0,
             backgroundColor: Colors.white,
@@ -87,7 +85,7 @@ class MyApp extends StatelessWidget {
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
               print("called2");
-              return HomeScreen();
+              return const HomeScreen();
               // return AddUpdatePurchaseScreen();
             } else {
               //and no data so not auth.. so retry
@@ -99,14 +97,14 @@ class MyApp extends StatelessWidget {
         routes: {
           LoadingScreen.routeName: (context) => const LoadingScreen(),
           AddInPayableScreen.routeName: (context) => const AddInPayableScreen(),
-          HomeScreen.routeName: (context) => HomeScreen(),
+          HomeScreen.routeName: (context) =>const HomeScreen(),
           ClientScreen.routeName: (context) => ClientScreen(),
           SelectSupplierScreen.routeName: (context) => SelectSupplierScreen(),
           AddupdateSupplierScreen.routeName: (context) =>
               AddupdateSupplierScreen(),
-          ManageSupplierScreen.routeName: (context) => ManageSupplierScreen(),
-          SelectContactScreen.routeName: (context) => SelectContactScreen(),
-          AddUpdatePurchaseScreen.routeName: (context) =>
+          ManageSupplierScreen.routeName: (context) =>const ManageSupplierScreen(),
+          SelectContactScreen.routeName: (context) => const SelectContactScreen(),
+          AddUpdatePurchaseScreen.routeName: (context) =>const
               AddUpdatePurchaseScreen(),
           PurchaseScreen.routeName: (context) => PurchaseScreen(),
         },

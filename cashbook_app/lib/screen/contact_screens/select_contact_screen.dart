@@ -19,6 +19,7 @@ class SelectContactScreen extends StatefulWidget {
 }
 
 class _SelectContactScreenState extends State<SelectContactScreen> {
+  ScrollController _scrollController = ScrollController();
   TextEditingController searchTextController = TextEditingController();
   FocusNode searchTextfocusnode = FocusNode();
 
@@ -120,7 +121,7 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
       appBar: AppBar(
         title: const Text(
           "Select contact",
-          style: TextStyle(fontFamily: "Rubik"),
+          // style: TextStyle(fontFamily: "Rubik"),
         ),
         actions: [
           TextButton(
@@ -129,7 +130,7 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
                 : null,
             child: const Text(
               "Done",
-              style: TextStyle(fontFamily: "Rubik"),
+              // style: TextStyle(fontFamily: "Rubik"),
             ),
           )
         ],
@@ -199,63 +200,69 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
       return const Center(child: Text('Permission denied'));
 
     return (contactList == null)
-        ? const  CupertinoActivityIndicator()
-        : ListView.builder(
-            itemCount: contactList!.length,
-            itemBuilder: (context, i) => ListTile(
-                leading: ((i == isSelectedContactIndex &&
-                        !isSelectedContactIndex!.isNaN))
-                    ? const CircleAvatar(
-                        child: Icon(Icons.check),
-                        backgroundColor: Colors.blue,
-                      )
-                    : CircleAvatar(
-                        backgroundColor: colorsList[i],
-                        child: Image.asset(
-                          'assets/images/contect_icon.png',
-                          fit: BoxFit.fill,
-                        ),
+        ? const CircularProgressIndicator()
+        : Scrollbar(
+            // notificationPredicate: (notification) {
+
+            // },
+            controller: ScrollController(),
+            child: ListView.builder(
+                itemCount: contactList!.length,
+                itemBuilder: (context, i) => ListTile(
+                    leading: ((i == isSelectedContactIndex &&
+                            !isSelectedContactIndex!.isNaN))
+                        ? const CircleAvatar(
+                            child: Icon(Icons.check),
+                            backgroundColor: Colors.blue,
+                          )
+                        : CircleAvatar(
+                            backgroundColor: colorsList[i],
+                            child: Image.asset(
+                              'assets/images/contect_icon.png',
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                    subtitle: Text(
+                      '${contactList![i].phones.isNotEmpty ? contactList![i].phones.first.number.toString().replaceAll(" ", "").replaceFirst("+91", "") : '(none)'}',
+                      style: TextStyle(
+                          fontSize: ((i == isSelectedContactIndex &&
+                                  !isSelectedContactIndex!.isNaN))
+                              ? 15
+                              : 14,
+                          fontFamily: "Rubik"),
+                    ),
+                    title: Text(
+                      contactList![i].displayName,
+                      style: TextStyle(
+                        overflow: TextOverflow.fade,
+                        fontWeight: (((i == isSelectedContactIndex &&
+                                !isSelectedContactIndex!.isNaN)))
+                            ? FontWeight.w500
+                            : null,
+                        color: (((i == isSelectedContactIndex &&
+                                !isSelectedContactIndex!.isNaN)))
+                            ? Colors.blue
+                            : Colors.black,
+                        fontFamily: 'Rubik',
+                        fontSize: (((i == isSelectedContactIndex &&
+                                !isSelectedContactIndex!.isNaN)))
+                            ? 20
+                            : 16,
                       ),
-                subtitle: Text(
-                  '${contactList![i].phones.isNotEmpty ? contactList![i].phones.first.number.toString().replaceAll(" ", "").replaceFirst("+91", "") : '(none)'}',
-                  style: TextStyle(
-                      fontSize: ((i == isSelectedContactIndex &&
-                              !isSelectedContactIndex!.isNaN))
-                          ? 15
-                          : 14,
-                      fontFamily: "Rubik"),
-                ),
-                title: Text(
-                  contactList![i].displayName,
-                  style: TextStyle(
-                    overflow: TextOverflow.fade,
-                    fontWeight: (((i == isSelectedContactIndex &&
-                            !isSelectedContactIndex!.isNaN)))
-                        ? FontWeight.w500
-                        : null,
-                    color: (((i == isSelectedContactIndex &&
-                            !isSelectedContactIndex!.isNaN)))
-                        ? Colors.blue
-                        : Colors.black,
-                    fontFamily: 'Rubik',
-                    fontSize: (((i == isSelectedContactIndex &&
-                            !isSelectedContactIndex!.isNaN)))
-                        ? 20
-                        : 16,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    if (isSelectedContactIndex == null) {
-                      isSelectedContactIndex = i;
-                      selectedContact = contactList![i];
-                    } else if (isSelectedContactIndex == i) {
-                      isSelectedContactIndex = null;
-                    } else if (isSelectedContactIndex != i) {
-                      isSelectedContactIndex = i;
-                      selectedContact = contactList![i];
-                    }
-                  });
-                }));
+                    ),
+                    onTap: () {
+                      setState(() {
+                        if (isSelectedContactIndex == null) {
+                          isSelectedContactIndex = i;
+                          selectedContact = contactList![i];
+                        } else if (isSelectedContactIndex == i) {
+                          isSelectedContactIndex = null;
+                        } else if (isSelectedContactIndex != i) {
+                          isSelectedContactIndex = i;
+                          selectedContact = contactList![i];
+                        }
+                      });
+                    })),
+          );
   }
 }

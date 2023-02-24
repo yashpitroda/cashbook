@@ -1,3 +1,4 @@
+import 'package:cashbook_app/models/supplier.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +11,7 @@ import 'add_supplier_screen.dart';
 
 class ManageSupplierScreen extends StatefulWidget {
   static const String routeName = '/ManageSupplierScreen';
-  ManageSupplierScreen({super.key});
+  const ManageSupplierScreen({super.key});
 
   @override
   State<ManageSupplierScreen> createState() => _ManageSupplierScreenState();
@@ -104,7 +105,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
   Widget build(BuildContext context) {
     var mqhight = MediaQuery.of(context).size.height;
     var mqwidth = MediaQuery.of(context).size.width;
-    final items =
+    final _supplierlist =
         Provider.of<SupplierProvider>(context, listen: true).supplierList;
 
     return Scaffold(
@@ -114,182 +115,187 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
           style: TextStyle(fontFamily: "Rubik"),
         ),
       ),
-      body: (_isloading)
-          ? const Center(
-              child: CupertinoActivityIndicator(),
-            )
-          : GestureDetector(
-              onTap: () {
-                searchTextfocusnode.unfocus();
-              },
-              child: Container(
-                color: Colors.grey.withOpacity(0.09),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: mqhight * 0.01,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: CustomSearchTextField(
-                          customController: searchTextController,
-                          labeltext: "search",
-                          hinttext: null,
-                          textinputtype: TextInputType.name,
-                          customfocusnode: searchTextfocusnode,
-                          customtextinputaction: null,
-                          customOnChangedFuction:
-                              Utility.SearchInSupplierListInProvider,
-                          customClearSearchFuction: clearTextOnSearchTextField),
-                    ),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 8),
-                    //   child: TextField(
-                    //     focusNode: searchTextfocusnode,
-                    //     onChanged: (value) {
-                    //       Provider.of<SupplierProvider>(context, listen: false)
-                    //           .filterSearchResults(query: value);
-                    //     },
-                    //     controller: searchTextController,
-                    //     cursorColor: Colors.black,
-                    //     style: const TextStyle(
-                    //         color: Colors.black,
-                    //         fontWeight: FontWeight.w500,
-                    //         fontSize: 16),
-                    //     decoration: InputDecoration(
-                    //       suffixIcon: searchTextfocusnode.hasFocus
-                    //           ? IconButton(
-                    //               icon: Icon(Icons.clear),
-                    //               onPressed: () {
-                    //                 searchTextController.clear();
-                    //                 searchTextfocusnode.unfocus();
-                    //                 Utility.refreshSupplier(context);
-                    //               },
-                    //             )
-                    //           : null,
-                    //       prefixIcon: Icon(Icons.search_rounded),
-                    //       border: OutlineInputBorder(
-                    //         borderRadius: BorderRadius.all(Radius.circular(14)),
-                    //       ),
-                    //       labelText: "Search",
-                    //       labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-                    //       hintStyle: TextStyle(fontSize: 13),
-                    //       contentPadding:
-                    //           EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    //     ),
-                    //   ),
-                    // ),
-                    SizedBox(
-                      height: mqhight * 0.02,
-                    ),
-                    Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () => Utility.refreshSupplier(context),
-                        child: ListView.builder(
-                          itemCount: items.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 6),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                elevation: 0,
-                                child: Column(
-                                  children: [
-                                    ListTile(
-                                      title: Text(
-                                        "${items[index].firmname}",
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: "Rubik"),
-                                      ),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const SizedBox(
-                                            height: 4,
-                                          ),
-                                          Text(
-                                            "${items[index].sname}",
-                                            style: const TextStyle(
-                                              fontFamily: "Rubik",
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 1,
-                                          ),
-                                          Text(
-                                            "+91 ${items[index].smobileno}",
-                                            style: const TextStyle(
-                                              fontFamily: "Rubik",
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 4,
-                                          ),
-                                        ],
-                                      ),
-                                      trailing: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pushNamed(
-                                                  AddupdateSupplierScreen
-                                                      .routeName,
-                                                  arguments: items[index].sid);
-                                            },
-                                            icon: const Icon(
-                                              Icons.edit,
-                                              color: Colors.blue,
-                                            ),
-                                          ),
-                                          IconButton(
-                                            onPressed: () => _onTapOnDelete(
-                                                smobileno:
-                                                    items[index].smobileno,
-                                                useremail: currentUser!.email
-                                                    .toString()),
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    // Divider(
-                                    //   thickness: 1.4,
-                                    // )
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
+      body: Visibility(
+          visible: (!_isloading),
+          replacement: Utility.loadingIndicator(),
+          child: _body(_supplierlist, mqhight, context)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Add your onPressed code here!
-          // Navigator.of(context).pushNamed(AddClientScreen.routeName);
           Navigator.of(context).pushNamed(
             AddupdateSupplierScreen.routeName,
           );
-          // .then((_) => _refreshProducts(context));
         },
         label: const Text('Add supplier'),
         icon: const Icon(Icons.add),
       ),
+    );
+  }
+
+  GestureDetector _body(
+      List<Supplier> _supplierlist, double mqhight, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        searchTextfocusnode.unfocus();
+      },
+      child: (_supplierlist.isEmpty)
+          ? Center(
+              child: Text("Empty List"),
+            )
+          : Container(
+              color: Colors.grey.withOpacity(0.09),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: mqhight * 0.01,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: CustomSearchTextField(
+                        customController: searchTextController,
+                        labeltext: "search",
+                        hinttext: null,
+                        textinputtype: TextInputType.name,
+                        customfocusnode: searchTextfocusnode,
+                        customtextinputaction: null,
+                        customOnChangedFuction:
+                            Utility.SearchInSupplierListInProvider,
+                        customClearSearchFuction: clearTextOnSearchTextField),
+                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 8),
+                  //   child: TextField(
+                  //     focusNode: searchTextfocusnode,
+                  //     onChanged: (value) {
+                  //       Provider.of<SupplierProvider>(context, listen: false)
+                  //           .filterSearchResults(query: value);
+                  //     },
+                  //     controller: searchTextController,
+                  //     cursorColor: Colors.black,
+                  //     style: const TextStyle(
+                  //         color: Colors.black,
+                  //         fontWeight: FontWeight.w500,
+                  //         fontSize: 16),
+                  //     decoration: InputDecoration(
+                  //       suffixIcon: searchTextfocusnode.hasFocus
+                  //           ? IconButton(
+                  //               icon: Icon(Icons.clear),
+                  //               onPressed: () {
+                  //                 searchTextController.clear();
+                  //                 searchTextfocusnode.unfocus();
+                  //                 Utility.refreshSupplier(context);
+                  //               },
+                  //             )
+                  //           : null,
+                  //       prefixIcon: Icon(Icons.search_rounded),
+                  //       border: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.all(Radius.circular(14)),
+                  //       ),
+                  //       labelText: "Search",
+                  //       labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+                  //       hintStyle: TextStyle(fontSize: 13),
+                  //       contentPadding:
+                  //           EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                  //     ),
+                  //   ),
+                  // ),
+                  SizedBox(
+                    height: mqhight * 0.02,
+                  ),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () => Utility.refreshSupplier(context),
+                      child: ListView.builder(
+                        itemCount: _supplierlist.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              elevation: 0,
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                      "${_supplierlist[index].firmname}",
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "Rubik"),
+                                    ),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                        Text(
+                                          "${_supplierlist[index].sname}",
+                                          style: const TextStyle(
+                                            fontFamily: "Rubik",
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 1,
+                                        ),
+                                        Text(
+                                          "+91 ${_supplierlist[index].smobileno}",
+                                          style: const TextStyle(
+                                            fontFamily: "Rubik",
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                      ],
+                                    ),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pushNamed(
+                                                AddupdateSupplierScreen
+                                                    .routeName,
+                                                arguments:
+                                                    _supplierlist[index].sid);
+                                          },
+                                          icon: const Icon(
+                                            Icons.edit,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: () => _onTapOnDelete(
+                                              smobileno: _supplierlist[index]
+                                                  .smobileno,
+                                              useremail: currentUser!.email
+                                                  .toString()),
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Divider(
+                                  //   thickness: 1.4,
+                                  // )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
     );
   }
 }

@@ -59,7 +59,7 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Supplier> items =
+    List<Supplier> _supplierlist =
         Provider.of<SupplierProvider>(context, listen: true).supplierList;
 
     var mqhight = MediaQuery.of(context).size.height;
@@ -79,148 +79,159 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
               icon: Icon(Icons.settings))
         ],
       ),
-      body: (_isloading)
-          ? const Center(
-              child: CupertinoActivityIndicator(
-                radius: 13,
-              ),
-            )
-          : GestureDetector(
-              onTap: () {
-                searchTextfocusnode.unfocus();
-              },
-              child: Container(
-                color: Colors.grey.withOpacity(0.09),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: Column(
-                    children: [
-                      // TextField(
-                      //   onChanged: (value) {
-                      //     Provider.of<SupplierProvider>(context, listen: false)
-                      //         .filterSearchResults(query: value);
-                      //   },
-                      //   focusNode: searchTextfocusnode,
-                      //   controller: searchTextController,
-                      //   cursorColor: Colors.black,
-                      //   style: const TextStyle(
-                      //       color: Colors.black,
-                      //       fontWeight: FontWeight.w500,
-                      //       fontSize: 16),
-                      //   decoration: InputDecoration(
-                      //     suffixIcon: searchTextfocusnode.hasFocus
-                      //         ? IconButton(
-                      //             icon: Icon(Icons.clear),
-                      //             onPressed: () {
-                      //               searchTextController.clear();
-                      //               searchTextfocusnode.unfocus();
-                      //               Utility.refreshSupplier(context);
-                      //             },
-                      //           )
-                      //         : null,
-                      //     prefixIcon: Icon(Icons.search_rounded),
-                      //     border: OutlineInputBorder(
-                      //       borderRadius: BorderRadius.all(Radius.circular(14)),
-                      //     ),
-                      //     labelText: "Search",
-                      //     labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-                      //     hintStyle: TextStyle(fontSize: 13),
-                      //     contentPadding:
-                      //         EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                      //   ),
-                      // ),
-                      CustomSearchTextField(
-                          customController: searchTextController,
-                          labeltext: "search",
-                          hinttext: null,
-                          textinputtype: TextInputType.name,
-                          customfocusnode: searchTextfocusnode,
-                          customtextinputaction: null,
-                          customOnChangedFuction:
-                              Utility.SearchInSupplierListInProvider,
-                          customClearSearchFuction: clearTextOnSearchTextField),
-                      SizedBox(
-                        height: mqhight * 0.015,
-                      ),
-                      Expanded(
-                        child: RefreshIndicator(
-                          onRefresh: () => Utility.refreshSupplier(context),
-                          child: ListView.builder(
-                            itemCount: items.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                elevation: 0,
-                                color: Colors.white,
-                                child: RadioListTile(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 0),
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${items[index].firmname}",
-                                        style:const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: "Rubik"),
-                                      ),
-                                      Text(
-                                        "${items[index].entrydatetime.toString().split(' ')[0]}",
-                                        style: const TextStyle(
-                                            fontSize: 12, fontFamily: "Rubik"),
-                                      ),
-                                    ],
-                                  ),
+      body:
+          //  (_isloading)
+          //     ? const Center(
+          //         child: CircularProgressIndicator(),
+          //       )
+          //     :
+          Visibility(
+              visible: (!_isloading),
 
-                                  // "${items[index].cname} AND cid=${items[index].cid}"
-
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${items[index].sname} : +91 ${items[index].smobileno}",
-                                        style: const TextStyle(
-                                            fontFamily: "Rubik"),
-                                      ),
-                                    ],
-                                  ),
-                                  // subtitle: Text(" ${items[index].entrydatetime}"),
-                                  value: items[index],
-                                  groupValue: selectedSuppilerObj,
-                                  // toggleable: true,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedSuppilerObj = value;
-                                    });
-                                    // print(selectedSuppilerObj);
-                                    Navigator.of(context)
-                                        .pop(selectedSuppilerObj);
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+              // maintainAnimation: true,
+              replacement: Utility.loadingIndicator(),
+              child: _body(_supplierlist, mqhight, context)),
+      // _body(_supplierlist, mqhight, context),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Add your onPressed code here!
           Navigator.of(context).pushNamed(AddupdateSupplierScreen.routeName);
-          // .then((_) => _refreshProducts(context));
         },
         label: const Text('Add Supplier'),
         icon: const Icon(Icons.add),
       ),
+    );
+  }
+
+  GestureDetector _body(
+      List<Supplier> _supplierlist, double mqhight, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        searchTextfocusnode.unfocus();
+      },
+      child: (_supplierlist.isEmpty)
+          ? Center(
+              child: Text("Empty List"),
+            )
+          : Container(
+              color: Colors.grey.withOpacity(0.09),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: Column(
+                  children: [
+                    // TextField(
+                    //   onChanged: (value) {
+                    //     Provider.of<SupplierProvider>(context, listen: false)
+                    //         .filterSearchResults(query: value);
+                    //   },
+                    //   focusNode: searchTextfocusnode,
+                    //   controller: searchTextController,
+                    //   cursorColor: Colors.black,
+                    //   style: const TextStyle(
+                    //       color: Colors.black,
+                    //       fontWeight: FontWeight.w500,
+                    //       fontSize: 16),
+                    //   decoration: InputDecoration(
+                    //     suffixIcon: searchTextfocusnode.hasFocus
+                    //         ? IconButton(
+                    //             icon: Icon(Icons.clear),
+                    //             onPressed: () {
+                    //               searchTextController.clear();
+                    //               searchTextfocusnode.unfocus();
+                    //               Utility.refreshSupplier(context);
+                    //             },
+                    //           )
+                    //         : null,
+                    //     prefixIcon: Icon(Icons.search_rounded),
+                    //     border: OutlineInputBorder(
+                    //       borderRadius: BorderRadius.all(Radius.circular(14)),
+                    //     ),
+                    //     labelText: "Search",
+                    //     labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+                    //     hintStyle: TextStyle(fontSize: 13),
+                    //     contentPadding:
+                    //         EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    //   ),
+                    // ),
+                    CustomSearchTextField(
+                        customController: searchTextController,
+                        labeltext: "search",
+                        hinttext: null,
+                        textinputtype: TextInputType.name,
+                        customfocusnode: searchTextfocusnode,
+                        customtextinputaction: null,
+                        customOnChangedFuction:
+                            Utility.SearchInSupplierListInProvider,
+                        customClearSearchFuction: clearTextOnSearchTextField),
+                    SizedBox(
+                      height: mqhight * 0.015,
+                    ),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: () => Utility.refreshSupplier(context),
+                        child: ListView.builder(
+                          itemCount: _supplierlist.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              elevation: 0,
+                              color: Colors.white,
+                              child: RadioListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 0),
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "${_supplierlist[index].firmname}",
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "Rubik"),
+                                    ),
+                                    Text(
+                                      "${_supplierlist[index].entrydatetime.toString().split(' ')[0]}",
+                                      style: const TextStyle(
+                                          fontSize: 12, fontFamily: "Rubik"),
+                                    ),
+                                  ],
+                                ),
+
+                                // "${items[index].cname} AND cid=${items[index].cid}"
+
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${_supplierlist[index].sname} : +91 ${_supplierlist[index].smobileno}",
+                                      style:
+                                          const TextStyle(fontFamily: "Rubik"),
+                                    ),
+                                  ],
+                                ),
+                                // subtitle: Text(" ${items[index].entrydatetime}"),
+                                value: _supplierlist[index],
+                                groupValue: selectedSuppilerObj,
+                                // toggleable: true,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedSuppilerObj = value;
+                                  });
+                                  // print(selectedSuppilerObj);
+                                  Navigator.of(context)
+                                      .pop(selectedSuppilerObj);
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

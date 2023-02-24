@@ -9,15 +9,20 @@ import '../provider/supplier_provider.dart';
 class Utility {
   // final currentUser = FirebaseAuth.instance.currentUser;
   static Widget loadingIndicator() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+  static Widget loadingIndicatorWithScafold() {
     return const Scaffold(
-      body: Center(
+      body:  Center(
         child: CircularProgressIndicator(),
       ),
     );
   }
 
-  static const BASEURL = "http://192.168.43.144:9000";
-  // static const BASEURL = "http://192.168.137.45:9000";
+  // static const BASEURL = "http://192.168.43.144:9000";
+  static const BASEURL = "http://192.168.0.103:9000";
   static const CHECK_STATUS = "success";
   // static const BASEURL = "http://192.168.1.33:9000";
 
