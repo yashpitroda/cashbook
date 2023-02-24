@@ -54,25 +54,25 @@ class PurchaseScreen extends StatelessWidget {
         //       ],
         //     )),
       ),
-      body: Stack(
-        children: [
-          (purchaselist.isEmpty)
-              ? const Center(
-                  child: Text("Empty List"),
-                )
-              : Container(
-                  child:
-                      //  (purchaselist.isEmpty)
-                      //     ? Container(child: Center(child: Text("Empty...")))
-                      //     :
-                      Container(
-                    color: Colors.grey.withOpacity(0.09),
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        await Utility.refreshSupplier(context).then((_) async {
-                          await Utility.refreshPurchase(context);
-                        });
-                      },
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await Utility.refreshSupplier(context).then((_) async {
+            await Utility.refreshPurchase(context);
+          });
+        },
+        child: Stack(
+          children: [
+            (purchaselist.isEmpty)
+                ? const Center(
+                    child: Text("Empty List"),
+                  )
+                : Container(
+                    child:
+                        //  (purchaselist.isEmpty)
+                        //     ? Container(child: Center(child: Text("Empty...")))
+                        //     :
+                        Container(
+                      color: Colors.grey.withOpacity(0.09),
                       child: Scrollbar(
                         child: SingleChildScrollView(
                           controller: _scrollcontroller,
@@ -168,12 +168,12 @@ class PurchaseScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-          Align(
-            alignment: AlignmentDirectional.bottomStart,
-            child: bottomButtonCard(context),
-          )
-        ],
+            Align(
+              alignment: AlignmentDirectional.bottomStart,
+              child: bottomButtonCard(context),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -8,6 +8,25 @@ import '../provider/supplier_provider.dart';
 
 class Utility {
   // final currentUser = FirebaseAuth.instance.currentUser;
+   static Route createRoute({required double dx,required double dy,required Function() customwidget}) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => customwidget(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        // const begin = Offset(0.0, 1.0);
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
   static Widget loadingIndicator() {
     return const Center(
       child: CircularProgressIndicator(),

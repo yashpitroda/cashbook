@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cashbook_app/models/current_user.dart';
 import 'package:cashbook_app/provider/current_user_provider.dart';
+import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,28 @@ class HomeScreen extends StatelessWidget {
     Key? key,
   }) : super(key: key);
   static const routeName = '/home';
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => PurchaseScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        // const end = Offset(0.0, 1.0);
+        const begin = Offset(1.0, 0.0);
+
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -99,7 +122,8 @@ class HomeScreen extends StatelessWidget {
           //   Image.network(cUser.userimageurl.toString()),
           ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(PurchaseScreen.routeName);
+                Navigator.of(context).push(_createRoute());
+                // Navigator.of(context).pushNamed(PurchaseScreen.routeName);
 //               Navigator.of(MaterialApp).push(
 //   MaterialPageRoute(builder: (MaterialAppContext) => ScreenB())
 // )
