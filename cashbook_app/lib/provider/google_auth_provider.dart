@@ -33,6 +33,7 @@ class GauthProvider extends ChangeNotifier {
       }
     }
   }
+  
 
   Future<bool> adduserindatabase(BuildContext context, String username,
       String useremail, String userimageurl) async {

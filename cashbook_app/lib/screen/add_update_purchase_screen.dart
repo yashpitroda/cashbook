@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:cashbook_app/models/account.dart';
 import 'package:cashbook_app/models/supplier.dart';
@@ -7,10 +6,8 @@ import 'package:cashbook_app/provider/account_provider.dart';
 import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/screen/select_supplier_screen.dart';
 import 'package:cashbook_app/utill/utility.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/supplier_provider.dart';
@@ -253,13 +250,19 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
 
   void _gotoSelectClintScreen() {
     Navigator.of(context)
-        .pushNamed(SelectSupplierScreen.routeName)
+        .pushNamed(SelectSupplierScreen.routeName,
+            arguments:
+                (selectedSupplierobj == null) ? null : selectedSupplierobj!.sid)
         .then((value) {
       selectedSupplierobj = value as Supplier?;
       if (selectedSupplierobj != null) {
         firmNameController.text = selectedSupplierobj!.firmname;
         supplierNameController.text = selectedSupplierobj!.sname;
         supplierMobilenoController.text = selectedSupplierobj!.smobileno;
+      } else {
+        firmNameController.text = "";
+        supplierNameController.text = "";
+        supplierMobilenoController.text = "";
       }
       setState(() {
         doEmptyController();
@@ -316,7 +319,6 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
       return;
     }
     if (_isCREDIT_ADVANCE && paidamountController.text.isEmpty) {
-      print("object");
       Utility.displaysnackbar(
           context: context, message: "Enter paid-amount first");
       return;
@@ -361,14 +363,16 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
           context: context,
           builder: (ctx) {
             return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
               title: const Text('A error occurred!'),
-              content: Text('somethings wents wrong.${e}'),
+              content: Text('somethings wents wrong.($e)'),
               actions: [
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(ctx).pop();
                   },
-                  child: Text("okey"),
+                  child: const Text("Okey"),
                 ),
               ],
             );
@@ -384,95 +388,183 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     // await Provider.of<accountProvider>(ctx, listen: false).fetchAccount();
 
     await showModalBottomSheet(
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12), topRight: Radius.circular(12))),
         context: ctx,
         builder: (_) {
           List<Account> accountlist =
               Provider.of<accountProvider>(ctx).getAccountList;
           return Container(
-            height: 400,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  (accountlist.isEmpty)
-                      ? Center(
-                          child: Text("Empty List"),
-                        )
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          // itemCount: list.length,
-                          itemCount: accountlist.length,
-                          itemBuilder: (context, index) {
-                            return
-                                // ListTile(
-                                //   title: Text(list[index].accountName!),
-                                //   subtitle: Text(list[index].balance!),
-                                // );
-                                Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              elevation: 0,
-                              color: Colors.white,
-                              child: RadioListTile(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 0),
-                                title: Row(
+            height: 450,
+            color: Colors.grey.withOpacity(0.09),
+            child: Scrollbar(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 1,
+                    ),
+                    Container(
+                      // color: Colors.amber,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Select an account",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(
+                                    // fontFamily: "Rubik",
+                                    // color: Colors.green.shade600,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            OutlinedButton(
+                                onPressed: () async {
+                                  await addNewAccount();
+                                },
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0))),
+                                ),
+                                child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "${accountlist[index].accountName!}",
-                                      // "${list[index].accountName!}",
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Rubik"),
+                                    Icon(
+                                      Icons.add,
+                                      size: 28,
+                                    ),
+                                    SizedBox(
+                                      width: 4,
                                     ),
                                     Text(
-                                      Utility.dateFormat_DD_MonthName_YYYY()
-                                          .format(accountlist[index].date!),
-                                      // .format(list[index].date!),
-                                      style: const TextStyle(
-                                          fontSize: 12, fontFamily: "Rubik"),
-                                    ),
+                                      "Add account",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium!
+                                          .copyWith(
+                                            // fontFamily: "Rubik",
+                                            color: Colors.blue,
+                                            fontSize: 16,
+                                            letterSpacing: 0.4,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                    )
                                   ],
-                                ),
-
-                                // "${items[index].cname} AND cid=${items[index].cid}"
-
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${accountlist[index].balance!}",
-                                      // "",
-                                      style:
-                                          const TextStyle(fontFamily: "Rubik"),
-                                    ),
-                                  ],
-                                ),
-                                // subtitle: Text(" ${items[index].entrydatetime}"),
-                                value: accountlist[index],
-                                groupValue: selectedAccountObj,
-                                // toggleable: true,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedAccountObj = value;
-                                  });
-                                  // print(selectedSuppilerObj);
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            );
-                          },
+                                )),
+                          ],
                         ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await addNewAccount();
-                    },
-                    child: Text("add new account"),
-                  ),
-                ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 1,
+                    ),
+                    (accountlist.isEmpty)
+                        ? Center(
+                            child: Text("Empty List"),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              // itemCount: list.length,
+                              itemCount: accountlist.length,
+                              itemBuilder: (context, index) {
+                                return
+                                    // ListTile(
+                                    //   title: Text(list[index].accountName!),
+                                    //   subtitle: Text(list[index].balance!),
+                                    // );
+                                    Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  elevation: 0,
+                                  color: Colors.white,
+                                  child: RadioListTile(
+                                    contentPadding: const EdgeInsets.only(
+                                        right: 8, top: 4, bottom: 4),
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            "${accountlist[index].accountName!}",
+                                            // "${list[index].accountName!}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium!
+                                                .copyWith(
+                                                  // fontFamily: "Rubik",
+                                                  // color: Colors.green.shade600,
+                                                  fontSize: 16,
+                                                  letterSpacing: 0.4,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                          ),
+                                        ),
+                                        Flexible(
+                                          child: Text(
+                                            "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: accountlist[index].balance!, decimalDigits: 2)} ",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelSmall!
+                                                .copyWith(
+                                                    fontFamily: "Rubik",
+                                                    color:
+                                                        Colors.green.shade700,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 16),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    // "${items[index].cname} AND cid=${items[index].cid}"
+
+                                    // subtitle: Column(
+                                    //   crossAxisAlignment:
+                                    //       CrossAxisAlignment.start,
+                                    //   children: [
+                                    //     Text(
+                                    //       "${accountlist[index].balance!}",
+                                    //       // "",
+                                    //       style: const TextStyle(
+                                    //           fontFamily: "Rubik"),
+                                    //     ),
+                                    //   ],
+                                    // ),
+                                    // subtitle: Text(" ${items[index].entrydatetime}"),
+                                    value: accountlist[index],
+                                    groupValue: selectedAccountObj,
+                                    // toggleable: true,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedAccountObj = value;
+                                      });
+                                      // print(selectedSuppilerObj);
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                  ],
+                ),
               ),
             ),
           );
@@ -481,13 +573,24 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
 
   Future<void> addNewAccount() async {
     TextEditingController accountNameController = TextEditingController();
+    FocusNode accountNameFocusNode = FocusNode();
+    FocusNode intialAmountFocusNoder = FocusNode();
     TextEditingController intialAmountController = TextEditingController();
     await showCupertinoDialog(
         // showDialog is also future fuction
         context: context,
         builder: (ctx) {
           return AlertDialog(
-            title: Center(child: const Text('Add new account')),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            title: Text(
+              'Add new account',
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    // fontFamily: "Rubik",
+                    // color: Colors.green.shade600,
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -498,57 +601,85 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                     triling_iconname: null,
                     leadding_iconname: null,
                     textinputtype: TextInputType.name,
-                    customfocusnode: null,
-                    customtextinputaction: null),
-                SizedBox(
+                    customfocusnode: accountNameFocusNode,
+                    customtextinputaction: TextInputAction.next),
+                const SizedBox(
                   height: 6,
                 ),
                 CustomTextField(
                     customController: intialAmountController,
-                    labeltext: "Intial Amount",
+                    labeltext: "Intial amount",
                     hinttext: null,
                     triling_iconname: null,
                     leadding_iconname: null,
                     textinputtype: TextInputType.number,
-                    customfocusnode: null,
-                    customtextinputaction: null)
+                    customfocusnode: intialAmountFocusNoder,
+                    customtextinputaction: TextInputAction.done)
               ],
             ),
             actions: [
-              // ElevatedButton(
+              OutlinedButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  style: ButtonStyle(
+                    // shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    //     borderRadius: BorderRadius.circular(30.0))),
+                    padding: MaterialStateProperty.all(
+                        EdgeInsets.symmetric(vertical: 8, horizontal: 14)),
+                  ),
+                  child: Text(
+                    "Cancel",
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          // fontFamily: "Rubik",
+                          color: Colors.blue,
+                          fontSize: 14,
+                          letterSpacing: 0.4,
+                          fontWeight: FontWeight.w500,
+                        ),
+                  )),
+              // TextButton(
+              //   style: ButtonStyle(
+              //       padding: MaterialStateProperty.all(
+              //           EdgeInsets.symmetric(vertical: 12, horizontal: 14)),
+              //       backgroundColor: MaterialStateProperty.all(
+              //           Colors.grey.withOpacity(0.3))),
+              //   child: const Text('Cancel'),
               //   onPressed: () {
-              //     Navigator.of(ctx).pop();
+              //     Navigator.of(context).pop();
               //   },
-              //   child: Text("Done"),
               // ),
               TextButton(
                 style: ButtonStyle(
                     padding: MaterialStateProperty.all(
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 14)),
+                        const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 14)),
                     backgroundColor: MaterialStateProperty.all(
-                        Colors.grey.withOpacity(0.3))),
-                child: const Text('Cancel'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 14)),
-                    backgroundColor: MaterialStateProperty.all(
-                        Colors.blue.withOpacity(0.9))),
-                child: (_isloading)
-                    ? CircularProgressIndicator(
+                        Colors.blue.withOpacity(0.8))),
+                child: Text(
+                  'Save',
+                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                        // fontFamily: "Rubik",
                         color: Colors.white,
-                      )
-                    : const Text(
-                        'Save',
-                        style: TextStyle(color: Colors.white),
+                        fontSize: 14,
+                        letterSpacing: 0.4,
+                        fontWeight: FontWeight.w500,
                       ),
+                ),
                 onPressed: () async {
+                  if (accountNameController.text.isEmpty) {
+                    print("object");
+                    Utility.displaysnackbar(
+                        context: context, message: "Fill account name");
+                    return;
+                  }
+                  if (intialAmountController.text.isEmpty) {
+                    Utility.displaysnackbar(
+                        context: context, message: "Fill intial amount");
+                    return;
+                  }
+                  // _isloading = true;
                   // setState(() {
-                  //   _isloading = true;
                   // });
                   try {
                     await Provider.of<accountProvider>(context, listen: false)
@@ -556,15 +687,16 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                             accountName: accountNameController.text,
                             date: DateTime.now(),
                             initialAmount: intialAmountController.text)
-                        .then((_) async {
-                      await Provider.of<accountProvider>(context, listen: false)
-                          .fetchAccount()
-                          .then((_) {
-                        // setState(() {
-                        //   _isloading = false;
-                        // });
-                        Navigator.of(ctx).pop();
-                      });
+                        .then((_) {
+                      Navigator.of(ctx).pop();
+                      // Provider.of<accountProvider>(context, listen: false)
+                      //     .fetchAccount()
+                      //     .then((_) {
+                      //   _isloading = false;
+                      //   // setState(() {
+                      //   // });
+                      //   Navigator.of(ctx).pop();
+                      // });
                     });
                   } catch (e) {
                     await showDialog(
@@ -572,14 +704,16 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                         context: context,
                         builder: (ctx) {
                           return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                             title: const Text('A error occurred!'),
-                            content: Text('somethings wents wrong.$e'),
+                            content: Text('somethings wents wrong.($e)'),
                             actions: [
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.of(ctx).pop();
                                 },
-                                child: const Text("okey"),
+                                child: const Text("Okey"),
                               ),
                             ],
                           );
@@ -600,6 +734,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           "Add purchase",
         ),
@@ -641,12 +776,157 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                       const Divider(
                         thickness: 1.2,
                       ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          await selectAccount(context);
-                          print(selectedAccountObj!.accountName);
-                        },
-                        child: Text("select account"),
+                      // SizedBox(
+                      //   height: mqhight * 0.007,
+                      // ),
+                      // ElevatedButton(
+                      //   onPressed: () async {
+                      //     await selectAccount(context);
+                      //     print(selectedAccountObj!.accountName);
+                      //   },
+                      //   child: Text("select account"),
+                      // ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Account",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .copyWith(
+                                          letterSpacing: 0.3,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14),
+                                ),
+                                Card(
+                                  elevation: 1,
+                                  child: InkWell(
+                                    splashColor: Colors.blue.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(5),
+                                    onTap: () async {
+                                      await selectAccount(context);
+                                      print(selectedAccountObj!.accountName);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 6),
+                                      // height: 26,
+                                      // width: 170,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1, color: Colors.black45),
+                                          // color: Colors.grey.withOpacity(0.075),
+                                          color: Colors.blue.withOpacity(0.08),
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              // "${cashflowObj.accountObj!.accountName}",
+                                              (selectedAccountObj == null)
+                                                  ? "Select Account"
+                                                  : "${selectedAccountObj!.accountName}",
+                                              maxLines: 1,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .button!
+                                                  .copyWith(
+                                                      letterSpacing: 0.75,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black
+                                                          .withOpacity(0.8),
+                                                      fontSize: 14),
+                                            ),
+                                          ),
+                                          const Icon(
+                                            Icons.arrow_drop_down,
+                                            size: 26,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Category",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .copyWith(
+                                          letterSpacing: 0.3,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14),
+                                ),
+                                Card(
+                                  elevation: 1,
+                                  child: InkWell(
+                                    splashColor: Colors.blue.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(5),
+                                    onTap: () async {
+                                      await selectAccount(context);
+                                      print(selectedAccountObj!.accountName);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 6),
+                                      // height: 26,
+                                      // width: 170,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1, color: Colors.black45),
+                                          // color: Colors.grey.withOpacity(0.075),
+                                          color: Colors.blue.withOpacity(0.08),
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              // "${cashflowObj.accountObj!.accountName}",
+                                              (selectedAccountObj == null)
+                                                  ? "Select Category"
+                                                  : "${selectedAccountObj!.accountName}",
+                                              maxLines: 1,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .button!
+                                                  .copyWith(
+                                                      letterSpacing: 0.75,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black
+                                                          .withOpacity(0.8),
+                                                      fontSize: 14),
+                                            ),
+                                          ),
+                                          const Icon(
+                                            Icons.arrow_drop_down,
+                                            size: 26,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
 
                       billWithOrWithoutOption(mqwidth),
@@ -894,6 +1174,9 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                                                       onChangedInCREDIT(
                                                           value: value);
                                                     },
+                                                    keyboardType:
+                                                        TextInputType.number,
+
                                                     controller:
                                                         paidamountController,
                                                     cursorColor: Colors.black,
@@ -1335,8 +1618,8 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                   });
                   await Provider.of<SupplierProvider>(context, listen: false)
                       .fatchSupplier()
-                      .then((_) async {
-                    await Provider.of<PurchaseProvider>(context, listen: false)
+                      .then((_) {
+                    Provider.of<PurchaseProvider>(context, listen: false)
                         .fatchPurchase();
                   }).then((_) {
                     setState(() {

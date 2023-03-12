@@ -8,7 +8,10 @@ import '../provider/supplier_provider.dart';
 
 class Utility {
   // final currentUser = FirebaseAuth.instance.currentUser;
-   static Route createRoute({required double dx,required double dy,required Function() customwidget}) {
+  static Route createRoute(
+      {required double dx,
+      required double dy,
+      required Function() customwidget}) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => customwidget(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -27,21 +30,24 @@ class Utility {
       },
     );
   }
+
   static Widget loadingIndicator() {
     return const Center(
       child: CircularProgressIndicator(),
     );
   }
+
   static Widget loadingIndicatorWithScafold() {
     return const Scaffold(
-      body:  Center(
+      body: Center(
         child: CircularProgressIndicator(),
       ),
     );
   }
 
   // static const BASEURL = "http://192.168.43.144:9000";
-  static const BASEURL = "http://192.168.0.103:9000";
+  // static const BASEURL = "http://172.16.0.136:9000";
+  static const BASEURL = "http://192.168.43.144:9000";
   static const CHECK_STATUS = "success";
   // static const BASEURL = "http://192.168.1.33:9000";
 

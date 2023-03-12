@@ -1,12 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cashbook_app/models/current_user.dart';
-import 'package:cashbook_app/provider/current_user_provider.dart';
-import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cashbook_app/screen/add_in_payable_screen.dart';
 import 'package:cashbook_app/screen/purchase_screen.dart';
 import 'package:cashbook_app/screen/supplier_screen.dart';
 
@@ -23,7 +19,7 @@ class HomeScreen extends StatelessWidget {
       pageBuilder: (context, animation, secondaryAnimation) => PurchaseScreen(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         // const end = Offset(0.0, 1.0);
-        const begin = Offset(1.0, 0.0);
+        const begin = Offset(1, 0);
 
         const end = Offset.zero;
         const curve = Curves.ease;

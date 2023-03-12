@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
 class IsInstantOrCreditAdvanceCard extends StatelessWidget {
   const IsInstantOrCreditAdvanceCard({
     Key? key,
@@ -12,7 +10,7 @@ class IsInstantOrCreditAdvanceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 26,
-      width: (int.parse(isCustomC_cr) == 1) ? 130 : 130,
+      width: 130,
       decoration: BoxDecoration(
           // border: Border.all(
           //     width: 1,
@@ -25,7 +23,7 @@ class IsInstantOrCreditAdvanceCard extends StatelessWidget {
         child: Text(
           (int.parse(isCustomC_cr) == 1) ? "CREDIT/ADVANCE" : "INSTANT PAYMENT",
           style: TextStyle(
-            fontSize: (int.parse(isCustomC_cr) == 1) ? 12 : 12,
+            fontSize:  12,
             fontWeight: FontWeight.w600,
             color: (int.parse(isCustomC_cr) == 1)
                 ? Colors.teal[700]

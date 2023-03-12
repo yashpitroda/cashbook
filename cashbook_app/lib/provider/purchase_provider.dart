@@ -161,8 +161,8 @@ class PurchaseProvider extends ChangeNotifier {
       final responseData = json.decode(response.body);
       final status = responseData["status"];
       if (status == Utility.CHECK_STATUS) {
-        supplierProviderOBJ!.fatchSupplier();
-        fatchPurchase();
+       await supplierProviderOBJ!.fatchSupplier();
+       await fatchPurchase();
       }
     } catch (e) {
       print(e);

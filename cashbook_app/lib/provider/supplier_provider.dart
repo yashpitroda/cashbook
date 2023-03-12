@@ -142,7 +142,7 @@ class SupplierProvider with ChangeNotifier {
     }
     final responseData = json.decode(response.body);
     print(responseData);
-    fatchSupplier();
+   await fatchSupplier();
   }
 
   // ------------------------------findClientContactByCID-----------------------------------
@@ -171,7 +171,7 @@ class SupplierProvider with ChangeNotifier {
     }
     final responseData = json.decode(response.body);
     print(responseData);
-    fatchSupplier();
+   await fatchSupplier();
   }
 
   Future<void> deleteSupplier(
@@ -188,7 +188,7 @@ class SupplierProvider with ChangeNotifier {
       print('its products retruns data is not avalible in firebase server');
       return;
     }
-    fatchSupplier();
+    await fatchSupplier();
     print("detetion done");
   }
 }

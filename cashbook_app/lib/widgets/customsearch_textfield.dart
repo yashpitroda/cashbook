@@ -8,7 +8,6 @@ class CustomSearchTextField extends StatelessWidget {
     required this.hinttext,
     required this.textinputtype,
     required this.customfocusnode,
-    required this.customtextinputaction,
     required this.customOnChangedFuction,
     required this.customClearSearchFuction,
   }) : super(key: key);
@@ -20,16 +19,14 @@ class CustomSearchTextField extends StatelessWidget {
   final Function customClearSearchFuction;
   final TextInputType? textinputtype;
   final FocusNode? customfocusnode;
-  final TextInputAction? customtextinputaction;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       onChanged: (value) {
-        customOnChangedFuction(value,context);
+        customOnChangedFuction(value, context);
       },
-      textInputAction:
-          (customtextinputaction == null) ? null : customtextinputaction,
+      textInputAction: TextInputAction.search,
       focusNode: customfocusnode,
       controller: customController,
       cursorColor: Colors.black,
@@ -44,12 +41,15 @@ class CustomSearchTextField extends StatelessWidget {
               )
             : null,
         prefixIcon: Icon(Icons.search_rounded),
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(14)),
         ),
         labelText: (labeltext == null) ? null : "$labeltext",
-        labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-        hintStyle: TextStyle(fontSize: 13),
+        labelStyle: Theme.of(context)
+            .textTheme
+            .caption!
+            .copyWith(letterSpacing: 0.3, fontSize: 14),
+        hintStyle: const TextStyle(fontSize: 13),
         hintText: (hinttext == null) ? null : "$hinttext",
         contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
       ),

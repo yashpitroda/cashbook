@@ -13,7 +13,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-
 import 'firebase_options.dart';
 import 'provider/google_auth_provider.dart';
 import 'screen/auth_screen_final.dart';
@@ -63,7 +62,7 @@ class MyApp extends StatelessWidget {
         title: 'cashbook',
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
-            elevation: 0,
+            elevation: 0.4,
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
           ),
@@ -97,15 +96,17 @@ class MyApp extends StatelessWidget {
         routes: {
           LoadingScreen.routeName: (context) => const LoadingScreen(),
           AddInPayableScreen.routeName: (context) => const AddInPayableScreen(),
-          HomeScreen.routeName: (context) =>const HomeScreen(),
+          HomeScreen.routeName: (context) => const HomeScreen(),
           ClientScreen.routeName: (context) => ClientScreen(),
           SelectSupplierScreen.routeName: (context) => SelectSupplierScreen(),
           AddupdateSupplierScreen.routeName: (context) =>
               AddupdateSupplierScreen(),
-          ManageSupplierScreen.routeName: (context) =>const ManageSupplierScreen(),
-          SelectContactScreen.routeName: (context) => const SelectContactScreen(),
-          AddUpdatePurchaseScreen.routeName: (context) =>const
-              AddUpdatePurchaseScreen(),
+          ManageSupplierScreen.routeName: (context) =>
+              const ManageSupplierScreen(),
+          SelectContactScreen.routeName: (context) =>
+              const SelectContactScreen(),
+          AddUpdatePurchaseScreen.routeName: (context) =>
+              const AddUpdatePurchaseScreen(),
           PurchaseScreen.routeName: (context) => PurchaseScreen(),
         },
       ),

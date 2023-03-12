@@ -2,7 +2,6 @@ import 'package:cashbook_app/models/supplier.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -137,74 +136,73 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
       onTap: () {
         searchTextfocusnode.unfocus();
       },
-      child: (_supplierlist.isEmpty)
-          ? Center(
-              child: Text("Empty List"),
-            )
-          : Container(
-              color: Colors.grey.withOpacity(0.09),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: mqhight * 0.01,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: CustomSearchTextField(
-                        customController: searchTextController,
-                        labeltext: "search",
-                        hinttext: null,
-                        textinputtype: TextInputType.name,
-                        customfocusnode: searchTextfocusnode,
-                        customtextinputaction: null,
-                        customOnChangedFuction:
-                            Utility.SearchInSupplierListInProvider,
-                        customClearSearchFuction: clearTextOnSearchTextField),
-                  ),
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  //   child: TextField(
-                  //     focusNode: searchTextfocusnode,
-                  //     onChanged: (value) {
-                  //       Provider.of<SupplierProvider>(context, listen: false)
-                  //           .filterSearchResults(query: value);
-                  //     },
-                  //     controller: searchTextController,
-                  //     cursorColor: Colors.black,
-                  //     style: const TextStyle(
-                  //         color: Colors.black,
-                  //         fontWeight: FontWeight.w500,
-                  //         fontSize: 16),
-                  //     decoration: InputDecoration(
-                  //       suffixIcon: searchTextfocusnode.hasFocus
-                  //           ? IconButton(
-                  //               icon: Icon(Icons.clear),
-                  //               onPressed: () {
-                  //                 searchTextController.clear();
-                  //                 searchTextfocusnode.unfocus();
-                  //                 Utility.refreshSupplier(context);
-                  //               },
-                  //             )
-                  //           : null,
-                  //       prefixIcon: Icon(Icons.search_rounded),
-                  //       border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.all(Radius.circular(14)),
-                  //       ),
-                  //       labelText: "Search",
-                  //       labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-                  //       hintStyle: TextStyle(fontSize: 13),
-                  //       contentPadding:
-                  //           EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                  //     ),
-                  //   ),
-                  // ),
-                  SizedBox(
-                    height: mqhight * 0.02,
-                  ),
-                  Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () => Utility.refreshSupplier(context),
-                      child: ListView.builder(
+      child: Container(
+        color: Colors.grey.withOpacity(0.09),
+        child: Column(
+          children: [
+            SizedBox(
+              height: mqhight * 0.01,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: CustomSearchTextField(
+                  customController: searchTextController,
+                  labeltext: "search",
+                  hinttext: null,
+                  textinputtype: TextInputType.name,
+                  customfocusnode: searchTextfocusnode,
+                  customOnChangedFuction:
+                      Utility.SearchInSupplierListInProvider,
+                  customClearSearchFuction: clearTextOnSearchTextField),
+            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 8),
+            //   child: TextField(
+            //     focusNode: searchTextfocusnode,
+            //     onChanged: (value) {
+            //       Provider.of<SupplierProvider>(context, listen: false)
+            //           .filterSearchResults(query: value);
+            //     },
+            //     controller: searchTextController,
+            //     cursorColor: Colors.black,
+            //     style: const TextStyle(
+            //         color: Colors.black,
+            //         fontWeight: FontWeight.w500,
+            //         fontSize: 16),
+            //     decoration: InputDecoration(
+            //       suffixIcon: searchTextfocusnode.hasFocus
+            //           ? IconButton(
+            //               icon: Icon(Icons.clear),
+            //               onPressed: () {
+            //                 searchTextController.clear();
+            //                 searchTextfocusnode.unfocus();
+            //                 Utility.refreshSupplier(context);
+            //               },
+            //             )
+            //           : null,
+            //       prefixIcon: Icon(Icons.search_rounded),
+            //       border: OutlineInputBorder(
+            //         borderRadius: BorderRadius.all(Radius.circular(14)),
+            //       ),
+            //       labelText: "Search",
+            //       labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+            //       hintStyle: TextStyle(fontSize: 13),
+            //       contentPadding:
+            //           EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            //     ),
+            //   ),
+            // ),
+            SizedBox(
+              height: mqhight * 0.02,
+            ),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () => Utility.refreshSupplier(context),
+                child: (_supplierlist.isEmpty)
+                    ? Center(
+                        child: Text("Empty List"),
+                      )
+                    : ListView.builder(
                         itemCount: _supplierlist.length,
                         itemBuilder: (context, index) {
                           return Container(
@@ -291,11 +289,11 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
                           );
                         },
                       ),
-                    ),
-                  )
-                ],
               ),
-            ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

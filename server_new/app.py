@@ -357,7 +357,56 @@ async def accountfetchall():
         }
         accountTableDataList.append(temp)
     # print(supplierTableDataList)
-    print("/fatchsupplier Completed")
+    print("/fatchAccount Completed")
+    return {'datalist': accountTableDataList},200 
+
+@app.route('/category/addone',methods=['POST'])
+async def categoryaddone():
+    value=request.get_json()
+    categoryName =value [ "categoryName"]
+    type =value ['type']
+    date  =value ['date']
+    useremail  =value ['useremail']
+    
+    # insert in account
+    query=f"INSERT INTO category (categoryName, date, useremail,type) VALUES ('{categoryName}', '{date}', '{useremail}','{type}');"
+    res_map= await utills.INSERT_DELETE_UPDATE_QUERY(query=query)
+    categoryId=res_map['id']
+
+    if((res_map['status']=="success")):
+        return {'status':"success"},200
+    else:
+        return {'status':"database error"},200
+    
+@app.route('/category/fetchall',methods=['POST'])
+async def categoryfetchall():
+    """body
+    {"useremail":"yashpitroda200@gmail.com",
+    ""
+    }
+    """
+    value=request.get_json()
+    requird=['useremail',"type"]
+    if not all(key in value for key in requird):
+         return {'error':'cmobile will be None or null','status':'fail'},400
+    useremail=value['useremail']
+    type=value['type']
+    
+    query=f"SELECT * FROM category WHERE useremail='{useremail} and type='{type}' ORDER BY  categoryName ASC"
+    result=await utills.SELECT_QUERY_FETCHALL(query=query) #result hold list of tupple -- [(),(),()]
+    accountTableDataList=[]
+    for row in result:
+        categoryId,categoryName,useremail,date=row # i is tupple
+        temp={
+            "categoryId":categoryId,
+            "categoryName":categoryName,
+            "type":type,
+            "useremail":useremail,    
+            "date":date,
+        }
+        accountTableDataList.append(temp)
+    # print(supplierTableDataList)
+    print("/fatchcategory Completed")
     return {'datalist': accountTableDataList},200 
 
    

@@ -26,7 +26,8 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
 
   var _isInit = true;
   var _isloading = false;
-  var selectedSuppilerObj;
+  String? selectedSupplierSid;
+  Supplier? selectedSupplierObj;
   bool issearchon = false;
   @override
   void didChangeDependencies() {
@@ -38,9 +39,15 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
           .fatchSupplier()
           .then((_) {
         setState(() {
+          final args = ModalRoute.of(context)!.settings.arguments;
+          final sid = args;
+          if (sid != null) {
+            selectedSupplierSid = sid as String?;
+          }
           _isloading = false;
         });
       });
+
       // widget.duplicateItems =
       //     Provider.of<ClientContactProvider>(context).clientContactList;
       // items.addAll(duplicateItems);
@@ -108,67 +115,66 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
       onTap: () {
         searchTextfocusnode.unfocus();
       },
-      child: (_supplierlist.isEmpty)
-          ? Center(
-              child: Text("Empty List"),
-            )
-          : Container(
-              color: Colors.grey.withOpacity(0.09),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Column(
-                  children: [
-                    // TextField(
-                    //   onChanged: (value) {
-                    //     Provider.of<SupplierProvider>(context, listen: false)
-                    //         .filterSearchResults(query: value);
-                    //   },
-                    //   focusNode: searchTextfocusnode,
-                    //   controller: searchTextController,
-                    //   cursorColor: Colors.black,
-                    //   style: const TextStyle(
-                    //       color: Colors.black,
-                    //       fontWeight: FontWeight.w500,
-                    //       fontSize: 16),
-                    //   decoration: InputDecoration(
-                    //     suffixIcon: searchTextfocusnode.hasFocus
-                    //         ? IconButton(
-                    //             icon: Icon(Icons.clear),
-                    //             onPressed: () {
-                    //               searchTextController.clear();
-                    //               searchTextfocusnode.unfocus();
-                    //               Utility.refreshSupplier(context);
-                    //             },
-                    //           )
-                    //         : null,
-                    //     prefixIcon: Icon(Icons.search_rounded),
-                    //     border: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.all(Radius.circular(14)),
-                    //     ),
-                    //     labelText: "Search",
-                    //     labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
-                    //     hintStyle: TextStyle(fontSize: 13),
-                    //     contentPadding:
-                    //         EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    //   ),
-                    // ),
-                    CustomSearchTextField(
-                        customController: searchTextController,
-                        labeltext: "search",
-                        hinttext: null,
-                        textinputtype: TextInputType.name,
-                        customfocusnode: searchTextfocusnode,
-                        customtextinputaction: null,
-                        customOnChangedFuction:
-                            Utility.SearchInSupplierListInProvider,
-                        customClearSearchFuction: clearTextOnSearchTextField),
-                    SizedBox(
-                      height: mqhight * 0.015,
-                    ),
-                    Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () => Utility.refreshSupplier(context),
-                        child: ListView.builder(
+      child: Container(
+        color: Colors.grey.withOpacity(0.09),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Column(
+            children: [
+              // TextField(
+              //   onChanged: (value) {
+              //     Provider.of<SupplierProvider>(context, listen: false)
+              //         .filterSearchResults(query: value);
+              //   },
+              //   focusNode: searchTextfocusnode,
+              //   controller: searchTextController,
+              //   cursorColor: Colors.black,
+              //   style: const TextStyle(
+              //       color: Colors.black,
+              //       fontWeight: FontWeight.w500,
+              //       fontSize: 16),
+              //   decoration: InputDecoration(
+              //     suffixIcon: searchTextfocusnode.hasFocus
+              //         ? IconButton(
+              //             icon: Icon(Icons.clear),
+              //             onPressed: () {
+              //               searchTextController.clear();
+              //               searchTextfocusnode.unfocus();
+              //               Utility.refreshSupplier(context);
+              //             },
+              //           )
+              //         : null,
+              //     prefixIcon: Icon(Icons.search_rounded),
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.all(Radius.circular(14)),
+              //     ),
+              //     labelText: "Search",
+              //     labelStyle: TextStyle(letterSpacing: 1, fontSize: 14),
+              //     hintStyle: TextStyle(fontSize: 13),
+              //     contentPadding:
+              //         EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+              //   ),
+              // ),
+              CustomSearchTextField(
+                  customController: searchTextController,
+                  labeltext: "search",
+                  hinttext: null,
+                  textinputtype: TextInputType.name,
+                  customfocusnode: searchTextfocusnode,
+                  customOnChangedFuction:
+                      Utility.SearchInSupplierListInProvider,
+                  customClearSearchFuction: clearTextOnSearchTextField),
+              SizedBox(
+                height: mqhight * 0.015,
+              ),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () => Utility.refreshSupplier(context),
+                  child: (_supplierlist.isEmpty)
+                      ? Center(
+                          child: Text("Empty List"),
+                        )
+                      : ListView.builder(
                           itemCount: _supplierlist.length,
                           itemBuilder: (context, index) {
                             return Card(
@@ -177,6 +183,8 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
                               elevation: 0,
                               color: Colors.white,
                               child: RadioListTile(
+                                // dense: true,
+                                // toggleable: true,
                                 contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 4, vertical: 0),
                                 title: Row(
@@ -211,27 +219,34 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
                                   ],
                                 ),
                                 // subtitle: Text(" ${items[index].entrydatetime}"),
-                                value: _supplierlist[index],
-                                groupValue: selectedSuppilerObj,
-                                // toggleable: true,
+                                value: _supplierlist[index].sid,
+                                groupValue: selectedSupplierSid,
+                                // value: selectedsid,
+                                // groupValue: selectedsid,
                                 onChanged: (value) {
+                                  print("mnmnm");
+                                  print(value);
                                   setState(() {
-                                    selectedSuppilerObj = value;
+                                    selectedSupplierSid = value;
+                                    selectedSupplierObj =
+                                        Provider.of<SupplierProvider>(context,
+                                                listen: false)
+                                            .findSupplierBySID(sid: value!);
                                   });
-                                  // print(selectedSuppilerObj);
+                                  // // print(selectedSuppilerObj);
                                   Navigator.of(context)
-                                      .pop(selectedSuppilerObj);
+                                      .pop(selectedSupplierObj);
                                 },
                               ),
                             );
                           },
                         ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
-            ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
