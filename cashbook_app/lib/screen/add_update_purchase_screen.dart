@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:cashbook_app/models/account.dart';
+import 'package:cashbook_app/models/category.dart';
 import 'package:cashbook_app/models/supplier.dart';
 import 'package:cashbook_app/provider/account_provider.dart';
+import 'package:cashbook_app/provider/category_provider.dart';
 import 'package:cashbook_app/provider/purchase_provider.dart';
+import 'package:cashbook_app/screen/selectAccountScreen.dart';
 import 'package:cashbook_app/screen/select_supplier_screen.dart';
 import 'package:cashbook_app/utill/utility.dart';
 import 'package:flutter/cupertino.dart';
@@ -64,17 +67,17 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
   var _isloading = false;
   @override
   void didChangeDependencies() {
-    if (_isInit) {
-      setState(() {
-        _isloading = true;
-      });
-      Provider.of<accountProvider>(context).fetchAccount().then((_) {
-        setState(() {
-          _isloading = false;
-        });
-      });
-    }
-    _isInit = false;
+    // if (_isInit) {
+    //   setState(() {
+    //     _isloading = true;
+    //   });
+    //   Provider.of<accountProvider>(context).fetchAccount().then((_) {
+    //     setState(() {
+    //       _isloading = false;
+    //     });
+    //   });
+    // }
+    // _isInit = false;
     super.didChangeDependencies();
   }
 
@@ -283,16 +286,10 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     return Colors.black;
   }
 
-  Future<void> _submitHander(BuildContext context) async {
-    // print(billamountController.text);
-    // print(descriptionController.text);
-    // print(_isBillValue);
-    // print(finaldateTime.toString());
-    // print(firmNameController.text);
-    // print(supplierNameController.text);
-    // print(supplierMobilenoController.text);
-    // print(currentUser.email!);
-
+  Future<void> _submitHander(
+      {required BuildContext context,
+      required Account? selectedAccountObj,
+      required Category_? seletedCategoryobj}) async {
     // if (_is_INSTANT_PAYMENT) {
     //   c_cr = 0;
     // }
@@ -307,6 +304,10 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     // print(_iscashBankValue);
     if (selectedAccountObj == null) {
       Utility.displaysnackbar(context: context, message: "Select account");
+      return;
+    }
+    if (seletedCategoryobj == null) {
+      Utility.displaysnackbar(context: context, message: "Select category");
       return;
     }
     if (firmNameController.text.isEmpty) {
@@ -341,7 +342,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
           .submit_IN_Purchase(
               isBill: _isBillValue!,
               cOrCr: c_cr,
-              accountId: selectedAccountObj!.accountId.toString(),
+              accountId: selectedAccountObj.accountId.toString(),
               selectedSupplierobj: selectedSupplierobj!,
               billAmount: int.parse(billamountController.text),
               paidAmount: int.parse(paidamountController.text),
@@ -350,14 +351,16 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               updatedOutstandingAmount:
                   int.parse(updatedoutstandingamountController.text),
               remark: descriptionController.text,
-              finaldateTime: finaldateTime!)
+              // finaldateTime: finaldateTime!)
+              finaldateTime: DateTime.now())
           .then((_) {
         setState(() {
           _isloading = false;
         });
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
       });
     } catch (e) {
+      print(e);
       await showDialog(
           // showDialog is also future fuction
           context: context,
@@ -366,7 +369,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
               title: const Text('A error occurred!'),
-              content: Text('somethings wents wrong.($e)'),
+              content: Text('somethings wents wrong.\($e)'),
               actions: [
                 ElevatedButton(
                   onPressed: () {
@@ -380,355 +383,45 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     }
   }
 
-  Account? selectedAccountObj;
-
-  Future<void> selectAccount(BuildContext ctx
-      //  List<Account> list
-      ) async {
-    // await Provider.of<accountProvider>(ctx, listen: false).fetchAccount();
-
+  Future<void> selectAccount(BuildContext ctx) async {
     await showModalBottomSheet(
-        isScrollControlled: true,
+
+        // isScrollControlled: true,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12), topRight: Radius.circular(12))),
         context: ctx,
         builder: (_) {
-          List<Account> accountlist =
-              Provider.of<accountProvider>(ctx).getAccountList;
-          return Container(
-            height: 450,
-            color: Colors.grey.withOpacity(0.09),
-            child: Scrollbar(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 1,
-                    ),
-                    Container(
-                      // color: Colors.amber,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Select an account",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(
-                                    // fontFamily: "Rubik",
-                                    // color: Colors.green.shade600,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                            OutlinedButton(
-                                onPressed: () async {
-                                  await addNewAccount();
-                                },
-                                style: ButtonStyle(
-                                  shape: MaterialStateProperty.all(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0))),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Icon(
-                                      Icons.add,
-                                      size: 28,
-                                    ),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    Text(
-                                      "Add account",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .copyWith(
-                                            // fontFamily: "Rubik",
-                                            color: Colors.blue,
-                                            fontSize: 16,
-                                            letterSpacing: 0.4,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                    )
-                                  ],
-                                )),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 1,
-                    ),
-                    (accountlist.isEmpty)
-                        ? Center(
-                            child: Text("Empty List"),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              // itemCount: list.length,
-                              itemCount: accountlist.length,
-                              itemBuilder: (context, index) {
-                                return
-                                    // ListTile(
-                                    //   title: Text(list[index].accountName!),
-                                    //   subtitle: Text(list[index].balance!),
-                                    // );
-                                    Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12)),
-                                  elevation: 0,
-                                  color: Colors.white,
-                                  child: RadioListTile(
-                                    contentPadding: const EdgeInsets.only(
-                                        right: 8, top: 4, bottom: 4),
-                                    title: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            "${accountlist[index].accountName!}",
-                                            // "${list[index].accountName!}",
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelMedium!
-                                                .copyWith(
-                                                  // fontFamily: "Rubik",
-                                                  // color: Colors.green.shade600,
-                                                  fontSize: 16,
-                                                  letterSpacing: 0.4,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                          ),
-                                        ),
-                                        Flexible(
-                                          child: Text(
-                                            "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: accountlist[index].balance!, decimalDigits: 2)} ",
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelSmall!
-                                                .copyWith(
-                                                    fontFamily: "Rubik",
-                                                    color:
-                                                        Colors.green.shade700,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 16),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-
-                                    // "${items[index].cname} AND cid=${items[index].cid}"
-
-                                    // subtitle: Column(
-                                    //   crossAxisAlignment:
-                                    //       CrossAxisAlignment.start,
-                                    //   children: [
-                                    //     Text(
-                                    //       "${accountlist[index].balance!}",
-                                    //       // "",
-                                    //       style: const TextStyle(
-                                    //           fontFamily: "Rubik"),
-                                    //     ),
-                                    //   ],
-                                    // ),
-                                    // subtitle: Text(" ${items[index].entrydatetime}"),
-                                    value: accountlist[index],
-                                    groupValue: selectedAccountObj,
-                                    // toggleable: true,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedAccountObj = value;
-                                      });
-                                      // print(selectedSuppilerObj);
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                  ],
-                ),
-              ),
-            ),
+          return SelectAccountScreen(
+            true,
+            "purchase",
           );
         });
   }
 
-  Future<void> addNewAccount() async {
-    TextEditingController accountNameController = TextEditingController();
-    FocusNode accountNameFocusNode = FocusNode();
-    FocusNode intialAmountFocusNoder = FocusNode();
-    TextEditingController intialAmountController = TextEditingController();
-    await showCupertinoDialog(
-        // showDialog is also future fuction
-        context: context,
-        builder: (ctx) {
-          return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            title: Text(
-              'Add new account',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    // fontFamily: "Rubik",
-                    // color: Colors.green.shade600,
-                    fontWeight: FontWeight.w500,
-                  ),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomTextField(
-                    customController: accountNameController,
-                    labeltext: "Account name",
-                    hinttext: null,
-                    triling_iconname: null,
-                    leadding_iconname: null,
-                    textinputtype: TextInputType.name,
-                    customfocusnode: accountNameFocusNode,
-                    customtextinputaction: TextInputAction.next),
-                const SizedBox(
-                  height: 6,
-                ),
-                CustomTextField(
-                    customController: intialAmountController,
-                    labeltext: "Intial amount",
-                    hinttext: null,
-                    triling_iconname: null,
-                    leadding_iconname: null,
-                    textinputtype: TextInputType.number,
-                    customfocusnode: intialAmountFocusNoder,
-                    customtextinputaction: TextInputAction.done)
-              ],
-            ),
-            actions: [
-              OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                  style: ButtonStyle(
-                    // shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.circular(30.0))),
-                    padding: MaterialStateProperty.all(
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 14)),
-                  ),
-                  child: Text(
-                    "Cancel",
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                          // fontFamily: "Rubik",
-                          color: Colors.blue,
-                          fontSize: 14,
-                          letterSpacing: 0.4,
-                          fontWeight: FontWeight.w500,
-                        ),
-                  )),
-              // TextButton(
-              //   style: ButtonStyle(
-              //       padding: MaterialStateProperty.all(
-              //           EdgeInsets.symmetric(vertical: 12, horizontal: 14)),
-              //       backgroundColor: MaterialStateProperty.all(
-              //           Colors.grey.withOpacity(0.3))),
-              //   child: const Text('Cancel'),
-              //   onPressed: () {
-              //     Navigator.of(context).pop();
-              //   },
-              // ),
-              TextButton(
-                style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 14)),
-                    backgroundColor: MaterialStateProperty.all(
-                        Colors.blue.withOpacity(0.8))),
-                child: Text(
-                  'Save',
-                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                        // fontFamily: "Rubik",
-                        color: Colors.white,
-                        fontSize: 14,
-                        letterSpacing: 0.4,
-                        fontWeight: FontWeight.w500,
-                      ),
-                ),
-                onPressed: () async {
-                  if (accountNameController.text.isEmpty) {
-                    print("object");
-                    Utility.displaysnackbar(
-                        context: context, message: "Fill account name");
-                    return;
-                  }
-                  if (intialAmountController.text.isEmpty) {
-                    Utility.displaysnackbar(
-                        context: context, message: "Fill intial amount");
-                    return;
-                  }
-                  // _isloading = true;
-                  // setState(() {
-                  // });
-                  try {
-                    await Provider.of<accountProvider>(context, listen: false)
-                        .submit_In_add_New_account(
-                            accountName: accountNameController.text,
-                            date: DateTime.now(),
-                            initialAmount: intialAmountController.text)
-                        .then((_) {
-                      Navigator.of(ctx).pop();
-                      // Provider.of<accountProvider>(context, listen: false)
-                      //     .fetchAccount()
-                      //     .then((_) {
-                      //   _isloading = false;
-                      //   // setState(() {
-                      //   // });
-                      //   Navigator.of(ctx).pop();
-                      // });
-                    });
-                  } catch (e) {
-                    await showDialog(
-                        // showDialog is also future fuction
-                        context: context,
-                        builder: (ctx) {
-                          return AlertDialog(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            title: const Text('A error occurred!'),
-                            content: Text('somethings wents wrong.($e)'),
-                            actions: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(ctx).pop();
-                                },
-                                child: const Text("Okey"),
-                              ),
-                            ],
-                          );
-                        });
-                  }
-                  // Navigator.of(context).pop();
-                },
-              ),
-            ],
+  Future<void> selectCategory(BuildContext ctx) async {
+    await showModalBottomSheet(
+
+        // isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12), topRight: Radius.circular(12))),
+        context: ctx,
+        builder: (_) {
+          return SelectAccountScreen(
+            false,
+            "purchase",
           );
         });
   }
 
   @override
   Widget build(BuildContext context) {
+    Account? selectedAccountObjbyprovider =
+        Provider.of<accountProvider>(context).getSelectedAccountObj;
+    Category_? selectedCategoryObjbyprovider =
+        Provider.of<CategoryProvider>(context).getSelectedcategoryObj;
+
     var mqhight = MediaQuery.of(context).size.height;
     var mqwidth = MediaQuery.of(context).size.width;
 
@@ -742,11 +435,17 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
       body: Visibility(
           visible: (!_isloading),
           replacement: Utility.loadingIndicator(),
-          child: _body(mqwidth, context, mqhight)),
+          child: _body(mqwidth, context, mqhight, selectedAccountObjbyprovider,
+              selectedCategoryObjbyprovider)),
     );
   }
 
-  GestureDetector _body(double mqwidth, BuildContext context, double mqhight) {
+  GestureDetector _body(
+      double mqwidth,
+      BuildContext context,
+      double mqhight,
+      Account? selectedAccountObjbyprovider,
+      Category_? selectedCategoryObjbyprovider) {
     return GestureDetector(
       onTap: () {
         Utility.removeFocus(context: context);
@@ -808,7 +507,6 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                                     borderRadius: BorderRadius.circular(5),
                                     onTap: () async {
                                       await selectAccount(context);
-                                      print(selectedAccountObj!.accountName);
                                     },
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
@@ -829,9 +527,11 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                                           Flexible(
                                             child: Text(
                                               // "${cashflowObj.accountObj!.accountName}",
-                                              (selectedAccountObj == null)
+
+                                              (selectedAccountObjbyprovider ==
+                                                      null)
                                                   ? "Select Account"
-                                                  : "${selectedAccountObj!.accountName}",
+                                                  : "${selectedAccountObjbyprovider.accountName}",
                                               maxLines: 1,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -876,8 +576,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                                     splashColor: Colors.blue.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(5),
                                     onTap: () async {
-                                      await selectAccount(context);
-                                      print(selectedAccountObj!.accountName);
+                                      await selectCategory(context);
                                     },
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
@@ -898,9 +597,11 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                                           Flexible(
                                             child: Text(
                                               // "${cashflowObj.accountObj!.accountName}",
-                                              (selectedAccountObj == null)
+
+                                              (selectedCategoryObjbyprovider ==
+                                                      null)
                                                   ? "Select Category"
-                                                  : "${selectedAccountObj!.accountName}",
+                                                  : "${selectedCategoryObjbyprovider.categorytName}",
                                               maxLines: 1,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -1353,10 +1054,69 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                   ),
                 ),
               ),
-              bottombuttoncard(context),
+              bottombuttoncard(context, selectedAccountObjbyprovider,
+                  selectedCategoryObjbyprovider),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Expanded newMethod(
+      BuildContext context, Account? selectedAccountObjbyprovider) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            "Category",
+            style: Theme.of(context).textTheme.caption!.copyWith(
+                letterSpacing: 0.3, fontWeight: FontWeight.w600, fontSize: 14),
+          ),
+          Card(
+            elevation: 1,
+            child: InkWell(
+              splashColor: Colors.blue.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(5),
+              onTap: () async {
+                // await selectAccount(context);
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                // height: 26,
+                // width: 170,
+                decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.black45),
+                    // color: Colors.grey.withOpacity(0.075),
+                    color: Colors.blue.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        // "${cashflowObj.accountObj!.accountName}",
+                        (selectedAccountObjbyprovider == null)
+                            ? "Select Category"
+                            : "${selectedAccountObjbyprovider.accountName}",
+                        maxLines: 1,
+                        style: Theme.of(context).textTheme.button!.copyWith(
+                            letterSpacing: 0.75,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black.withOpacity(0.8),
+                            fontSize: 14),
+                      ),
+                    ),
+                    const Icon(
+                      Icons.arrow_drop_down,
+                      size: 26,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1601,7 +1361,10 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     );
   }
 
-  Column bottombuttoncard(BuildContext context) {
+  Column bottombuttoncard(
+      BuildContext context,
+      Account? selectedAccountObjbyprovider,
+      Category_? selectedCategoryObjbyprovider) {
     return Column(
       children: [
         const Divider(
@@ -1648,7 +1411,10 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                 onPressed: (_isloading)
                     ? null
                     : () {
-                        _submitHander(context);
+                        _submitHander(
+                            context: context,
+                            selectedAccountObj: selectedAccountObjbyprovider,
+                            seletedCategoryobj: selectedCategoryObjbyprovider);
                       },
                 style: ElevatedButton.styleFrom(
                     fixedSize: const Size(10, 55),

@@ -1,4 +1,5 @@
 import 'package:cashbook_app/provider/account_provider.dart';
+import 'package:cashbook_app/provider/category_provider.dart';
 import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:cashbook_app/screen/add_supplier_screen.dart';
@@ -8,6 +9,7 @@ import 'package:cashbook_app/screen/home_screen.dart';
 import 'package:cashbook_app/screen/manage_supplier_screen.dart';
 import 'package:cashbook_app/screen/add_update_purchase_screen.dart';
 import 'package:cashbook_app/screen/purchase_screen.dart';
+import 'package:cashbook_app/screen/selectAccountScreen.dart';
 import 'package:cashbook_app/screen/select_supplier_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +45,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (BuildContext ctx) => accountProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext ctx) => CategoryProvider(),
         ),
         // ChangeNotifierProvider(
         //   create: (ctx) => PurchaseProvider(),

@@ -142,11 +142,11 @@ async def supplierfetchall():
         outstanding_amount_without_bill=0
         advance_amount_with_bill=0
         advance_amount_without_bill=0
-        res_withoutbill=await Purchase.find_advAmt_and_outstandingAmt(isBill=0,supplierId=sid)
+        res_withoutbill=await Purchase.find_advAmt_and_outstandingAmt(isBill=0,supplierId=sid,useremail=useremail)
         for row in res_withoutbill:
             advance_amount_without_bill,outstanding_amount_without_bill=row
             
-        res_withbill=await Purchase.find_advAmt_and_outstandingAmt(isBill=1,supplierId=sid)
+        res_withbill=await Purchase.find_advAmt_and_outstandingAmt(isBill=1,supplierId=sid,useremail=useremail)
         for row1 in res_withbill:
             advance_amount_with_bill,outstanding_amount_withbill=row1
         temp={
@@ -305,6 +305,8 @@ async def purchaseaddone():
     else:
          return {'status':"database error"},200
      
+
+     
 @app.route('/account/addone',methods=['POST'])
 async def accountaddone():
     value=request.get_json()
@@ -363,7 +365,8 @@ async def accountfetchall():
 @app.route('/category/addone',methods=['POST'])
 async def categoryaddone():
     value=request.get_json()
-    categoryName =value [ "categoryName"]
+    print(value)
+    categoryName =value [ 'categoryName']#categorytName
     type =value ['type']
     date  =value ['date']
     useremail  =value ['useremail']
@@ -392,22 +395,76 @@ async def categoryfetchall():
     useremail=value['useremail']
     type=value['type']
     
-    query=f"SELECT * FROM category WHERE useremail='{useremail} and type='{type}' ORDER BY  categoryName ASC"
+    query=f"SELECT * FROM category WHERE useremail='{useremail}' and type='{type}' ORDER BY categoryName ASC"
     result=await utills.SELECT_QUERY_FETCHALL(query=query) #result hold list of tupple -- [(),(),()]
     accountTableDataList=[]
     for row in result:
-        categoryId,categoryName,useremail,date=row # i is tupple
+        categoryId,categoryName,type,useremail,date=row # i is tupple
         temp={
             "categoryId":categoryId,
-            "categoryName":categoryName,
+            "categoryName":categoryName,#categorytName
             "type":type,
             "useremail":useremail,    
             "date":date,
         }
+       
         accountTableDataList.append(temp)
     # print(supplierTableDataList)
     print("/fatchcategory Completed")
-    return {'datalist': accountTableDataList},200 
+    return {'datalist': accountTableDataList},200
+
+@app.route('/purchase/addone/new',methods=['POST'])
+async def purchaseaddonenew():
+    value=request.get_json()
+    isBill =value [ "isBill"]
+    cOrCr =value ['cOrCr']
+    accountId  =value ['accountId']
+    paidAmount  =value ['paidAmount']
+    billAmount =value [ "billAmount"]
+    updatedAdavanceAmount  =value['updatedAdavanceAmount']
+    updatedOutstandingAmount   =value['updatedOutstandingAmount']
+    sid  =value[ "sid"]
+    firmname =value ['firmname']
+    smobileno  =value ['smobileno']
+    useremail  =value ['useremail']
+    date =value ['date']
+    remark  =value ['remark']
+    new_purchase_obj=Purchase(biilAmount=billAmount,accountId=accountId,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
+    status=await new_purchase_obj.insert_IN_purchase_3()
+    print(status)
+    if(status=="success"):
+        return {'status':status},200
+    else:
+         return {'status':"database error"},200
+
+@app.route('/test',methods=['POST'])
+async def test():
+    
+    # value=request.get_json()
+    # requird=['useremail',"type","accountId"]
+    # if not all(key in value for key in requird):
+    #      return {'error':'cmobile will be None or null','status':'fail'},400
+    # useremail=value['useremail']
+    # type=value['type']
+    # accountId=value["accountId"]
+    
+    conn = await utills.createConn()
+    cur = await conn.cursor()
+    # query=f"SELECT balance FROM cashflow where cashflowId=(SELECT max(cashflowId) FROM cashflow where cashflowId<{current_cashflowId} and accountId={self.accountId} and useremail='{self.useremail}')"
+    query=f"SELECT balance FROM cashflow where accountId={36} and useremail='yashpitroda200@gmail.com' and date=(SELECT MAX(date) FROM cashflow WHERE date<(SELECT date FROM cashflow WHERE cashflowId={187}) and accountId={36} and useremail='yashpitroda200@gmail.com')"
+    
+    await cur.execute(query)
+    fetchdata = await cur.fetchall()
+    await cur.close()
+    conn.close()
+    old_balance=0 
+    for row in fetchdata:
+        old_balance,=row
+    print(old_balance)
+    print("com")
+    # print(supplierTableDataList)
+    print("/fatchcategory Completed")
+    return {'datalist': old_balance},200 
 
    
 

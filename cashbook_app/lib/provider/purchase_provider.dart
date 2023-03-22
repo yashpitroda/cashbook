@@ -133,7 +133,9 @@ class PurchaseProvider extends ChangeNotifier {
       required DateTime finaldateTime}) async {
     try {
       // final url = Uri.parse(Utility.BASEURL + "/addinpurchas");
-      final url = Uri.parse(Utility.BASEURL + "/purchase/addone");
+      // final url = Uri.parse(Utility.BASEURL + "/purchase/addone");
+      final url = Uri.parse(Utility.BASEURL + "/purchase/addone/new");
+
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
@@ -161,8 +163,8 @@ class PurchaseProvider extends ChangeNotifier {
       final responseData = json.decode(response.body);
       final status = responseData["status"];
       if (status == Utility.CHECK_STATUS) {
-       await supplierProviderOBJ!.fatchSupplier();
-       await fatchPurchase();
+        //  await supplierProviderOBJ!.fatchSupplier();
+        //  await fatchPurchase();
       }
     } catch (e) {
       print(e);

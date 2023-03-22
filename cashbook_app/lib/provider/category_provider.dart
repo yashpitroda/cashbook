@@ -10,6 +10,8 @@ import '../models/category.dart';
 import '../utill/utility.dart';
 
 class CategoryProvider with ChangeNotifier {
+  Category_? _selectedcategoryObj;
+
   List<Category_> _categoryList = [];
   List<Category_> _storedCategoryList = []; //for backup
 
@@ -17,11 +19,25 @@ class CategoryProvider with ChangeNotifier {
     return [..._categoryList];
   }
 
+  Category_? get getSelectedcategoryObj {
+    return _selectedcategoryObj;
+  }
+
+  void setSelectedCategoryObj({Category_? categoryObj}) {
+    _selectedcategoryObj = categoryObj;
+    notifyListeners();
+  }
+
   // Account findSupplierByPID({required String accountId}) {
   //   return _categoryList.firstWhere((element) {
   //     return element.accountId == accountId;
   //   });
   // }
+  Category_ findCategoryByCategoryId({required String categoryId}) {
+    return _categoryList.firstWhere((element) {
+      return element.categoryId == categoryId;
+    });
+  }
 
   Future<void> fetchCategory({required String type}) async {
     print("fetchCategory is call");
@@ -42,42 +58,39 @@ class CategoryProvider with ChangeNotifier {
       return;
     }
     final responseData = json.decode(response.body);
-    // print(responseData);
-    List responseDataList = responseData['datalist']; //[{},{},{}]
+    List responseDataList = responseData['datalist'];
     final List<Category_> tempLoadedCategorylist = [];
-
-    // Wed, 28 Dec 2022 13:34:09 GMT //element['entrydatetime'] -- hold this type of formate --this formate coming form flask server
-    final stirngToDateTmeFormatter =
-        DateFormat('EEE, d MMM yyyy HH:mm:ss'); // Wed, 28 Dec 2022 13:34:09 GMT
+    final stirngToDateTmeFormatter = DateFormat('EEE, d MMM yyyy HH:mm:ss');
 
     responseDataList.forEach((element) {
       tempLoadedCategorylist.add(Category_(
-          categoryId: element["categoryId"],
-          categorytName: element["categorytName"],
-          useremail: element["useremail"],
+          categoryId: element["categoryId"].toString(),
+          categorytName: element["categoryName"].toString(), //categoryName
+          useremail: element["useremail".toString()],
           date: stirngToDateTmeFormatter.parse(element["date"]),
-          type: element["type"]));
+          type: element["type"].toString()));
     });
+
     _categoryList = tempLoadedCategorylist;
     _storedCategoryList = _categoryList; //for backup in searching
     print(_categoryList);
     notifyListeners();
   }
 
-  Future<void> submit_In_add_New_account({
+  Future<void> addNewCategory({
     required String categorytName,
     required String type,
     required DateTime date,
   }) async {
     try {
       // final url = Uri.parse(Utility.BASEURL + "/addinpurchas");
-      final url = Uri.parse(Utility.BASEURL + "/account/addone");
+      final url = Uri.parse(Utility.BASEURL + "/category/addone");
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
         body: json.encode(
           {
-            "categorytName": categorytName,
+            "categoryName": categorytName,
             'type': type, //instant
             'useremail': Utility.getCurrentUserEMAILID(),
             'date': date.toString(),
@@ -91,7 +104,7 @@ class CategoryProvider with ChangeNotifier {
       final status = responseData["status"];
       if (status == Utility.CHECK_STATUS) {
         // supplierProviderOBJ!.fatchSupplier();
-        // fatchPurchase();
+        fetchCategory(type: type);
       }
     } catch (e) {
       print(e);

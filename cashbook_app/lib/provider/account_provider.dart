@@ -8,11 +8,21 @@ import 'package:intl/intl.dart';
 import '../utill/utility.dart';
 
 class accountProvider with ChangeNotifier {
+  Account? _selectedAccountObj;
   List<Account> _accountList = [];
   List<Account> _storedAccountList = []; //for backup
 
   List<Account> get getAccountList {
     return [..._accountList];
+  }
+
+  Account? get getSelectedAccountObj {
+    return _selectedAccountObj;
+  }
+
+  void setSelectedAccountObj({Account? accountObj}) {
+    _selectedAccountObj = accountObj;
+    notifyListeners();
   }
 
   Account findAccountByAccountId({required String accountId}) {
