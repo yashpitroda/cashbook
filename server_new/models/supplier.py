@@ -97,7 +97,6 @@ class Supplier():
         
     async def fetchAllItemInsupplierTable(useremail):
         try:
-            print(useremail)
             conn = await utills.createConn()
             cur = await conn.cursor()
             query = f"SELECT * FROM supplier WHERE useremail='{useremail}' ORDER BY firmname ASC"

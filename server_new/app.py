@@ -5,7 +5,6 @@ from flask_smorest import Api
 from models.user_mod import UserModel
 from models.supplier import Supplier
 from models.purchase import Purchase 
-# from models.cashbank import CashBankClass
 
 import utills
 
@@ -30,41 +29,8 @@ async def useraddone():
     return {'status':fetchdata},200 #user is already exisit so retrun user
 
 
-# @app.route('/users/currentuser',methods=['POST'])
-# async def usercurrentuser():
-#     value=request.get_json()
-#     requird=['useremail']
-#     if not all(key in value for key in requird):
-#          return {'error':'cname or cmobile will be None or null','status':'fail'},400  
-#     useremail=value["useremail"] 
-    
-#     fetchdata=await UserModel.findThisUserwithUserEmail(useremail=useremail) 
-#     uid,username,useremail,userimageurl=fetchdata
-    
-#     result_cb=await CashBankClass.find_cash_bal_and_bank_bal_by_latest_row_in_cashbook_by_useremail(useremail=useremail)
-#     for row in result_cb:
-#         cash_balance,bank_balance=row
-    
-#     responsedata={
-#         "uid":uid,
-#         "username":username,
-#         "useremail":useremail,
-#         "userimageurl":userimageurl,
-#         "cash_balance":cash_balance,
-#         "bank_balance":bank_balance
-#     } 
-#     return {'data':responsedata},200 #user is already exisit so retrun user
-
-
 @app.route('/supplier/addone',methods=['POST'])
 async def supplieraddone():
-    """
-    {
-    "cname": "keval",
-    "cmobileno": "98965943",
-    "useremail" : "yash@gmail.com"
-    }
-    """
     value=request.get_json()
     requird=['sname','smobileno','semail','useremail',"entrydatetime","firmname"]
     if not all(key in value for key in requird):
@@ -85,9 +51,6 @@ async def supplieraddone():
 
 @app.route('/supplier/updateone',methods=['POST'])
 async def supplierupdateone():
-    """
-   
-    """
     value=request.get_json()
     requird=['sname','smobileno','semail','useremail',"entrydatetime","firmname","oldcmobileno"]
     if not all(key in value for key in requird):
@@ -102,11 +65,6 @@ async def supplierupdateone():
 
 @app.route('/supplier/deleteone',methods=['POST'])
 async def supplierdeleteone():
-    """
-     {
-    "cmobileno": "1234",
-    }
-    """
     value=request.get_json()
     requird=['smobileno','useremail']
     if not all(key in value for key in requird):
@@ -123,9 +81,6 @@ async def supplierdeleteone():
 
 @app.route('/supplier/fetchall',methods=['POST'])
 async def supplierfetchall():
-    """body
-    {"useremail":"yashpitroda200@gmail.com"}
-    """
     value=request.get_json()
     requird=['useremail']
     if not all(key in value for key in requird):
@@ -137,7 +92,6 @@ async def supplierfetchall():
     supplierTableDataList=[]
     for i in result:
         sid,sname,firmname,smobileno,semail,useremail,entrydatetime=i # i is tupple
-        # outstanding_amount_withbill,outstanding_amount_without_bill,advance_amount_with_bill,advance_amount_without_bill
         outstanding_amount_withbill=0
         outstanding_amount_without_bill=0
         advance_amount_with_bill=0
@@ -163,31 +117,11 @@ async def supplierfetchall():
             "advance_amount_without_bill":advance_amount_without_bill, #in string   
         }
         supplierTableDataList.append(temp)
-    # print(supplierTableDataList)
     print("/fatchsupplier Completed")
     return {'datalist': supplierTableDataList},200 
 
 @app.route('/purchase/fetchall',methods=['POST'])
 async def purchasefetchall():
-    """body
-    {"useremail":"yashpitroda200@gmail.com"}
-    """
-    
-    """
-     useremail:element["puchase_map"]["useremail"].toString() ,
-          pid: element["puchase_map"]["pid"].toString(),
-          isBill: element["puchase_map"]["isBill"].toString(),
-          biilAmount: element["puchase_map"]["biilAmount"].toString(),
-          paidAmount: element["puchase_map"]["paidAmount"].toString(),
-          outstandingAmount:
-              element["puchase_map"]["outstandingAmount"].toString(),
-          advanceAmount: element["puchase_map"]["advanceAmount"].toString(),
-          date: stirngToDateTmeFormatter.parse(element["puchase_map"]['date']),
-          cOrCr: element["puchase_map"]["cOrCr"].toString(),
-          cashOrBank: element["puchase_map"]["cashOrBank"].toString(),
-          cashBankId: element["puchase_map"]["cashBankId"].toString(),
-          remark: element["puchase_map"]["remark"].toString(),
-    """
     value=request.get_json()
     requird=['useremail']
     if not all(key in value for key in requird):
@@ -195,7 +129,6 @@ async def purchasefetchall():
     useremail=value['useremail']
     
     result=await Purchase.fetchAllItemInpurchaseTable(useremail=useremail) #result hold list of tupple -- [(),(),()]
-    print("ss6")
     status=""
     purchaseTableDataList=[]
     for row in result:
@@ -251,35 +184,9 @@ async def purchasefetchall():
         temp={"puchase_map":purchase_map,"cashflow_map":cashflow_map,"account_map":account_map}
         purchaseTableDataList.append(temp)
         
-    print(purchaseTableDataList)
-    print("/fatchsupplier Completed")
+    # print(purchaseTableDataList)
+    print("/fatchpurchase Completed")
     return {"status":status,'datalist': purchaseTableDataList},200 
-
-
-
-# @app.route('/purchase/addone/old',methods=['POST'])
-# async def purchaseaddone():
-#     value=request.get_json()
-#     isBill =value [ "isBill"]
-#     cOrCr =value ['cOrCr']
-#     cashOrBank  =value ['cashOrBank']
-#     paidAmount  =value ['paidAmount']
-#     billAmount =value [ "billAmount"]
-#     updatedAdavanceAmount   =value['updatedAdavanceAmount']
-#     updatedOutstandingAmount   =value['updatedOutstandingAmount']
-#     sid  =value[ "sid"]
-#     firmname =value ['firmname']
-#     smobileno  =value ['smobileno']
-#     useremail  =value ['useremail']
-#     date =value ['date']
-#     remark  =value ['remark']
-#     new_purchase_obj=Purchase(biilAmount=billAmount,cashOrBank=cashOrBank,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
-#     status=await new_purchase_obj.insert_IN_purchase_2()
-#     print(status)
-#     if(status=="success"):
-#         return {'status':status},200
-#     else:
-#          return {'status':"database error"},200
      
 @app.route('/purchase/addone',methods=['POST'])
 async def purchaseaddone():
@@ -298,7 +205,7 @@ async def purchaseaddone():
     date =value ['date']
     remark  =value ['remark']
     new_purchase_obj=Purchase(biilAmount=billAmount,accountId=accountId,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
-    status=await new_purchase_obj.insert_IN_purchase_2()
+    status=await new_purchase_obj.insert_IN_purchase()
     print(status)
     if(status=="success"):
         return {'status':status},200
@@ -332,9 +239,6 @@ async def accountaddone():
     
 @app.route('/account/fetchall',methods=['POST'])
 async def accountfetchall():
-    """body
-    {"useremail":"yashpitroda200@gmail.com"}
-    """
     value=request.get_json()
     requird=['useremail']
     if not all(key in value for key in requird):
@@ -383,11 +287,6 @@ async def categoryaddone():
     
 @app.route('/category/fetchall',methods=['POST'])
 async def categoryfetchall():
-    """body
-    {"useremail":"yashpitroda200@gmail.com",
-    ""
-    }
-    """
     value=request.get_json()
     requird=['useremail',"type"]
     if not all(key in value for key in requird):
@@ -413,29 +312,8 @@ async def categoryfetchall():
     print("/fatchcategory Completed")
     return {'datalist': accountTableDataList},200
 
-@app.route('/purchase/addone/new',methods=['POST'])
-async def purchaseaddonenew():
-    value=request.get_json()
-    isBill =value [ "isBill"]
-    cOrCr =value ['cOrCr']
-    accountId  =value ['accountId']
-    paidAmount  =value ['paidAmount']
-    billAmount =value [ "billAmount"]
-    updatedAdavanceAmount  =value['updatedAdavanceAmount']
-    updatedOutstandingAmount   =value['updatedOutstandingAmount']
-    sid  =value[ "sid"]
-    firmname =value ['firmname']
-    smobileno  =value ['smobileno']
-    useremail  =value ['useremail']
-    date =value ['date']
-    remark  =value ['remark']
-    new_purchase_obj=Purchase(biilAmount=billAmount,accountId=accountId,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
-    status=await new_purchase_obj.insert_IN_purchase_3()
-    print(status)
-    if(status=="success"):
-        return {'status':status},200
-    else:
-         return {'status':"database error"},200
+
+  
 
 @app.route('/test',methods=['POST'])
 async def test():

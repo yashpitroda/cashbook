@@ -357,7 +357,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
         setState(() {
           _isloading = false;
         });
-        // Navigator.of(context).pop();
+        Navigator.of(context).pop();
       });
     } catch (e) {
       print(e);
