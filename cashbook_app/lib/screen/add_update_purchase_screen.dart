@@ -339,7 +339,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     Utility.removeFocus(context: context);
     try {
       await Provider.of<PurchaseProvider>(context, listen: false)
-          .submit_IN_Purchase(
+          .submit_IN_Purchase(categoryId: seletedCategoryobj.categoryId!,
               isBill: _isBillValue!,
               cOrCr: c_cr,
               accountId: selectedAccountObj.accountId.toString(),
@@ -601,7 +601,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                                               (selectedCategoryObjbyprovider ==
                                                       null)
                                                   ? "Select Category"
-                                                  : "${selectedCategoryObjbyprovider.categorytName}",
+                                                  : "${selectedCategoryObjbyprovider.categoryName}",
                                               maxLines: 1,
                                               style: Theme.of(context)
                                                   .textTheme

@@ -557,7 +557,7 @@ class ItemCard2 extends StatelessWidget {
           children: [
             Flexible(
               child: Text(
-                "${categoryobj.categorytName!}",
+                "${categoryobj.categoryName}",
                 // "${list[index].accountName!}",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -572,7 +572,7 @@ class ItemCard2 extends StatelessWidget {
             ),
             Flexible(
               child: Text(
-                "\u{20B9} ${Utility.dateFormat_DD_MonthName_YYYY().format(categoryobj.date!)} ",
+                "\u{20B9} ${Utility.dateFormat_DD_MonthName_YYYY().format(categoryobj.date)} ",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelSmall!.copyWith(

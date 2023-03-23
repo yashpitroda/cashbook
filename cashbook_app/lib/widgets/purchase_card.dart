@@ -1,4 +1,5 @@
 import 'package:cashbook_app/models/cashflow.dart';
+import 'package:cashbook_app/widgets/categoryCard.dart';
 import 'package:cashbook_app/widgets/remarkCard.dart';
 import 'package:cashbook_app/widgets/titleCard.dart';
 import 'package:flutter/material.dart';
@@ -83,6 +84,12 @@ class PurchaseCard extends StatelessWidget {
                   ),
                   IsInstantOrCreditAdvanceCard(
                     isCustomC_cr: purchaseObj.cOrCr,
+                  ),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  CategoryCard(
+                    category: purchaseObj.categoryObj,
                   ),
                 ],
               ),

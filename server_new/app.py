@@ -132,10 +132,11 @@ async def purchasefetchall():
     status=""
     purchaseTableDataList=[]
     for row in result:
-        pid,supplierId,accountId,biilAmount,paidAmount,advanceAmount,outstandingAmount,date,remark,cOrCr,isBill,cashflowId,useremail=row # i is tupple
+        pid,supplierId,categoryId,accountId,biilAmount,paidAmount,advanceAmount,outstandingAmount,date,remark,cOrCr,isBill,cashflowId,useremail=row # i is tupple
         purchase_map={
             "pid":pid,
             "supplierId":supplierId,
+            "categoryId":categoryId,
             "biilAmount":biilAmount,
             "paidAmount":paidAmount,
             "advanceAmount":advanceAmount,    
@@ -148,8 +149,22 @@ async def purchasefetchall():
             "cashflowId":cashflowId, #in string   
             "useremail":useremail, #in string   
         }
-        query = f"SELECT * FROM cashflow WHERE cashflowId={cashflowId}"
+        print("result_category")
+        query = f"SELECT * FROM category WHERE categoryId={categoryId}"
         
+        result_category=await utills.SELECT_QUERY_FETCHALL(query=query)
+        print(result_category)
+        
+        for row_ in result_category:
+            categoryId,categoryName,type,useremail,date=row_
+            category_map={
+                "categoryId":categoryId,
+                "categoryName":categoryName,
+                "type":type,
+                "useremail":useremail,
+                "date":date,
+            }
+        query = f"SELECT * FROM cashflow WHERE cashflowId={cashflowId}"
         result_cashflow=await utills.SELECT_QUERY_FETCHALL(query=query)
         if(result=="database error" or result_cashflow=="database error"):
             status="error"
@@ -181,7 +196,7 @@ async def purchasefetchall():
                 "useremail":useremail, 
             }
          
-        temp={"puchase_map":purchase_map,"cashflow_map":cashflow_map,"account_map":account_map}
+        temp={"puchase_map":purchase_map,"cashflow_map":cashflow_map,"account_map":account_map,"category_map":category_map}
         purchaseTableDataList.append(temp)
         
     # print(purchaseTableDataList)
@@ -194,6 +209,7 @@ async def purchaseaddone():
     isBill =value [ "isBill"]
     cOrCr =value ['cOrCr']
     accountId  =value ['accountId']
+    categoryId  =value ['categoryId']
     paidAmount  =value ['paidAmount']
     billAmount =value [ "billAmount"]
     updatedAdavanceAmount  =value['updatedAdavanceAmount']
@@ -204,7 +220,7 @@ async def purchaseaddone():
     useremail  =value ['useremail']
     date =value ['date']
     remark  =value ['remark']
-    new_purchase_obj=Purchase(biilAmount=billAmount,accountId=accountId,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
+    new_purchase_obj=Purchase(biilAmount=billAmount,accountId=accountId,categoryId=categoryId,cOrCr=cOrCr,date=date,isBill=isBill,paidAmount=paidAmount,remark=remark,supplierId=sid,useremail=useremail)
     status=await new_purchase_obj.insert_IN_purchase()
     print(status)
     if(status=="success"):

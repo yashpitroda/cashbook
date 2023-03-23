@@ -2,7 +2,7 @@ import time
 import utills
 
 class Purchase():
-    def __init__(self,biilAmount,paidAmount,accountId,remark,date,cOrCr,isBill,supplierId,useremail):
+    def __init__(self,biilAmount,paidAmount,accountId,remark,date,cOrCr,isBill,supplierId,useremail,categoryId):
         self.biilAmount=biilAmount
         self.paidAmount=paidAmount
         self.advanceAmount=0
@@ -14,6 +14,8 @@ class Purchase():
         self.isBill=isBill
         self.useremail=useremail
         self.supplierId=supplierId
+        self.categoryId=categoryId
+        
     
     async def fetchAllItemInpurchaseTable(useremail):
         try:
@@ -35,7 +37,7 @@ class Purchase():
  
             conn = await utills.createConn()
             cur = await conn.cursor()
-            query = f"INSERT INTO purchase(accountId,supplierId,isBill,biilAmount,paidAmount,cOrCr,remark,useremail,date) values({self.accountId},{self.supplierId},{self.isBill},{self.biilAmount},{self.paidAmount},{self.cOrCr},'{self.remark}','{self.useremail}','{self.date}');"
+            query = f"INSERT INTO purchase(accountId,categoryId,supplierId,isBill,biilAmount,paidAmount,cOrCr,remark,useremail,date) values({self.accountId},{self.categoryId},{self.supplierId},{self.isBill},{self.biilAmount},{self.paidAmount},{self.cOrCr},'{self.remark}','{self.useremail}','{self.date}');"
             await cur.execute(query)
             await conn.commit()
             current_pid=cur.lastrowid
@@ -45,7 +47,6 @@ class Purchase():
           
             conn = await utills.createConn()
             cur = await conn.cursor()
-            # query=f"SELECT advanceAmount,outstandingAmount FROM purchase WHERE pid = (SELECT MAX(pid) FROM purchase WHERE pid<{current_pid} and isBill={self.isBill} and supplierId='{self.supplierId}' and useremail='{self.useremail}')"
             query=f"SELECT advanceAmount,outstandingAmount FROM purchase WHERE pid=(select pid from purchase where isBill={self.isBill} and supplierId={self.supplierId} and useremail='{self.useremail}' and date = (SELECT MAX(date) FROM purchase WHERE date<(select date from purchase where pid={current_pid} ) and isBill={self.isBill} and supplierId={self.supplierId} and useremail='{self.useremail}')) "
             await cur.execute(query)
             fetchdata = await cur.fetchall()
@@ -79,12 +80,9 @@ class Purchase():
             await conn.commit()    
             await cur.close()
             conn.close()
-            #done
             
             conn = await utills.createConn()
             cur = await conn.cursor()
-            # query = f"INSERT INTO purchase(accountId,supplierId,isBill,biilAmount,paidAmount,cOrCr,remark,useremail,date,cashflowId) values({self.accountId},{self.supplierId},{self.isBill},{self.biilAmount},{self.paidAmount},{self.cOrCr},'{self.remark}','{self.useremail}','{self.date}',{cashflowId});"
-            
             query = f" INSERT INTO cashflow (date, accountId, debit, credit, balance, particulars, useremail) VALUES ( '{self.date}',{self.accountId},{self.paidAmount}, '0', {self.paidAmount},'remark_info' , '{self.useremail}');"
             await cur.execute(query)
             await conn.commit()
@@ -98,7 +96,6 @@ class Purchase():
             
             conn = await utills.createConn()
             cur = await conn.cursor()
-            # query=f"SELECT balance FROM cashflow where cashflowId=(SELECT max(cashflowId) FROM cashflow where cashflowId<{current_cashflowId} and accountId={self.accountId} and useremail='{self.useremail}')"
             query=f"SELECT balance FROM cashflow where accountId={self.accountId} and useremail='{self.useremail}' and date=(SELECT MAX(date) FROM cashflow WHERE date<(SELECT date FROM cashflow WHERE cashflowId={current_cashflowId}) and accountId={self.accountId} and useremail='{self.useremail}')"
             await cur.execute(query)
             fetchdata = await cur.fetchall()
@@ -138,7 +135,6 @@ class Purchase():
             conn = await utills.createConn()
             cur = await conn.cursor()
             query=f"SELECT advanceAmount,outstandingAmount FROM purchase WHERE pid=(select pid from purchase where isBill={isBill} and supplierId={supplierId} and useremail='{useremail}' and date = (SELECT MAX(date) FROM purchase WHERE isBill={isBill} and supplierId={supplierId} and useremail='{useremail}')) "
-            # query = f"SELECT advanceAmount,outstandingAmount FROM purchase WHERE pid = (SELECT MAX(pid) FROM purchase WHERE isBill={isBill} and supplierId={supplierId})  ORDER BY date DESC"
             await cur.execute(query)
             fetchdata = await cur.fetchall()
             await cur.close()

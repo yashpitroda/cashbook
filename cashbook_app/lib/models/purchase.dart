@@ -1,4 +1,5 @@
 import 'package:cashbook_app/models/account.dart';
+import 'package:cashbook_app/models/category.dart';
 import 'package:cashbook_app/models/supplier.dart';
 
 import 'cashflow.dart';
@@ -13,17 +14,20 @@ class Purchase {
   DateTime date;
   String remark;
   String accountId;
+  String categoryId;
   String cOrCr;
   String isBill;
   String cashflowId;
   String useremail;
   Cashflow cashflowObj;
+  Category_ categoryObj;
   Supplier? supplierObj;
   
 
   Purchase({
     required this.useremail,
     required this.supplierId,
+    required this.categoryId,
     required this.pid,
     required this.isBill,
     required this.biilAmount,
@@ -37,5 +41,7 @@ class Purchase {
     required this.accountId,
     required this.cashflowObj,
     required this.supplierObj,
+    required this.categoryObj,
+
   });
 }

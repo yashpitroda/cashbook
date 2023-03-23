@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cashbook_app/models/account.dart';
 import 'package:cashbook_app/models/cashflow.dart';
+import 'package:cashbook_app/models/category.dart';
 import 'package:cashbook_app/models/purchase.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:http/http.dart' as http;
@@ -69,9 +70,18 @@ class PurchaseProvider extends ChangeNotifier {
     final stirngToDateTmeFormatter =
         DateFormat('EEE, d MMM yyyy HH:mm:ss'); // Wed, 28 Dec 2022 13:34:09 GM
     print("sd");
+    print(responsePurchaseDataList);
     // if (responseData["status"] == "success") {
     responsePurchaseDataList.forEach((element) {
       tempLoadedPurchaselist.add(Purchase(
+        categoryObj: Category_(
+          categoryId: element["category_map"]["categoryId"].toString(),
+          categoryName: element["category_map"]["categoryName"].toString(),
+          useremail: element["category_map"]["useremail"].toString(),
+          date: stirngToDateTmeFormatter.parse(element["category_map"]['date']),
+          type: element["category_map"]["type"].toString(),
+        ),
+        categoryId: element["puchase_map"]["categoryId"].toString(),
         useremail: element["puchase_map"]["useremail"].toString(),
         supplierId: element["puchase_map"]["supplierId"].toString(),
         pid: element["puchase_map"]["pid"].toString(),
@@ -124,6 +134,7 @@ class PurchaseProvider extends ChangeNotifier {
       {required int isBill,
       required int cOrCr,
       required String accountId,
+      required String categoryId,
       required Supplier selectedSupplierobj,
       required int billAmount,
       required int paidAmount,
@@ -144,6 +155,7 @@ class PurchaseProvider extends ChangeNotifier {
             "isBill": isBill,
             'cOrCr': cOrCr, //instant
             'accountId': accountId,
+            'categoryId': categoryId,
             "paidAmount": paidAmount,
             'billAmount': billAmount,
             'updatedOutstandingAmount': updatedOutstandingAmount,
@@ -163,8 +175,8 @@ class PurchaseProvider extends ChangeNotifier {
       final responseData = json.decode(response.body);
       final status = responseData["status"];
       if (status == Utility.CHECK_STATUS) {
-         await supplierProviderOBJ!.fatchSupplier();
-         await fatchPurchase();
+        await supplierProviderOBJ!.fatchSupplier();
+        await fatchPurchase();
       }
     } catch (e) {
       print(e);

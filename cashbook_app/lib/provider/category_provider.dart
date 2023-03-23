@@ -65,7 +65,7 @@ class CategoryProvider with ChangeNotifier {
     responseDataList.forEach((element) {
       tempLoadedCategorylist.add(Category_(
           categoryId: element["categoryId"].toString(),
-          categorytName: element["categoryName"].toString(), //categoryName
+          categoryName: element["categoryName"].toString(), //categoryName
           useremail: element["useremail".toString()],
           date: stirngToDateTmeFormatter.parse(element["date"]),
           type: element["type"].toString()));
