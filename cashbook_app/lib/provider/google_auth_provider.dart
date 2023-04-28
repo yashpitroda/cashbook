@@ -1,10 +1,12 @@
 import 'dart:convert';
-import 'package:cashbook_app/utill/utility.dart';
+import 'package:cashbook_app/services/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
+
+import '../services/widget_component_utill.dart';
 
 class GauthProvider extends ChangeNotifier {
   final FirebaseAuth fireauth = FirebaseAuth.instance;
@@ -33,7 +35,6 @@ class GauthProvider extends ChangeNotifier {
       }
     }
   }
-  
 
   Future<bool> adduserindatabase(BuildContext context, String username,
       String useremail, String userimageurl) async {
@@ -53,7 +54,7 @@ class GauthProvider extends ChangeNotifier {
     final responseData = json.decode(response.body);
     if (response.statusCode == 200) {
       if (responseData['status'].toString() == "database error") {
-        Utility.displaysnackbar(
+        WidgetComponentUtill.displaysnackbar(
             context: context, message: 'something went wrong');
         return false;
       }
@@ -63,13 +64,13 @@ class GauthProvider extends ChangeNotifier {
     } else if (response.statusCode == 500) {
       print('Internal Server Error');
       print(response.statusCode);
-      Utility.displaysnackbar(
+      WidgetComponentUtill.displaysnackbar(
           context: context, message: 'Internal Server Error');
       return false;
     } else {
       print('something went wrong -- authentication');
       print(response.statusCode);
-      Utility.displaysnackbar(
+      WidgetComponentUtill.displaysnackbar(
           context: context, message: 'something went wrong -- authentication');
       return false;
     }

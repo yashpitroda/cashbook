@@ -286,7 +286,7 @@ async def accountfetchall():
 async def categoryaddone():
     value=request.get_json()
     print(value)
-    categoryName =value [ 'categoryName']#categorytName
+    categoryName =value ['categoryName']#categorytName
     type =value ['type']
     date  =value ['date']
     useremail  =value ['useremail']
@@ -333,18 +333,9 @@ async def categoryfetchall():
 
 @app.route('/test',methods=['POST'])
 async def test():
-    
-    # value=request.get_json()
-    # requird=['useremail',"type","accountId"]
-    # if not all(key in value for key in requird):
-    #      return {'error':'cmobile will be None or null','status':'fail'},400
-    # useremail=value['useremail']
-    # type=value['type']
-    # accountId=value["accountId"]
-    
+  
     conn = await utills.createConn()
     cur = await conn.cursor()
-    # query=f"SELECT balance FROM cashflow where cashflowId=(SELECT max(cashflowId) FROM cashflow where cashflowId<{current_cashflowId} and accountId={self.accountId} and useremail='{self.useremail}')"
     query=f"SELECT balance FROM cashflow where accountId={36} and useremail='yashpitroda200@gmail.com' and date=(SELECT MAX(date) FROM cashflow WHERE date<(SELECT date FROM cashflow WHERE cashflowId={187}) and accountId={36} and useremail='yashpitroda200@gmail.com')"
     
     await cur.execute(query)

@@ -1,7 +1,7 @@
-
 import "package:flutter/material.dart";
 
 import '../models/purchase.dart';
+
 //supplier title card
 class TitleCard extends StatelessWidget {
   const TitleCard({
@@ -15,15 +15,13 @@ class TitleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       child: Text(
-        purchaseObj.supplierObj!.firmname +
-            " (${purchaseObj.supplierObj!.sname})",
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: Theme.of(context)
-            .textTheme
-            .titleSmall!
-            .copyWith(fontSize: 16),
-      ),
+          purchaseObj.supplierObj!.firmname +
+              "(${purchaseObj.supplierObj!.sname})",
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.bodyLarge!
+          // .copyWith(fontSize: 16),
+          ),
     );
   }
 }

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,9 +7,9 @@ import 'package:cashbook_app/provider/category_provider.dart';
 
 import '../models/account.dart';
 import '../provider/account_provider.dart';
-import '../provider/purchase_provider.dart';
-import '../provider/supplier_provider.dart';
-import '../utill/utility.dart';
+
+import '../services/utility.dart';
+import '../services/widget_component_utill.dart';
 import '../widgets/customtextfield.dart';
 
 class SelectAccountScreen extends StatelessWidget {
@@ -98,8 +97,7 @@ class SelectAccountScreen extends StatelessWidget {
                 ),
                 onPressed: () async {
                   if (categoryNameController.text.isEmpty) {
-                    print("object");
-                    Utility.displaysnackbar(
+                    WidgetComponentUtill.displaysnackbar(
                         context: context, message: "Fill account name");
                     return;
                   }
@@ -248,12 +246,12 @@ class SelectAccountScreen extends StatelessWidget {
                 onPressed: () async {
                   if (accountNameController.text.isEmpty) {
                     print("object");
-                    Utility.displaysnackbar(
+                    WidgetComponentUtill.displaysnackbar(
                         context: context, message: "Fill account name");
                     return;
                   }
                   if (intialAmountController.text.isEmpty) {
-                    Utility.displaysnackbar(
+                    WidgetComponentUtill.displaysnackbar(
                         context: context, message: "Fill intial amount");
                     return;
                   }
@@ -557,7 +555,7 @@ class ItemCard2 extends StatelessWidget {
           children: [
             Flexible(
               child: Text(
-                "${categoryobj.categoryName}",
+                categoryobj.categoryName,
                 // "${list[index].accountName!}",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -570,18 +568,18 @@ class ItemCard2 extends StatelessWidget {
                     ),
               ),
             ),
-            Flexible(
-              child: Text(
-                "\u{20B9} ${Utility.dateFormat_DD_MonthName_YYYY().format(categoryobj.date)} ",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                    fontFamily: "Rubik",
-                    color: Colors.green.shade700,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16),
-              ),
-            ),
+            // Flexible(
+            //   child: Text(
+            //     "\u{20B9} ${Utility.dateFormat_DD_MonthName_YYYY().format(categoryobj.date)} ",
+            //     maxLines: 1,
+            //     overflow: TextOverflow.ellipsis,
+            //     style: Theme.of(context).textTheme.labelSmall!.copyWith(
+            //         fontFamily: "Rubik",
+            //         color: Colors.green.shade700,
+            //         fontWeight: FontWeight.w500,
+            //         fontSize: 16),
+            //   ),
+            // ),
           ],
         ),
 

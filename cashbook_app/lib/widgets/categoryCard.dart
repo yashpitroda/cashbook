@@ -11,15 +11,17 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 26,
-      width: 130,
+      width: 150,
       decoration: BoxDecoration(
-          color:const Color.fromARGB(255, 234, 242, 247),
+          color: const Color.fromARGB(255, 234, 242, 247),
           borderRadius: BorderRadius.circular(6)),
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Text(
+
             category.categoryName,
+            
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 12,

@@ -8,13 +8,14 @@ import 'package:cashbook_app/provider/category_provider.dart';
 import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/screen/selectAccountScreen.dart';
 import 'package:cashbook_app/screen/select_supplier_screen.dart';
-import 'package:cashbook_app/utill/utility.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cashbook_app/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/supplier_provider.dart';
 import '../widgets/customtextfield.dart';
+import '../services/date_time_utill.dart';
+import '../services/widget_component_utill.dart';
 
 class AddUpdatePurchaseScreen extends StatefulWidget {
   const AddUpdatePurchaseScreen({super.key});
@@ -303,24 +304,24 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     // print("qq3");
     // print(_iscashBankValue);
     if (selectedAccountObj == null) {
-      Utility.displaysnackbar(context: context, message: "Select account");
+      WidgetComponentUtill.displaysnackbar(context: context, message: "Select account");
       return;
     }
     if (seletedCategoryobj == null) {
-      Utility.displaysnackbar(context: context, message: "Select category");
+      WidgetComponentUtill.displaysnackbar(context: context, message: "Select category");
       return;
     }
     if (firmNameController.text.isEmpty) {
-      Utility.displaysnackbar(context: context, message: "Select firm first");
+      WidgetComponentUtill.displaysnackbar(context: context, message: "Select firm first");
       return;
     }
     if (billamountController.text.isEmpty) {
-      Utility.displaysnackbar(
+      WidgetComponentUtill.displaysnackbar(
           context: context, message: "Enter bill-amount first");
       return;
     }
     if (_isCREDIT_ADVANCE && paidamountController.text.isEmpty) {
-      Utility.displaysnackbar(
+      WidgetComponentUtill.displaysnackbar(
           context: context, message: "Enter paid-amount first");
       return;
     }
@@ -339,7 +340,8 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     Utility.removeFocus(context: context);
     try {
       await Provider.of<PurchaseProvider>(context, listen: false)
-          .submit_IN_Purchase(categoryId: seletedCategoryobj.categoryId!,
+          .submit_IN_Purchase(
+              categoryId: seletedCategoryobj.categoryId,
               isBill: _isBillValue!,
               cOrCr: c_cr,
               accountId: selectedAccountObj.accountId.toString(),
@@ -434,7 +436,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
       ),
       body: Visibility(
           visible: (!_isloading),
-          replacement: Utility.loadingIndicator(),
+          replacement: WidgetComponentUtill.loadingIndicator(),
           child: _body(mqwidth, context, mqhight, selectedAccountObjbyprovider,
               selectedCategoryObjbyprovider)),
     );
@@ -1417,11 +1419,12 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                             seletedCategoryobj: selectedCategoryObjbyprovider);
                       },
                 style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(10, 55),
-                    backgroundColor: Colors.blue),
+                  fixedSize: const Size(10, 55),
+                  // backgroundColor: Colors.blue
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     // (_isloading)
                     //     ? CircularProgressIndicator(
                     //         color: Colors.white,
@@ -1655,7 +1658,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               SizedBox(
                 width: mqwidth * 0.013,
               ),
-              Text(Utility.dateFormat_DDMMYYYY().format(finaldateTime!)),
+              Text(DateTimeUtill.returnDDMMYY(souceDateTime: finaldateTime!)),
               const Icon(
                 Icons.arrow_drop_down,
                 size: 26,
@@ -1671,7 +1674,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               SizedBox(
                 width: mqwidth * 0.013,
               ),
-              Text(Utility.datetime_to_timeAMPM(souceDateTime: finaldateTime!)),
+              Text(DateTimeUtill.datetimeToTimeAmPm(souceDateTime: finaldateTime!)),
               const Icon(
                 Icons.arrow_drop_down,
                 size: 26,

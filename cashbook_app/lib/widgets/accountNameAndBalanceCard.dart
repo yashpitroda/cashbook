@@ -1,7 +1,8 @@
+import 'package:cashbook_app/services/palette.dart';
 import 'package:flutter/material.dart';
 
 import '../models/cashflow.dart';
-import '../utill/utility.dart';
+import '../services/utility.dart';
 
 class accountNameAndBalanceCard extends StatelessWidget {
   const accountNameAndBalanceCard({
@@ -14,31 +15,39 @@ class accountNameAndBalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       // height: 26,
       // width: 170,
       decoration: BoxDecoration(
-          // border: Border.all(
-          //     width: 1,
-          //     color: Colors.black45),
-          // color: Colors.grey.withOpacity(0.075),
-          color: Color.fromARGB(200, 243, 243, 243),
+          border: Border.all(width: 1, color: Colors.black45),
+          //  color: Colors.grey.withOpacity(0.075),
+          //  color: Color.fromARGB(200, 243, 243, 243),
           borderRadius: BorderRadius.circular(6)),
       child: Column(
         children: [
           Row(
             children: [
               Text(
-                "${cashflowObj.accountObj!.accountName}",
-                style: Theme.of(context).textTheme.caption!.copyWith(
-                    letterSpacing: 1,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14),
+                "Account: ",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(),
+              ),
+              Flexible(
+                child: Text(
+                  "${cashflowObj.accountObj!.accountName}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      //    fontWeight: FontWeight.w600,
+                      ),
+                  // style: Theme.of(context).textTheme.caption!.copyWith(
+                  //     letterSpacing: 1,
+                  //     fontWeight: FontWeight.w600,
+                  //     fontSize: 14),
+                ),
               ),
             ],
-          ),
-          SizedBox(
-            height: 6,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -48,10 +57,16 @@ class accountNameAndBalanceCard extends StatelessWidget {
                   "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: cashflowObj.balance!, decimalDigits: 2)}",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      letterSpacing: 1,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: Palette.primaryColor
+                          // fontWeight: FontWeight.w600,
+                          ),
+                  // style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  //     letterSpacing: 1,
+                  //     fontWeight: FontWeight.w600,
+                  //     fontSize: 16),
                 ),
               ),
             ],

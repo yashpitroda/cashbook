@@ -1,8 +1,8 @@
+import 'package:cashbook_app/services/palette.dart';
 import "package:flutter/material.dart";
 
 import '../models/purchase.dart';
-import '../utill/utility.dart';
-
+import '../services/utility.dart';
 
 class billPaidDueAdvInPuchaseCard extends StatelessWidget {
   const billPaidDueAdvInPuchaseCard({
@@ -21,146 +21,111 @@ class billPaidDueAdvInPuchaseCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Bill amt: ",
+                "Bill amount  ",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelSmall!
-                    .copyWith(fontSize: 14),
+                style: Theme.of(context).textTheme.labelMedium!,
               ),
               Flexible(
                 child: Text(
                   Utility.convertToIndianCurrency(
-                      sourceNumber: purchaseObj.biilAmount,
-                      decimalDigits: 2),
+                      sourceNumber: purchaseObj.biilAmount, decimalDigits: 2),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
                       .textTheme
-                      .labelSmall!
-                      .copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16),
+                      .labelLarge!
+                      .copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "paid amt: ",
+                "paid amount  ",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelSmall!
-                    .copyWith(
-                        // fontWeight:
-                        //     FontWeight.w500,
-                        fontSize: 14),
+                style: Theme.of(context).textTheme.labelMedium!,
               ),
               Flexible(
                 child: Text(
                   Utility.convertToIndianCurrency(
-                      sourceNumber: purchaseObj.paidAmount,
-                      decimalDigits: 2),
+                      sourceNumber: purchaseObj.paidAmount, decimalDigits: 2),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelSmall!
-                      .copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          color: Colors.red[400]),
+                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                        fontWeight: FontWeight.w600,
+                        // color: Palette.redColor
+                      ),
                 ),
               ),
             ],
           ),
           Divider(
-            indent: 20,
+            height: 4,
+            indent: 94,
+            thickness: 1.4,
+            // indent: 20,
           ),
           (purchaseObj.outstandingAmount == "0" &&
                   purchaseObj.advanceAmount == "0")
               ? Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "due & adv: ",
+                      "due & adv  ",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelSmall!
-                          .copyWith(
-                              // fontWeight:
-                              //     FontWeight.w500,
-                              fontSize: 14),
+                      style: Theme.of(context).textTheme.labelMedium!,
                     ),
                     Flexible(
                       child: Text(
                         Utility.convertToIndianCurrency(
-                            sourceNumber:
-                                purchaseObj.outstandingAmount,
+                            sourceNumber: purchaseObj.outstandingAmount,
                             decimalDigits: 2),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context)
                             .textTheme
-                            .labelSmall!
-                            .copyWith(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16),
+                            .labelLarge!
+                            .copyWith(fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],
                 )
               : Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       (purchaseObj.outstandingAmount == "0")
-                          ? "adv: "
-                          : "due: ",
+                          ? "adv  "
+                          : "due  ",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelSmall!
-                          .copyWith(
-                              // fontWeight:
-                              //     FontWeight.w500,
-                              fontSize: 14),
+                      style: Theme.of(context).textTheme.labelMedium!,
                     ),
                     Flexible(
                       child: Text(
                         (purchaseObj.outstandingAmount == "0")
                             ? Utility.convertToIndianCurrency(
-                                sourceNumber:
-                                    purchaseObj.advanceAmount,
+                                sourceNumber: purchaseObj.advanceAmount,
                                 decimalDigits: 2)
                             : Utility.convertToIndianCurrency(
-                                sourceNumber: purchaseObj
-                                    .outstandingAmount,
+                                sourceNumber: purchaseObj.outstandingAmount,
                                 decimalDigits: 2),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelSmall!
-                            .copyWith(
-                                color: ((purchaseObj
-                                            .outstandingAmount ==
-                                        "0"))
-                                    ? Colors.green.shade900
-                                    : Colors.red.shade900,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16),
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: ((purchaseObj.outstandingAmount == "0"))
+                                  ? Palette.greenColor
+                                  : Palette.redColor,
+                            ),
                       ),
                     ),
                   ],
@@ -170,7 +135,3 @@ class billPaidDueAdvInPuchaseCard extends StatelessWidget {
     );
   }
 }
-
-
-
-

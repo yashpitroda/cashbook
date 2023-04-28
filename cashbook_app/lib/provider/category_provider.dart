@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../models/category.dart';
-import '../utill/utility.dart';
+import '../services/utility.dart';
 
 class CategoryProvider with ChangeNotifier {
   Category_? _selectedcategoryObj;

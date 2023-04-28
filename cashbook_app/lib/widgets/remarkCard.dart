@@ -20,16 +20,14 @@ class RemarkCard extends StatelessWidget {
           //     :
           Flexible(
             child: Text(
-              (purchaseObj.remark == "")
-                  ? "No remark"
-                  : "${purchaseObj.remark}",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context)
-                  .textTheme
-                  .caption!
-                  .copyWith(fontSize: 14),
-            ),
+                (purchaseObj.remark == "")
+                    ? "No remark"
+                    : "${purchaseObj.remark}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.caption!
+                // .copyWith(fontSize: 14),
+                ),
           ),
         ],
       ),

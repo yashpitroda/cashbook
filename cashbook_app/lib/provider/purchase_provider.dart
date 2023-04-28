@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../utill/utility.dart';
+import '../services/utility.dart';
 
 class PurchaseProvider extends ChangeNotifier {
   SupplierProvider? supplierProviderOBJ;
@@ -27,30 +27,15 @@ class PurchaseProvider extends ChangeNotifier {
     return [..._purchaseList];
   }
 
-  Purchase findSupplierByPID({required String pid}) {
+  Purchase findPurchaseObjByPID({required String pid}) {
     return _purchaseList.firstWhere((element) {
       return element.pid == pid;
     });
   }
 
-  // List<Map> get getuniqueDateForCard {
-  //   List<Map> t = [];
-  //   for (int i = 0; i < _purchaseList.length; i++) {
-  //     if ((i > 0) &&
-  //         (_purchaseList[i].date.year == _purchaseList[i - 1].date.year &&
-  //             _purchaseList[i].date.month == _purchaseList[i - 1].date.month &&
-  //             _purchaseList[i].date.day == _purchaseList[i - 1].date.day)) {
-  //     } else {
-  //       t.add({i: _purchaseList[i].date});
-  //     }
-  //   }
-  //   print(t);
-  //   return t;
-  // }
-
   Future<void> fatchPurchase() async {
-    print("fatchPurchase is call");
-    final url = Uri.parse(Utility.BASEURL + "/purchase/fetchall");
+    Uri url = Uri.parse(Utility.BASEURL + "/purchase/fetchall");
+
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
@@ -60,18 +45,17 @@ class PurchaseProvider extends ChangeNotifier {
         },
       ),
     );
+
     if (response.body == 'null') {
       return;
     }
+
     final responseData = json.decode(response.body);
     List responsePurchaseDataList = responseData['datalist']; //[{},{},{}]
-    print(responseData);
     final List<Purchase> tempLoadedPurchaselist = [];
     final stirngToDateTmeFormatter =
         DateFormat('EEE, d MMM yyyy HH:mm:ss'); // Wed, 28 Dec 2022 13:34:09 GM
-    print("sd");
-    print(responsePurchaseDataList);
-    // if (responseData["status"] == "success") {
+
     responsePurchaseDataList.forEach((element) {
       tempLoadedPurchaselist.add(Purchase(
         categoryObj: Category_(
@@ -120,8 +104,52 @@ class PurchaseProvider extends ChangeNotifier {
         ),
       ));
     });
+
     _purchaseList = tempLoadedPurchaselist;
     _storedPurchaseList = _purchaseList; //for backup in searching
+
+    String totalPurchase = "0";
+    String totalLastMounthPurchase = "0";
+    String totalThisMounthPurchase = "0";
+    String totalPaid = "0";
+    String totalAdvance = "0";
+    String totalDue = "0";
+
+    var dtNow = DateTime.now();
+    int currentMonth = dtNow.month;
+    for (var i = 0; i < _purchaseList.length; i++) {
+      Purchase purchaseObj = _purchaseList[i];
+      int objMounth = purchaseObj.date.month;
+      totalPurchase =
+          (int.parse(totalPurchase) + int.parse(purchaseObj.biilAmount))
+              .toString();
+      totalPaid =
+          (int.parse(totalPaid) + int.parse(purchaseObj.paidAmount)).toString();
+      totalAdvance =
+          (int.parse(totalAdvance) + int.parse(purchaseObj.advanceAmount))
+              .toString();
+      totalDue =
+          (int.parse(totalDue) + int.parse(purchaseObj.outstandingAmount))
+              .toString();
+      if (objMounth == currentMonth) {
+        totalThisMounthPurchase = (int.parse(totalThisMounthPurchase) +
+                int.parse(purchaseObj.biilAmount))
+            .toString();
+      }
+      if (objMounth == (currentMonth - 1)) {
+        totalLastMounthPurchase = (int.parse(totalLastMounthPurchase) +
+                int.parse(purchaseObj.biilAmount))
+            .toString();
+      }
+    }
+    print("totalPurchase :" + totalPurchase);
+    print("totalPaid :" + totalPaid);
+    print("totalAdvance :" + totalAdvance);
+    print("totalDue :" + totalDue);
+    print("totalThisMounthPurchase :" + totalThisMounthPurchase);
+
+    print("totalLastMounthPurchase :" + totalLastMounthPurchase);
+
     notifyListeners();
     // } else {
     //   print("not add");

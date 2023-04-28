@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-import '../utill/utility.dart';
+import '../services/utility.dart';
 
 class accountProvider with ChangeNotifier {
   Account? _selectedAccountObj;

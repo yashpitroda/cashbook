@@ -42,8 +42,9 @@ class CustomSearchTextField extends StatelessWidget {
             : null,
         prefixIcon: Icon(Icons.search_rounded),
         border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(14)),
+          borderRadius: BorderRadius.all(Radius.circular(55)),
         ),
+        // bor
         labelText: (labeltext == null) ? null : "$labeltext",
         labelStyle: Theme.of(context)
             .textTheme

@@ -5,7 +5,7 @@ import 'package:cashbook_app/widgets/titleCard.dart';
 import 'package:flutter/material.dart';
 
 import '../models/purchase.dart';
-import '../utill/utility.dart';
+import '../services/utility.dart';
 import 'IsBillOrWithoutBillCard.dart';
 import 'IsCashBankCard.dart';
 import 'IsInstantOrCreditAdvanceCard.dart';
@@ -32,14 +32,14 @@ class PurchaseCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TitleCard(purchaseObj: purchaseObj),
-                SizedBox(
+                const SizedBox(
                   width: 12,
                 ),
                 onlyTimeCard(purchaseObj: purchaseObj),
               ],
             ),
-            SizedBox(
-              height: 4,
+            const SizedBox(
+              height: 1,
             ),
             // Divider(
             //   height: 6,
@@ -55,7 +55,7 @@ class PurchaseCard extends StatelessWidget {
                         children: [
                           RemarkCard(purchaseObj: purchaseObj),
                           const SizedBox(
-                            height: 6,
+                            height: 3,
                           ),
                           accountNameAndBalanceCard(
                               cashflowObj: purchaseObj.cashflowObj),
@@ -64,13 +64,15 @@ class PurchaseCard extends StatelessWidget {
                         ],
                       ),
                     )),
-                SizedBox(
-                  width: 6,
+                const SizedBox(
+                  width: 10,
                 ),
                 Expanded(
                     flex: 6,
-                    child:
-                        billPaidDueAdvInPuchaseCard(purchaseObj: purchaseObj))
+                    child: Container(
+                        //color: Colors.pink,
+                        child: billPaidDueAdvInPuchaseCard(
+                            purchaseObj: purchaseObj)))
               ],
             ),
             const Divider(),

@@ -1,12 +1,13 @@
 import 'package:cashbook_app/models/supplier.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
-import 'package:cashbook_app/utill/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/customsearch_textfield.dart';
 import 'add_supplier_screen.dart';
+import '../services/provider_utill.dart';
+import '../services/widget_component_utill.dart';
 
 class ManageSupplierScreen extends StatefulWidget {
   static const String routeName = '/ManageSupplierScreen';
@@ -97,7 +98,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
   void clearTextOnSearchTextField() {
     searchTextController.clear();
     searchTextfocusnode.unfocus();
-    Utility.refreshSupplier(context);
+    ProviderUtill.refreshSupplier(context);
   }
 
   @override
@@ -116,7 +117,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
       ),
       body: Visibility(
           visible: (!_isloading),
-          replacement: Utility.loadingIndicator(),
+          replacement: WidgetComponentUtill.loadingIndicator(),
           child: _body(_supplierlist, mqhight, context)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -137,7 +138,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
         searchTextfocusnode.unfocus();
       },
       child: Container(
-        color: Colors.grey.withOpacity(0.09),
+        // color: Colors.grey.withOpacity(0.09),
         child: Column(
           children: [
             SizedBox(
@@ -152,7 +153,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
                   textinputtype: TextInputType.name,
                   customfocusnode: searchTextfocusnode,
                   customOnChangedFuction:
-                      Utility.SearchInSupplierListInProvider,
+                      ProviderUtill.searchInSupplierListInProvider,
                   customClearSearchFuction: clearTextOnSearchTextField),
             ),
             // Padding(
@@ -197,7 +198,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
             ),
             Expanded(
               child: RefreshIndicator(
-                onRefresh: () => Utility.refreshSupplier(context),
+                onRefresh: () => ProviderUtill.refreshSupplier(context),
                 child: (_supplierlist.isEmpty)
                     ? Center(
                         child: Text("Empty List"),

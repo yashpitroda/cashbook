@@ -1,11 +1,13 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
-import 'package:cashbook_app/utill/utility.dart';
+import 'package:cashbook_app/services/utility.dart';
 
+import '../services/date_time_utill.dart';
+import '../services/provider_utill.dart';
+import '../services/widget_component_utill.dart';
 import '../widgets/purchase_card.dart';
 import 'add_update_purchase_screen.dart';
 
@@ -20,13 +22,6 @@ class PurchaseScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("purchase"),
-        // bottom: PreferredSize(
-        //     preferredSize: Size.fromHeight(8.0),
-        //     child: Row(
-        //       children: [
-        //         Text("fsta"),
-        //       ],
-        //     )),
       ),
       body: FutureBuilder(
           future: Future.wait([
@@ -43,8 +38,8 @@ class PurchaseScreen extends StatelessWidget {
                   Provider.of<PurchaseProvider>(context).getPurchaseList;
               return RefreshIndicator(
                 onRefresh: () async {
-                  await Utility.refreshSupplier(context).then((_) async {
-                    await Utility.refreshPurchase(context);
+                  await ProviderUtill.refreshSupplier(context).then((_) async {
+                    await ProviderUtill.refreshPurchase(context);
                   });
                 },
                 child: Stack(
@@ -53,121 +48,105 @@ class PurchaseScreen extends StatelessWidget {
                         ? const Center(
                             child: Text("Empty List"),
                           )
-                        : Container(
-                            child:
-                                //  (purchaselist.isEmpty)
-                                //     ? Container(child: Center(child: Text("Empty...")))
-                                //     :
-                                Container(
-                              color: Colors.grey.withOpacity(0.09),
-                              child: Scrollbar(
-                                child: SingleChildScrollView(
-                                  controller: _scrollcontroller,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 300,
-                                        color: Colors.pink,
-                                      ),
-                                      ListView.builder(
-                                        physics: NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: purchaselist.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Column(
-                                            children: [
-                                              // (((index > 0) &&
-                                              //         (purchaselist[index].date.year ==
-                                              //                 purchaselist[index - 1].date.year &&
-                                              //             purchaselist[index].date.month ==
-                                              //                 purchaselist[index - 1].date.month &&
-                                              //             purchaselist[index].date.day ==
-                                              //                 purchaselist[index - 1].date.day)))
-                                              // (((index > 0) &&
-                                              //         (Utility.convertDatetimeToDateOnly(
-                                              //                 souceDateTime:
-                                              //                     purchaselist[index].date) ==
-                                              //             Utility.convertDatetimeToDateOnly(
-                                              //                 souceDateTime:
-                                              //                     purchaselist[index - 1].date))))
-
-                                              (((index > 0) &&
-                                                      (Utility
-                                                          .check_is_A_sameday(
-                                                              souceDateTime_1:
-                                                                  purchaselist[
-                                                                          index]
-                                                                      .date,
-                                                              souceDateTime_2:
-                                                                  purchaselist[
-                                                                          index -
-                                                                              1]
-                                                                      .date))))
-                                                  ? const SizedBox(
-                                                      height: 8,
-                                                    )
-                                                  : Container(
-                                                      // color: Colors.amber,
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 16,
-                                                              bottom: 4),
-                                                      height: 34,
-                                                      child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Text(
-                                                            Utility.dateFormat_DD_MonthName_YYYY()
-                                                                .format(
-                                                                    purchaselist[
-                                                                            index]
-                                                                        .date),
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .caption!
-                                                                .copyWith(
-                                                                    fontSize:
-                                                                        14),
-                                                          ),
-                                                        ],
-                                                      )),
-                                              PurchaseCard(
-                                                purchaseObj:
-                                                    purchaselist[index],
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: 86,
-                                      )
-                                    ],
+                        : Scrollbar(
+                            child: SingleChildScrollView(
+                              controller: _scrollcontroller,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 300,
+                                    color: Colors.pink,
                                   ),
-                                ),
+                                  ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: purchaselist.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Column(
+                                        children: [
+                                          // (((index > 0) &&
+                                          //         (purchaselist[index].date.year ==
+                                          //                 purchaselist[index - 1].date.year &&
+                                          //             purchaselist[index].date.month ==
+                                          //                 purchaselist[index - 1].date.month &&
+                                          //             purchaselist[index].date.day ==
+                                          //                 purchaselist[index - 1].date.day)))
+                                          // (((index > 0) &&
+                                          //         (Utility.convertDatetimeToDateOnly(
+                                          //                 souceDateTime:
+                                          //                     purchaselist[index].date) ==
+                                          //             Utility.convertDatetimeToDateOnly(
+                                          //                 souceDateTime:
+                                          //                     purchaselist[index - 1].date))))
 
-                                // child: StickyGroupedListView<Purchase, DateTime>(
-                                //   // physics: NeverScrollableScrollPhysics(),
-                                //   shrinkWrap: true,
-                                //   elements: purchaselist,
-                                //   groupBy: (element) {
-                                //     return DateUtils.dateOnly(element.date);
-                                //   },
-                                //   groupSeparatorBuilder: (value) =>
-                                //       Text(Utility.dateFormat_DDMMYYYY().format(value.date)),
-                                //   itemBuilder: (context, dynamic element) =>
-                                //       Container(height: 200, child: Card(child: Text(element.pid))),
-                                //   // itemComparator: (e1, e2) => e1['name'].compareTo(e2['name']), // optional
-                                //   // elementIdentifier: (element) => element.name // optional - see below for usage
-                                //   // itemScrollController: itemScrollController, // optional
-                                //   // order: StickyGroupedListOrder.ASC, // optional
-                                // ),
+                                          (((index > 0) &&
+                                                  (DateTimeUtill.checkIsSameDay(
+                                                      souceDateTime_1:
+                                                          purchaselist[index]
+                                                              .date,
+                                                      souceDateTime_2:
+                                                          purchaselist[
+                                                                  index - 1]
+                                                              .date))))
+                                              ? const SizedBox(
+                                                  height: 8,
+                                                )
+                                              : Container(
+                                                  // color: Colors.amber,
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 16, bottom: 4),
+                                                  height: 34,
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                      Text(
+                                                        DateTimeUtill.returnDateMounthAndYear(
+                                                            souceDateTime:
+                                                                purchaselist[
+                                                                        index]
+                                                                    .date),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption!
+                                                            .copyWith(
+                                                                fontSize: 14),
+                                                      ),
+                                                    ],
+                                                  )),
+                                          PurchaseCard(
+                                            purchaseObj: purchaselist[index],
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 86,
+                                  )
+                                ],
                               ),
                             ),
+
+                            // child: StickyGroupedListView<Purchase, DateTime>(
+                            //   // physics: NeverScrollableScrollPhysics(),
+                            //   shrinkWrap: true,
+                            //   elements: purchaselist,
+                            //   groupBy: (element) {
+                            //     return DateUtils.dateOnly(element.date);
+                            //   },
+                            //   groupSeparatorBuilder: (value) =>
+                            //       Text(Utility.dateFormat_DDMMYYYY().format(value.date)),
+                            //   itemBuilder: (context, dynamic element) =>
+                            //       Container(height: 200, child: Card(child: Text(element.pid))),
+                            //   // itemComparator: (e1, e2) => e1['name'].compareTo(e2['name']), // optional
+                            //   // elementIdentifier: (element) => element.name // optional - see below for usage
+                            //   // itemScrollController: itemScrollController, // optional
+                            //   // order: StickyGroupedListOrder.ASC, // optional
+                            // ),
                           ),
                     Align(
                       alignment: AlignmentDirectional.bottomStart,
@@ -177,15 +156,11 @@ class PurchaseScreen extends StatelessWidget {
                 ),
               );
             } else {
-              return Utility.loadingIndicator();
+              return WidgetComponentUtill.loadingIndicator();
             }
           })),
     );
   }
-
-  // Future<Scaffold> _body(BuildContext context) async {
-  //   return
-  // }
 
   Container bottomButtonCard(BuildContext context) {
     return Container(
@@ -199,7 +174,6 @@ class PurchaseScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
-              // crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   flex: 1,
@@ -211,7 +185,10 @@ class PurchaseScreen extends StatelessWidget {
                       style: OutlinedButton.styleFrom(
                         fixedSize: const Size(10, 55),
                       ),
-                      child: Icon(Icons.arrow_upward_rounded)),
+                      child: const Icon(
+                        Icons.arrow_upward_rounded,
+                        color: Colors.black,
+                      )),
                 ),
                 const SizedBox(
                   width: 20,
@@ -224,15 +201,14 @@ class PurchaseScreen extends StatelessWidget {
                           .pushNamed(AddUpdatePurchaseScreen.routeName);
                     },
                     style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(10, 55),
-                        backgroundColor: Colors.blue),
-                    child: const Text(
+                      fixedSize: const Size(10, 55),
+                    ),
+                    child: Text(
                       'Add purchase',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Rubik',
-                        fontSize: 16,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .button!
+                          .copyWith(color: Colors.white, fontSize: 16),
                     ),
                   ),
                 )
