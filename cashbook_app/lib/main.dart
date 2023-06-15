@@ -2,6 +2,7 @@ import 'package:cashbook_app/provider/account_provider.dart';
 import 'package:cashbook_app/provider/category_provider.dart';
 import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
+import 'package:cashbook_app/screen/add_purchase_new_screen.dart';
 import 'package:cashbook_app/screen/add_supplier_screen.dart';
 import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
 import 'package:cashbook_app/screen/add_in_payable_screen.dart';
@@ -9,14 +10,15 @@ import 'package:cashbook_app/screen/home_screen.dart';
 import 'package:cashbook_app/screen/manage_supplier_screen.dart';
 import 'package:cashbook_app/screen/add_update_purchase_screen.dart';
 import 'package:cashbook_app/screen/purchase_screen.dart';
-import 'package:cashbook_app/screen/selectAccountScreen.dart';
 import 'package:cashbook_app/screen/select_supplier_screen.dart';
+import 'package:cashbook_app/screen_provider/add_purchase_new_screen_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'services/constants.dart';
 import 'services/palette.dart';
 import 'provider/google_auth_provider.dart';
 import 'screen/auth_screen_final.dart';
@@ -46,7 +48,7 @@ class MyApp extends StatelessWidget {
           create: (BuildContext ctx) => SupplierProvider(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext ctx) => accountProvider(),
+          create: (BuildContext ctx) => AccountProvider(),
         ),
         ChangeNotifierProvider(
           create: (BuildContext ctx) => CategoryProvider(),
@@ -54,6 +56,9 @@ class MyApp extends StatelessWidget {
         // ChangeNotifierProvider(
         //   create: (ctx) => PurchaseProvider(),
         // ),
+        ChangeNotifierProvider(
+          create: (BuildContext ctx) => AddPurchaseNewScreenProvider(),
+        ),
         ChangeNotifierProxyProvider<SupplierProvider, PurchaseProvider>(
           create: (BuildContext ctx) => PurchaseProvider(),
           update: (BuildContext ctx, value_supplierProvider,
@@ -67,35 +72,74 @@ class MyApp extends StatelessWidget {
             androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
+        // theme: ThemeData(
+        // textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
+        //     .apply(bodyColor: Palette.fontBlackColor)
+        //     .copyWith(),
+        // appBarTheme: const AppBarTheme(
+        //   elevation: 0.4,
+        //   backgroundColor: Colors.white,
+        //   foregroundColor: Palette.blackColor,
+        // ),
+        //   primarySwatch: generateMaterialColor(Palette.primaryColor),
+        //   //canvasColor: Palette.backgroundColor,
+        //   scaffoldBackgroundColor: Palette.backgroundColor,
+        // floatingActionButtonTheme: FloatingActionButtonThemeData(
+        //   shape:
+        //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        // ),
+        //   inputDecorationTheme: const InputDecorationTheme(
+        //     iconColor: Colors.black,
+        //     filled: true,
+        //     fillColor: Colors.white,
+        //   ),
+        // ),
         theme: ThemeData(
+          dialogTheme: DialogTheme(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+
+          bottomSheetTheme: BottomSheetThemeData(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12))),
+          cardTheme: const CardTheme(
+              margin: EdgeInsets.symmetric(
+                  horizontal: 0, vertical: Constants.defaultPadding_6 / 2)),
+          primarySwatch: generateMaterialColor(Palette.primaryColor),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            extendedTextStyle: Theme.of(context).textTheme.button,
+            elevation: 3,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+          ),
+          scaffoldBackgroundColor: Palette.backgroundColor,
           textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
               .apply(bodyColor: Palette.fontBlackColor)
-              .copyWith(
-                  // bodyText1: TextStyle(color: Palette.fontBlackColor),
-                  // bodyText2: TextStyle(color: Palette.fontBlackColor),
-                  ),
+              .copyWith(),
           appBarTheme: const AppBarTheme(
             elevation: 0.4,
             backgroundColor: Colors.white,
             foregroundColor: Palette.blackColor,
           ),
-          primarySwatch: generateMaterialColor(Palette.primaryColor),
-          //canvasColor: Palette.backgroundColor,
-          scaffoldBackgroundColor: Palette.backgroundColor,
-          floatingActionButtonTheme: FloatingActionButtonThemeData(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-          ),
-          inputDecorationTheme: const InputDecorationTheme(
-            iconColor: Colors.black,
-            filled: true,
-            fillColor: Colors.white,
-          ),
+          // colorScheme: const ColorScheme(
+          //     brightness: Brightness.light,
+          //     primary: Palette.primaryColor,
+          //     onPrimary: Palette.fontWhiteColor,
+          //     secondary: Colors.amber,
+          //     onSecondary: Palette.fontBlackColor,
+          //     error: Palette.redColor,
+          //     onError: Palette.fontWhiteColor,
+          //     background: Palette.fontWhiteColor,
+          //     onBackground: Palette.fontWhiteColor,
+          //     surface: Palette.fontWhiteColor,
+          //     onSurface: Palette.fontBlackColor),
         ),
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
+              print(FirebaseAuth.instance.currentUser!.email);
               return const HomeScreen();
             } else {
               return const AuthScreen();
@@ -116,6 +160,7 @@ class MyApp extends StatelessWidget {
               const SelectContactScreen(),
           AddUpdatePurchaseScreen.routeName: (context) =>
               const AddUpdatePurchaseScreen(),
+          AddPurchaseNewScreen.routeName: (context) => AddPurchaseNewScreen(),
           PurchaseScreen.routeName: (context) => PurchaseScreen(),
         },
       ),

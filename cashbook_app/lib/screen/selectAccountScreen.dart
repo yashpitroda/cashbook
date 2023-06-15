@@ -259,7 +259,7 @@ class SelectAccountScreen extends StatelessWidget {
                   // setState(() {
                   // });
                   try {
-                    await Provider.of<accountProvider>(context, listen: false)
+                    await Provider.of<AccountProvider>(context, listen: false)
                         .submit_In_add_New_account(
                             accountName: accountNameController.text,
                             date: DateTime.now(),
@@ -309,14 +309,14 @@ class SelectAccountScreen extends StatelessWidget {
     return Scaffold(
       body: FutureBuilder(
         future: Future.wait([
-          Provider.of<accountProvider>(context, listen: false).fetchAccount(),
+          Provider.of<AccountProvider>(context, listen: false).fetchAccount(),
           Provider.of<CategoryProvider>(context, listen: false)
               .fetchCategory(type: type),
         ]),
         builder: (context, snapshot) {
           print(snapshot.connectionState);
           if (snapshot.connectionState == ConnectionState.done) {
-            List<Account> accountList = Provider.of<accountProvider>(
+            List<Account> accountList = Provider.of<AccountProvider>(
               context,
             ).getAccountList;
             List<Category_> categotyList = Provider.of<CategoryProvider>(
@@ -340,6 +340,7 @@ class SelectAccountScreen extends StatelessWidget {
       child: Scrollbar(
         child: SingleChildScrollView(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(
                 height: 1,
@@ -516,17 +517,17 @@ class ItemCard extends StatelessWidget {
         // subtitle: Text(" ${items[index].entrydatetime}"),
         value: accountobj.accountId,
         groupValue:
-            (Provider.of<accountProvider>(context).getSelectedAccountObj ==
+            (Provider.of<AccountProvider>(context).getSelectedAccountObj ==
                     null)
                 ? null
-                : Provider.of<accountProvider>(context)
+                : Provider.of<AccountProvider>(context)
                     .getSelectedAccountObj!
                     .accountId,
         onChanged: (value) {
           Account _accountobj =
-              Provider.of<accountProvider>(context, listen: false)
+              Provider.of<AccountProvider>(context, listen: false)
                   .findAccountByAccountId(accountId: value!);
-          Provider.of<accountProvider>(context, listen: false)
+          Provider.of<AccountProvider>(context, listen: false)
               .setSelectedAccountObj(accountObj: _accountobj);
           Navigator.of(context).pop();
         },

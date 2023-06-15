@@ -63,7 +63,7 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
           .toString()
           .replaceAll(" ", "")
           .replaceFirst("+91", ""),
-      "email": (selectedContact!.emails.length == 0)
+      "email": (selectedContact!.emails.isEmpty)
           ? null
           : selectedContact!.emails.first.address.toString().toLowerCase(),
     };
@@ -128,55 +128,52 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(35.0),
-          child: Theme(
-            data: Theme.of(context).copyWith(accentColor: Colors.white),
-            child: Column(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 12, right: 12),
-                    child: TextField(
-                      onChanged: (value) {
-                        filterSearchResults(value);
-                      },
-                      focusNode: searchTextfocusnode,
-                      controller: searchTextController,
-                      cursorColor: Colors.black,
-                      style: const TextStyle(
-                          // letterSpacing: 1,
-                          color: Colors.black,
-                          // fontWeight: FontWeight.w500,
-                          fontSize: 18),
-                      decoration: InputDecoration(
-                        suffixIcon: searchTextfocusnode.hasFocus
-                            ? IconButton(
-                                icon: Icon(Icons.clear),
-                                onPressed: () {
-                                  // print();
-                                  searchTextController.clear();
-                                  searchTextfocusnode.unfocus();
-                                  _fetchContacts().then((_) {
-                                    contactList = _dummycontactslist;
-                                  });
-                                },
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.search), //icon at tail of input
-                      ),
+          child: Column(
+            children: [
+              Container(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12, right: 12),
+                  child: TextField(
+                    onChanged: (value) {
+                      filterSearchResults(value);
+                    },
+                    focusNode: searchTextfocusnode,
+                    controller: searchTextController,
+                    cursorColor: Colors.black,
+                    style: const TextStyle(
+                        // letterSpacing: 1,
+                        color: Colors.black,
+                        // fontWeight: FontWeight.w500,
+                        fontSize: 18),
+                    decoration: InputDecoration(
+                      suffixIcon: searchTextfocusnode.hasFocus
+                          ? IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                // print();
+                                searchTextController.clear();
+                                searchTextfocusnode.unfocus();
+                                _fetchContacts().then((_) {
+                                  contactList = _dummycontactslist;
+                                });
+                              },
+                            )
+                          : null,
+                      border: InputBorder.none,
+                      prefixIcon: Icon(Icons.search), //icon at tail of input
                     ),
                   ),
                 ),
-                Container(
-                  height: 1.2,
-                  color: Colors.grey.shade500,
-                ),
-                const SizedBox(
-                  height: 1.9,
-                )
-              ],
-            ),
+              ),
+              Container(
+                height: 1.2,
+                color: Colors.grey.shade500,
+              ),
+              const SizedBox(
+                height: 1.9,
+              )
+            ],
           ),
         ),
       ),

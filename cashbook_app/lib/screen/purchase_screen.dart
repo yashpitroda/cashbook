@@ -9,6 +9,7 @@ import '../services/date_time_utill.dart';
 import '../services/provider_utill.dart';
 import '../services/widget_component_utill.dart';
 import '../widgets/purchase_card.dart';
+import '../widgets/purchase_screen_header.dart';
 import 'add_update_purchase_screen.dart';
 
 class PurchaseScreen extends StatelessWidget {
@@ -34,8 +35,8 @@ class PurchaseScreen extends StatelessWidget {
           ]),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              final purchaselist =
-                  Provider.of<PurchaseProvider>(context).getPurchaseList;
+              Provider.of<PurchaseProvider>(context, listen: false);
+
               return RefreshIndicator(
                 onRefresh: () async {
                   await ProviderUtill.refreshSupplier(context).then((_) async {
@@ -44,110 +45,188 @@ class PurchaseScreen extends StatelessWidget {
                 },
                 child: Stack(
                   children: [
-                    (purchaselist.isEmpty)
-                        ? const Center(
-                            child: Text("Empty List"),
-                          )
-                        : Scrollbar(
-                            child: SingleChildScrollView(
-                              controller: _scrollcontroller,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 300,
-                                    color: Colors.pink,
-                                  ),
-                                  ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: purchaselist.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Column(
-                                        children: [
-                                          // (((index > 0) &&
-                                          //         (purchaselist[index].date.year ==
-                                          //                 purchaselist[index - 1].date.year &&
-                                          //             purchaselist[index].date.month ==
-                                          //                 purchaselist[index - 1].date.month &&
-                                          //             purchaselist[index].date.day ==
-                                          //                 purchaselist[index - 1].date.day)))
-                                          // (((index > 0) &&
-                                          //         (Utility.convertDatetimeToDateOnly(
-                                          //                 souceDateTime:
-                                          //                     purchaselist[index].date) ==
-                                          //             Utility.convertDatetimeToDateOnly(
-                                          //                 souceDateTime:
-                                          //                     purchaselist[index - 1].date))))
-
-                                          (((index > 0) &&
-                                                  (DateTimeUtill.checkIsSameDay(
-                                                      souceDateTime_1:
-                                                          purchaselist[index]
-                                                              .date,
-                                                      souceDateTime_2:
-                                                          purchaselist[
-                                                                  index - 1]
-                                                              .date))))
-                                              ? const SizedBox(
-                                                  height: 8,
-                                                )
-                                              : Container(
-                                                  // color: Colors.amber,
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 16, bottom: 4),
-                                                  height: 34,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    children: [
-                                                      Text(
-                                                        DateTimeUtill.returnDateMounthAndYear(
-                                                            souceDateTime:
-                                                                purchaselist[
-                                                                        index]
-                                                                    .date),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .caption!
-                                                            .copyWith(
-                                                                fontSize: 14),
-                                                      ),
-                                                    ],
-                                                  )),
-                                          PurchaseCard(
-                                            purchaseObj: purchaselist[index],
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    height: 86,
-                                  )
-                                ],
-                              ),
-                            ),
-
-                            // child: StickyGroupedListView<Purchase, DateTime>(
-                            //   // physics: NeverScrollableScrollPhysics(),
-                            //   shrinkWrap: true,
-                            //   elements: purchaselist,
-                            //   groupBy: (element) {
-                            //     return DateUtils.dateOnly(element.date);
-                            //   },
-                            //   groupSeparatorBuilder: (value) =>
-                            //       Text(Utility.dateFormat_DDMMYYYY().format(value.date)),
-                            //   itemBuilder: (context, dynamic element) =>
-                            //       Container(height: 200, child: Card(child: Text(element.pid))),
-                            //   // itemComparator: (e1, e2) => e1['name'].compareTo(e2['name']), // optional
-                            //   // elementIdentifier: (element) => element.name // optional - see below for usage
-                            //   // itemScrollController: itemScrollController, // optional
-                            //   // order: StickyGroupedListOrder.ASC, // optional
+                    Scrollbar(
+                      child: SingleChildScrollView(
+                        controller: _scrollcontroller,
+                        child: Column(
+                          children: [
+                            // Padding(
+                            // padding: const EdgeInsets.symmetric(
+                            //     vertical: Constants.defaultPadding_6),
+                            // child:
+                            // Card(
+                            //   margin: const EdgeInsets.symmetric(
+                            //       horizontal:
+                            //           Constants.defaultPadding_6 / 3,
+                            //       vertical: 0),
+                            //   elevation: 2,
+                            //   shape: const RoundedRectangleBorder(
+                            //       borderRadius: BorderRadius.only(
+                            //           bottomRight: Radius.circular(
+                            //               Constants.borderRadius_6 * 2),
+                            //           bottomLeft: Radius.circular(
+                            //               Constants.borderRadius_6 * 2))),
+                            //   child: Column(
+                            //     children: [
+                            //       Padding(
+                            //         padding: const EdgeInsets.symmetric(
+                            //             horizontal:
+                            //                 Constants.defaultPadding_8 *
+                            //                     2,
+                            //             vertical:
+                            //                 Constants.defaultPadding_6),
+                            //         child: Row(
+                            //           mainAxisAlignment:
+                            //               MainAxisAlignment.spaceBetween,
+                            //           children: [
+                            //             Text(
+                            //               "Outstanding",
+                            //               maxLines: 1,
+                            //               overflow: TextOverflow.ellipsis,
+                            //               style: Theme.of(context)
+                            //                   .textTheme
+                            //                   .labelMedium!
+                            //                   .copyWith(
+                            //                     fontSize: 16,
+                            //                     // color: Colors.red
+                            //                   ),
+                            //             ),
+                            //             Flexible(
+                            //               child: Text(
+                            //                 "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: Provider.of<PurchaseProvider>(context).totalDue, decimalDigits: 2)}",
+                            //                 maxLines: 1,
+                            //                 overflow:
+                            //                     TextOverflow.ellipsis,
+                            //                 style: Theme.of(context)
+                            //                     .textTheme
+                            //                     .labelLarge!
+                            //                     .copyWith(
+                            //                         color: Colors
+                            //                             .red.shade700,
+                            //                         fontSize: 14,
+                            //                         fontWeight:
+                            //                             FontWeight.w600),
+                            //               ),
+                            //             ),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
                             // ),
-                          ),
+                            // // ),
+                            // const SizedBox(
+                            //   height: Constants.defaultPadding_6,
+                            // ),
+                            // WidgetComponentUtill.divider(1.4),
+                            PurchaseScreenHeaderCard(
+                              title1: "Purchase",
+                              title2: "paid",
+                              title1Value:
+                                  Provider.of<PurchaseProvider>(context)
+                                      .totalPurchase,
+                              title2Value:
+                                  Provider.of<PurchaseProvider>(context)
+                                      .totalPaid,
+                            ),
+                            Consumer<PurchaseProvider>(
+                              builder: (context, purchaseProvider, child) {
+                                print("fgfg");
+                                print(purchaseProvider.getPurchaseList == null);
+                                return (purchaseProvider.getPurchaseList ==
+                                        null)
+                                    ? const Center(
+                                        child: Text(
+                                            "Press Add purchase to add new purchase"),
+                                      )
+                                    : ListView.builder(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: purchaseProvider
+                                            .getPurchaseList!.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Column(
+                                            children: [
+                                              (((index > 0) &&
+                                                      (DateTimeUtill.checkIsSameDay(
+                                                          souceDateTime_1:
+                                                              purchaseProvider
+                                                                  .getPurchaseList![
+                                                                      index]
+                                                                  .date,
+                                                          souceDateTime_2:
+                                                              purchaseProvider
+                                                                  .getPurchaseList![
+                                                                      index - 1]
+                                                                  .date))))
+                                                  ? const SizedBox(
+                                                      height: 8,
+                                                    )
+                                                  : Container(
+                                                      color: Colors.transparent,
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 16,
+                                                              bottom: 4),
+                                                      height: 34,
+                                                      child: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Text(
+                                                            DateTimeUtill.returnDateMounthAndYear(
+                                                                souceDateTime:
+                                                                    purchaseProvider
+                                                                        .getPurchaseList![
+                                                                            index]
+                                                                        .date),
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .caption!
+                                                                .copyWith(
+                                                                    fontSize:
+                                                                        14),
+                                                          ),
+                                                        ],
+                                                      )),
+                                              PurchaseCard(
+                                                purchaseObj: purchaseProvider
+                                                    .getPurchaseList![index],
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                              },
+                            ),
+                            const SizedBox(
+                              height: 86,
+                            )
+                          ],
+                        ),
+                      ),
+
+                      // child: StickyGroupedListView<Purchase, DateTime>(
+                      //   // physics: NeverScrollableScrollPhysics(),
+                      //   shrinkWrap: true,
+                      //   elements: purchaselist,
+                      //   groupBy: (element) {
+                      //     return DateUtils.dateOnly(element.date);
+                      //   },
+                      //   groupSeparatorBuilder: (value) =>
+                      //       Text(Utility.dateFormat_DDMMYYYY().format(value.date)),
+                      //   itemBuilder: (context, dynamic element) =>
+                      //       Container(height: 200, child: Card(child: Text(element.pid))),
+                      //   // itemComparator: (e1, e2) => e1['name'].compareTo(e2['name']), // optional
+                      //   // elementIdentifier: (element) => element.name // optional - see below for usage
+                      //   // itemScrollController: itemScrollController, // optional
+                      //   // order: StickyGroupedListOrder.ASC, // optional
+                      // ),
+                    ),
                     Align(
                       alignment: AlignmentDirectional.bottomStart,
                       child: bottomButtonCard(context),

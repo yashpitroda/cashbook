@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cashbook_app/models/account.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -23,8 +22,8 @@ class CategoryProvider with ChangeNotifier {
     return _selectedcategoryObj;
   }
 
-  void setSelectedCategoryObj({Category_? categoryObj}) {
-    _selectedcategoryObj = categoryObj;
+  void setSelectedCategoryObj({required Category_? categoryObj}) {
+    _selectedcategoryObj = (categoryObj==null)?null:categoryObj;
     notifyListeners();
   }
 

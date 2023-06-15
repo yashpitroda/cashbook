@@ -36,16 +36,15 @@ Color shadeColor(Color color, double factor) => Color.fromRGBO(
 
 class Palette {
   static const Color primaryColor = Color(0xFF4285F4);
-  static const Color redColor = Color(0xFFE60023);
-  static const Color redDarkColor = Color(0xFFDB4437);
-  static const Color greenColor = Color(0xFF0F9D58);
-  static const Color greendarkColor = Color(0xFF1DB954);
+  static const Color redColor = Color(0xFFDB4437);
+  static const Color redDarkColor = Color(0xFFB81E26);
+  static const Color greenColor = Color(0xFF1DB954); //0xFF1DB954
+  static const Color greendarkColor = Color(0xFF0F9D58);
 
   static const Color blackColor = Color(0xFF282828);
   static const Color whiteColor = Color.fromARGB(255, 255, 255, 255);
 
   static const Color fontWhiteColor = Color.fromARGB(255, 255, 255, 255);
   static const Color fontBlackColor = Color.fromARGB(255, 0, 0, 0);
-  static const Color backgroundColor = Color.fromARGB(255, 247, 245, 245);
+  static const Color backgroundColor = Color.fromARGB(255, 240, 242, 245);
 }
-

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../services/constants.dart';
 import '../widgets/customsearch_textfield.dart';
 import 'add_supplier_screen.dart';
 import '../services/provider_utill.dart';
@@ -43,18 +44,28 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
   }
 
   Future<void> _showAlertDialog(
-      {required String smobileno, required String useremail}) async {
+      {required String smobileno,
+      required String useremail,
+      required String firmname}) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Alert'),
+          shape: const RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.all(Radius.circular(Constants.borderRadius_6))),
+          title: Text(
+            firmname,
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
           content: SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
-                Text('Do you want to delete item?'),
-                // Text('Would you like to approve of this message?'),
+              children: <Widget>[
+                Text(
+                  'Do you want to delete item?',
+                  style: Theme.of(context).textTheme.caption,
+                ),
               ],
             ),
           ),
@@ -65,7 +76,13 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
                       EdgeInsets.symmetric(vertical: 12, horizontal: 14)),
                   backgroundColor:
                       MaterialStateProperty.all(Colors.blue.withOpacity(0.2))),
-              child: const Text('No,Keep it'),
+              child: Text(
+                'No,Keep it',
+                style: Theme.of(context)
+                    .textTheme
+                    .button!
+                    .copyWith(color: Colors.blue),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -75,9 +92,12 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
                   padding: MaterialStateProperty.all(
                       EdgeInsets.symmetric(vertical: 12, horizontal: 14)),
                   backgroundColor: MaterialStateProperty.all(Colors.red)),
-              child: const Text(
+              child: Text(
                 'Yes,Delete',
-                style: TextStyle(color: Colors.white),
+                style: Theme.of(context)
+                    .textTheme
+                    .button!
+                    .copyWith(color: Colors.white),
               ),
               onPressed: () {
                 Provider.of<SupplierProvider>(context, listen: false)
@@ -91,8 +111,12 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
     );
   }
 
-  void _onTapOnDelete({required String smobileno, required String useremail}) {
-    _showAlertDialog(smobileno: smobileno, useremail: useremail);
+  void _onTapOnDelete(
+      {required String smobileno,
+      required String useremail,
+      required String firmname}) {
+    _showAlertDialog(
+        smobileno: smobileno, useremail: useremail, firmname: firmname);
   }
 
   void clearTextOnSearchTextField() {
@@ -112,7 +136,6 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
       appBar: AppBar(
         title: const Text(
           "Manage supplier",
-          style: TextStyle(fontFamily: "Rubik"),
         ),
       ),
       body: Visibility(
@@ -200,18 +223,23 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
               child: RefreshIndicator(
                 onRefresh: () => ProviderUtill.refreshSupplier(context),
                 child: (_supplierlist.isEmpty)
-                    ? Center(
+                    ? const Center(
                         child: Text("Empty List"),
                       )
                     : ListView.builder(
                         itemCount: _supplierlist.length,
                         itemBuilder: (context, index) {
                           return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            padding: const EdgeInsets.only(
+                                left: Constants.defaultPadding_8 * 1.4),
                             child: Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              elevation: 0,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(
+                                          Constants.borderRadius_6 * 2),
+                                      bottomLeft: Radius.circular(
+                                          Constants.borderRadius_6 * 2))),
+                              elevation: 0.7,
                               child: Column(
                                 children: [
                                   ListTile(
@@ -271,6 +299,8 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
                                           onPressed: () => _onTapOnDelete(
                                               smobileno: _supplierlist[index]
                                                   .smobileno,
+                                              firmname:
+                                                  _supplierlist[index].firmname,
                                               useremail: currentUser!.email
                                                   .toString()),
                                           icon: const Icon(

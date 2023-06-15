@@ -420,7 +420,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
   @override
   Widget build(BuildContext context) {
     Account? selectedAccountObjbyprovider =
-        Provider.of<accountProvider>(context).getSelectedAccountObj;
+        Provider.of<AccountProvider>(context).getSelectedAccountObj;
     Category_? selectedCategoryObjbyprovider =
         Provider.of<CategoryProvider>(context).getSelectedcategoryObj;
 

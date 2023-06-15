@@ -81,5 +81,6 @@ class GauthProvider extends ChangeNotifier {
     // Sign out with google
     googleSignIn.signOut();
     FirebaseAuth.instance.signOut();
+    notifyListeners();
   }
 }

@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cashbook_app/screen/add_purchase_new_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +54,8 @@ class HomeScreen extends StatelessWidget {
         //     .fatchCurrentInfo(),
 
         builder: ((context, snapshot) {
+          print("xcxc");
+          print(currentUser.email);
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data == true) {
               return __child(context);
@@ -133,6 +136,16 @@ class HomeScreen extends StatelessWidget {
           Center(
             child: Text("home"),
           ),
+          ElevatedButton(
+              onPressed: () =>
+                  Provider.of<GauthProvider>(context, listen: false)
+                      .signOutWithGoogle(),
+              child: Text("Logout")),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(AddPurchaseNewScreen.routeName);
+              },
+              child: Text("nothing"))
         ],
       ),
     );

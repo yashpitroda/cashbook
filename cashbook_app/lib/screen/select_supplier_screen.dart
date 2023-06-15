@@ -1,4 +1,3 @@
-import 'package:cashbook_app/services/palette.dart';
 import 'package:cashbook_app/models/supplier.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
 import 'package:cashbook_app/screen/manage_supplier_screen.dart';
@@ -9,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../services/constants.dart';
 import '../services/date_time_utill.dart';
 import '../services/provider_utill.dart';
-import '../services/utility.dart';
 import '../services/widget_component_utill.dart';
 
 class SelectSupplierScreen extends StatefulWidget {
@@ -66,9 +64,10 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        title: const Text(
+       
+        title: Text(
           "Select supplier",
+          
         ),
         actions: [
           IconButton(

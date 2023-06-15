@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../services/utility.dart';
 
-class accountProvider with ChangeNotifier {
+class AccountProvider with ChangeNotifier {
   Account? _selectedAccountObj;
   List<Account> _accountList = [];
   List<Account> _storedAccountList = []; //for backup
@@ -20,8 +20,8 @@ class accountProvider with ChangeNotifier {
     return _selectedAccountObj;
   }
 
-  void setSelectedAccountObj({Account? accountObj}) {
-    _selectedAccountObj = accountObj;
+  void setSelectedAccountObj({required Account? accountObj}) {
+    _selectedAccountObj = (accountObj == null) ? null : accountObj;
     notifyListeners();
   }
 
