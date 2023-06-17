@@ -1,7 +1,6 @@
-import 'package:cashbook_app/services/palette.dart';
 import 'package:flutter/material.dart';
 
-class WidgetComponentUtill {
+class UtillComponent {
   static Widget loadingIndicator() {
     return const Center(
       child: CircularProgressIndicator(),
@@ -18,6 +17,7 @@ class WidgetComponentUtill {
   static void displaysnackbar(
       {required BuildContext context, required String message}) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      elevation: 1.5,
       duration: const Duration(seconds: 2),
       content: Text(
         message,
@@ -25,7 +25,7 @@ class WidgetComponentUtill {
             // color: Colors.white
             ),
       ),
-      // backgroundColor: Palette.blackColor,
+      backgroundColor: Theme.of(context).primaryColorLight,
     ));
   }
 }

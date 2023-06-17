@@ -97,7 +97,7 @@ class SelectAccountScreen extends StatelessWidget {
                 ),
                 onPressed: () async {
                   if (categoryNameController.text.isEmpty) {
-                    WidgetComponentUtill.displaysnackbar(
+                    UtillComponent.displaysnackbar(
                         context: context, message: "Fill account name");
                     return;
                   }
@@ -246,12 +246,12 @@ class SelectAccountScreen extends StatelessWidget {
                 onPressed: () async {
                   if (accountNameController.text.isEmpty) {
                     print("object");
-                    WidgetComponentUtill.displaysnackbar(
+                    UtillComponent.displaysnackbar(
                         context: context, message: "Fill account name");
                     return;
                   }
                   if (intialAmountController.text.isEmpty) {
-                    WidgetComponentUtill.displaysnackbar(
+                    UtillComponent.displaysnackbar(
                         context: context, message: "Fill intial amount");
                     return;
                   }
@@ -487,7 +487,7 @@ class ItemCard extends StatelessWidget {
             ),
             Flexible(
               child: Text(
-                "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: accountobj.balance!, decimalDigits: 2)} ",
+                "\u{20B9} ${Utill.convertToIndianCurrency(sourceNumber: accountobj.balance!, decimalDigits: 2)} ",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelSmall!.copyWith(

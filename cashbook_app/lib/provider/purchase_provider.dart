@@ -4,12 +4,12 @@ import 'package:cashbook_app/models/cashflow.dart';
 import 'package:cashbook_app/models/category.dart';
 import 'package:cashbook_app/models/purchase.dart';
 import 'package:cashbook_app/provider/supplier_provider.dart';
+import 'package:cashbook_app/services/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:cashbook_app/models/supplier.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../services/utility.dart';
 
 class PurchaseProvider extends ChangeNotifier {
   String totalPurchase = "0";
@@ -39,14 +39,14 @@ class PurchaseProvider extends ChangeNotifier {
   }
 
   Future<void> fatchPurchase() async {
-    Uri url = Uri.parse(Utility.BASEURL + "/purchase/fetchall");
+    Uri url = Uri.parse(Utill.BASEURL + "/purchase/fetchall");
 
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
       body: json.encode(
         {
-          'useremail': Utility.getCurrentUserEMAILID(),
+          'useremail': Utill.getCurrentUserEMAILID(),
         },
       ),
     );
@@ -191,9 +191,9 @@ class PurchaseProvider extends ChangeNotifier {
       required String remark,
       required DateTime finaldateTime}) async {
     try {
-      // final url = Uri.parse(Utility.BASEURL + "/addinpurchas");
-      // final url = Uri.parse(Utility.BASEURL + "/purchase/addone");
-      final url = Uri.parse(Utility.BASEURL + "/purchase/addone");
+      // final url = Uri.parse(Utill.BASEURL + "/addinpurchas");
+      // final url = Uri.parse(Utill.BASEURL + "/purchase/addone");
+      final url = Uri.parse(Utill.BASEURL + "/purchase/addone");
 
       final response = await http.post(
         url,
@@ -211,7 +211,7 @@ class PurchaseProvider extends ChangeNotifier {
             "sid": selectedSupplierobj.sid,
             'firmname': selectedSupplierobj.firmname,
             'smobileno': selectedSupplierobj.smobileno,
-            'useremail': Utility.getCurrentUserEMAILID(),
+            'useremail': Utill.getCurrentUserEMAILID(),
             'date': finaldateTime.toString(),
             'remark': remark,
           },
@@ -222,7 +222,7 @@ class PurchaseProvider extends ChangeNotifier {
       }
       final responseData = json.decode(response.body);
       final status = responseData["status"];
-      if (status == Utility.CHECK_STATUS) {
+      if (status == Utill.CHECK_STATUS) {
         await supplierProviderOBJ!.fatchSupplier();
         await fatchPurchase();
       }

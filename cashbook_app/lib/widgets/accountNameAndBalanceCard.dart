@@ -54,7 +54,7 @@ class accountNameAndBalanceCard extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: cashflowObj.balance!, decimalDigits: 2)}",
+                  "\u{20B9} ${Utill.convertToIndianCurrency(sourceNumber: cashflowObj.balance!, decimalDigits: 2)}",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)

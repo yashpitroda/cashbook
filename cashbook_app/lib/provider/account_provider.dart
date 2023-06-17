@@ -33,8 +33,8 @@ class AccountProvider with ChangeNotifier {
 
   Future<void> fetchAccount() async {
     print("fetchAccount is call");
-    String useremail = Utility.getCurrentUserEMAILID();
-    final url = Uri.parse(Utility.BASEURL + "/account/fetchall");
+    String useremail = Utill.getCurrentUserEMAILID();
+    final url = Uri.parse(Utill.BASEURL + "/account/fetchall");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
@@ -78,8 +78,8 @@ class AccountProvider with ChangeNotifier {
     required DateTime date,
   }) async {
     try {
-      // final url = Uri.parse(Utility.BASEURL + "/addinpurchas");
-      final url = Uri.parse(Utility.BASEURL + "/account/addone");
+      // final url = Uri.parse(Utill.BASEURL + "/addinpurchas");
+      final url = Uri.parse(Utill.BASEURL + "/account/addone");
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
@@ -87,7 +87,7 @@ class AccountProvider with ChangeNotifier {
           {
             "accountName": accountName,
             'initialAmount': initialAmount, //instant
-            'useremail': Utility.getCurrentUserEMAILID(),
+            'useremail': Utill.getCurrentUserEMAILID(),
             'date': date.toString(),
           },
         ),
@@ -97,7 +97,7 @@ class AccountProvider with ChangeNotifier {
       }
       final responseData = json.decode(response.body);
       final status = responseData["status"];
-      if (status == Utility.CHECK_STATUS) {
+      if (status == Utill.CHECK_STATUS) {
         // supplierProviderOBJ!.fatchSupplier();
         await fetchAccount();
       }

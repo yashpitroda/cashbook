@@ -38,7 +38,7 @@ class GauthProvider extends ChangeNotifier {
 
   Future<bool> adduserindatabase(BuildContext context, String username,
       String useremail, String userimageurl) async {
-    final url = Uri.parse(Utility.BASEURL + "/users/addone");
+    final url = Uri.parse(Utill.BASEURL + "/users/addone");
     print("called");
     final response = await http.post(
       url,
@@ -54,7 +54,7 @@ class GauthProvider extends ChangeNotifier {
     final responseData = json.decode(response.body);
     if (response.statusCode == 200) {
       if (responseData['status'].toString() == "database error") {
-        WidgetComponentUtill.displaysnackbar(
+        UtillComponent.displaysnackbar(
             context: context, message: 'something went wrong');
         return false;
       }
@@ -64,13 +64,13 @@ class GauthProvider extends ChangeNotifier {
     } else if (response.statusCode == 500) {
       print('Internal Server Error');
       print(response.statusCode);
-      WidgetComponentUtill.displaysnackbar(
+      UtillComponent.displaysnackbar(
           context: context, message: 'Internal Server Error');
       return false;
     } else {
       print('something went wrong -- authentication');
       print(response.statusCode);
-      WidgetComponentUtill.displaysnackbar(
+      UtillComponent.displaysnackbar(
           context: context, message: 'something went wrong -- authentication');
       return false;
     }

@@ -122,7 +122,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
   void clearTextOnSearchTextField() {
     searchTextController.clear();
     searchTextfocusnode.unfocus();
-    ProviderUtill.refreshSupplier(context);
+    UtillProvider.refreshSupplier(context);
   }
 
   @override
@@ -140,7 +140,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
       ),
       body: Visibility(
           visible: (!_isloading),
-          replacement: WidgetComponentUtill.loadingIndicator(),
+          replacement: UtillComponent.loadingIndicator(),
           child: _body(_supplierlist, mqhight, context)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -176,7 +176,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
                   textinputtype: TextInputType.name,
                   customfocusnode: searchTextfocusnode,
                   customOnChangedFuction:
-                      ProviderUtill.searchInSupplierListInProvider,
+                      UtillProvider.searchInSupplierListInProvider,
                   customClearSearchFuction: clearTextOnSearchTextField),
             ),
             // Padding(
@@ -221,7 +221,7 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
             ),
             Expanded(
               child: RefreshIndicator(
-                onRefresh: () => ProviderUtill.refreshSupplier(context),
+                onRefresh: () => UtillProvider.refreshSupplier(context),
                 child: (_supplierlist.isEmpty)
                     ? const Center(
                         child: Text("Empty List"),

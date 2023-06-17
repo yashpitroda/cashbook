@@ -399,7 +399,7 @@ class _AddInPayableScreenState extends State<AddInPayableScreen> {
               SizedBox(
                 width: mqwidth * 0.013,
               ),
-              Text(DateTimeUtill.datetimeToTimeAmPm(
+              Text(UtillDatetime.datetimeToTimeAmPm(
                   souceDateTime: finaldateTime!)),
               const Icon(
                 Icons.arrow_drop_down,

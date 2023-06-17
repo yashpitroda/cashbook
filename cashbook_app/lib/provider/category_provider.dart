@@ -40,8 +40,8 @@ class CategoryProvider with ChangeNotifier {
 
   Future<void> fetchCategory({required String type}) async {
     print("fetchCategory is call");
-    String useremail = Utility.getCurrentUserEMAILID();
-    final url = Uri.parse(Utility.BASEURL + "/category/fetchall");
+    String useremail = Utill.getCurrentUserEMAILID();
+    final url = Uri.parse(Utill.BASEURL + "/category/fetchall");
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
@@ -82,8 +82,8 @@ class CategoryProvider with ChangeNotifier {
     required DateTime date,
   }) async {
     try {
-      // final url = Uri.parse(Utility.BASEURL + "/addinpurchas");
-      final url = Uri.parse(Utility.BASEURL + "/category/addone");
+      // final url = Uri.parse(Utill.BASEURL + "/addinpurchas");
+      final url = Uri.parse(Utill.BASEURL + "/category/addone");
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
@@ -91,7 +91,7 @@ class CategoryProvider with ChangeNotifier {
           {
             "categoryName": categorytName,
             'type': type, //instant
-            'useremail': Utility.getCurrentUserEMAILID(),
+            'useremail': Utill.getCurrentUserEMAILID(),
             'date': date.toString(),
           },
         ),
@@ -101,7 +101,7 @@ class CategoryProvider with ChangeNotifier {
       }
       final responseData = json.decode(response.body);
       final status = responseData["status"];
-      if (status == Utility.CHECK_STATUS) {
+      if (status == Utill.CHECK_STATUS) {
         // supplierProviderOBJ!.fatchSupplier();
         fetchCategory(type: type);
       }

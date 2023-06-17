@@ -54,7 +54,7 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
   void clearTextOnSearchTextField() {
     searchTextController.clear();
     searchTextfocusnode.unfocus();
-    ProviderUtill.refreshSupplier(context);
+    UtillProvider.refreshSupplier(context);
   }
 
   @override
@@ -79,7 +79,7 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
       ),
       body: Visibility(
           visible: (!_isloading),
-          replacement: WidgetComponentUtill.loadingIndicator(),
+          replacement: UtillComponent.loadingIndicator(),
           child: _body(_supplierList, context)),
     );
   }
@@ -103,7 +103,7 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
                   textinputtype: TextInputType.name,
                   customfocusnode: searchTextfocusnode,
                   customOnChangedFuction:
-                      ProviderUtill.searchInSupplierListInProvider,
+                      UtillProvider.searchInSupplierListInProvider,
                   customClearSearchFuction: clearTextOnSearchTextField),
             ),
             const SizedBox(
@@ -111,7 +111,7 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
             ),
             Expanded(
               child: RefreshIndicator(
-                onRefresh: () => ProviderUtill.refreshSupplier(context),
+                onRefresh: () => UtillProvider.refreshSupplier(context),
                 child: (_supplierlist.isEmpty)
                     ? const Center(
                         child: Text("Empty List"),
@@ -143,7 +143,7 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
                                             .textTheme
                                             .labelLarge),
                                     Text(
-                                        DateTimeUtill.returnDateAndMounth(
+                                        UtillDatetime.returnDateAndMounth(
                                             souceDateTime: _supplierlist[index]
                                                 .entrydatetime),
                                         style: Theme.of(context)

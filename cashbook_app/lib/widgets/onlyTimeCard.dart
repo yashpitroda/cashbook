@@ -15,7 +15,7 @@ class onlyTimeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-        "at ${DateTimeUtill.datetimeToTimeAmPm(souceDateTime: purchaseObj.date)}",
+        "at ${UtillDatetime.datetimeToTimeAmPm(souceDateTime: purchaseObj.date)}",
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: Theme.of(context).textTheme.bodySmall!

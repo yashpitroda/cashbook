@@ -31,7 +31,7 @@ class billPaidDueAdvInPuchaseCard extends StatelessWidget {
               ),
               Flexible(
                 child: Text(
-                  Utility.convertToIndianCurrency(
+                  Utill.convertToIndianCurrency(
                       sourceNumber: purchaseObj.biilAmount, decimalDigits: 2),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -54,7 +54,7 @@ class billPaidDueAdvInPuchaseCard extends StatelessWidget {
               ),
               Flexible(
                 child: Text(
-                  Utility.convertToIndianCurrency(
+                  Utill.convertToIndianCurrency(
                       sourceNumber: purchaseObj.paidAmount, decimalDigits: 2),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -85,7 +85,7 @@ class billPaidDueAdvInPuchaseCard extends StatelessWidget {
                     ),
                     Flexible(
                       child: Text(
-                        Utility.convertToIndianCurrency(
+                        Utill.convertToIndianCurrency(
                             sourceNumber: purchaseObj.outstandingAmount,
                             decimalDigits: 2),
                         maxLines: 1,
@@ -112,10 +112,10 @@ class billPaidDueAdvInPuchaseCard extends StatelessWidget {
                     Flexible(
                       child: Text(
                         (purchaseObj.outstandingAmount == "0")
-                            ? Utility.convertToIndianCurrency(
+                            ? Utill.convertToIndianCurrency(
                                 sourceNumber: purchaseObj.advanceAmount,
                                 decimalDigits: 2)
-                            : Utility.convertToIndianCurrency(
+                            : Utill.convertToIndianCurrency(
                                 sourceNumber: purchaseObj.outstandingAmount,
                                 decimalDigits: 2),
                         maxLines: 1,

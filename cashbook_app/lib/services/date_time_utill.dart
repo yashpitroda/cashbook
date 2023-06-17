@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DateTimeUtill {
+class UtillDatetime {
   static bool checkIsSameDay(
       {required DateTime souceDateTime_1, required DateTime souceDateTime_2}) {
     return DateUtils.isSameDay(souceDateTime_1, souceDateTime_2);

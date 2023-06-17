@@ -8,6 +8,7 @@ import 'package:cashbook_app/provider/category_provider.dart';
 import 'package:cashbook_app/provider/purchase_provider.dart';
 import 'package:cashbook_app/screen/selectAccountScreen.dart';
 import 'package:cashbook_app/screen/select_supplier_screen.dart';
+import 'package:cashbook_app/screen_provider/add_purchase_new_screen_provider.dart';
 import 'package:cashbook_app/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -304,24 +305,24 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     // print("qq3");
     // print(_iscashBankValue);
     if (selectedAccountObj == null) {
-      WidgetComponentUtill.displaysnackbar(context: context, message: "Select account");
+      UtillComponent.displaysnackbar(context: context, message: "Select account");
       return;
     }
     if (seletedCategoryobj == null) {
-      WidgetComponentUtill.displaysnackbar(context: context, message: "Select category");
+      UtillComponent.displaysnackbar(context: context, message: "Select category");
       return;
     }
     if (firmNameController.text.isEmpty) {
-      WidgetComponentUtill.displaysnackbar(context: context, message: "Select firm first");
+      UtillComponent.displaysnackbar(context: context, message: "Select firm first");
       return;
     }
     if (billamountController.text.isEmpty) {
-      WidgetComponentUtill.displaysnackbar(
+      UtillComponent.displaysnackbar(
           context: context, message: "Enter bill-amount first");
       return;
     }
     if (_isCREDIT_ADVANCE && paidamountController.text.isEmpty) {
-      WidgetComponentUtill.displaysnackbar(
+      UtillComponent.displaysnackbar(
           context: context, message: "Enter paid-amount first");
       return;
     }
@@ -337,7 +338,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
     //   FocusScope.of(context).requestFocus(smobilenoFocusNode);
     //   return;
     // }
-    Utility.removeFocus(context: context);
+    Utill.removeFocus(context: context);
     try {
       await Provider.of<PurchaseProvider>(context, listen: false)
           .submit_IN_Purchase(
@@ -436,7 +437,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
       ),
       body: Visibility(
           visible: (!_isloading),
-          replacement: WidgetComponentUtill.loadingIndicator(),
+          replacement: UtillComponent.loadingIndicator(),
           child: _body(mqwidth, context, mqhight, selectedAccountObjbyprovider,
               selectedCategoryObjbyprovider)),
     );
@@ -450,7 +451,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
       Category_? selectedCategoryObjbyprovider) {
     return GestureDetector(
       onTap: () {
-        Utility.removeFocus(context: context);
+        Utill.removeFocus(context: context);
       },
       child: Container(
         // color: Colors.grey.withOpacity(0.09),
@@ -1301,16 +1302,18 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
       child: TabBar(
         onTap: (value) {
           doEmptyController();
-          Utility.removeFocus(context: context);
+          Utill.removeFocus(context: context);
           if (value == 0) {
             c_cr = 0;
             _is_INSTANT_PAYMENT = true;
             _isCREDIT_ADVANCE = false;
+           
           }
           if (value == 1) {
             c_cr = 1;
             _is_INSTANT_PAYMENT = false;
             _isCREDIT_ADVANCE = true;
+            
             // if (_isBillValue == 1) {
             //   updatedoutstandingamountController.text =
             //       selectedSupplierobj!.outstanding_amount_withbill;
@@ -1483,7 +1486,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                         // _isBillValue = selected ? 1 : null;
                         _isBillValue = 1;
                         doEmptyController();
-                        Utility.removeFocus(context: context);
+                        Utill.removeFocus(context: context);
                       });
                     },
                   ),
@@ -1500,7 +1503,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
                         // _isBillValue = selected ? 0 : null;
                         _isBillValue = 0;
                         doEmptyController();
-                        Utility.removeFocus(context: context);
+                        Utill.removeFocus(context: context);
                       });
                     },
                   ),
@@ -1658,7 +1661,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               SizedBox(
                 width: mqwidth * 0.013,
               ),
-              Text(DateTimeUtill.returnDDMMYY(souceDateTime: finaldateTime!)),
+              Text(UtillDatetime.returnDDMMYY(souceDateTime: finaldateTime!)),
               const Icon(
                 Icons.arrow_drop_down,
                 size: 26,
@@ -1674,7 +1677,7 @@ class _AddUpdatePurchaseScreenState extends State<AddUpdatePurchaseScreen> {
               SizedBox(
                 width: mqwidth * 0.013,
               ),
-              Text(DateTimeUtill.datetimeToTimeAmPm(souceDateTime: finaldateTime!)),
+              Text(UtillDatetime.datetimeToTimeAmPm(souceDateTime: finaldateTime!)),
               const Icon(
                 Icons.arrow_drop_down,
                 size: 26,

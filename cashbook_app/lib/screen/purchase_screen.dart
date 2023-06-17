@@ -1,3 +1,4 @@
+import 'package:cashbook_app/screen/add_purchase_new_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +23,7 @@ class PurchaseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("purchase"),
+        title: const Text("Purchases"),
       ),
       body: FutureBuilder(
           future: Future.wait([
@@ -39,8 +40,8 @@ class PurchaseScreen extends StatelessWidget {
 
               return RefreshIndicator(
                 onRefresh: () async {
-                  await ProviderUtill.refreshSupplier(context).then((_) async {
-                    await ProviderUtill.refreshPurchase(context);
+                  await UtillProvider.refreshSupplier(context).then((_) async {
+                    await UtillProvider.refreshPurchase(context);
                   });
                 },
                 child: Stack(
@@ -150,7 +151,7 @@ class PurchaseScreen extends StatelessWidget {
                                           return Column(
                                             children: [
                                               (((index > 0) &&
-                                                      (DateTimeUtill.checkIsSameDay(
+                                                      (UtillDatetime.checkIsSameDay(
                                                           souceDateTime_1:
                                                               purchaseProvider
                                                                   .getPurchaseList![
@@ -177,7 +178,7 @@ class PurchaseScreen extends StatelessWidget {
                                                                 .end,
                                                         children: [
                                                           Text(
-                                                            DateTimeUtill.returnDateMounthAndYear(
+                                                            UtillDatetime.returnDateMounthAndYear(
                                                                 souceDateTime:
                                                                     purchaseProvider
                                                                         .getPurchaseList![
@@ -235,7 +236,7 @@ class PurchaseScreen extends StatelessWidget {
                 ),
               );
             } else {
-              return WidgetComponentUtill.loadingIndicator();
+              return UtillComponent.loadingIndicator();
             }
           })),
     );
@@ -258,7 +259,7 @@ class PurchaseScreen extends StatelessWidget {
                   flex: 1,
                   child: OutlinedButton(
                       onPressed: () {
-                        Utility.scrollUp(
+                        Utill.scrollUp(
                             customScrollController: _scrollcontroller);
                       },
                       style: OutlinedButton.styleFrom(
@@ -277,7 +278,7 @@ class PurchaseScreen extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context)
-                          .pushNamed(AddUpdatePurchaseScreen.routeName);
+                          .pushNamed(AddPurchaseNewScreen.routeName);
                     },
                     style: ElevatedButton.styleFrom(
                       fixedSize: const Size(10, 55),

@@ -50,7 +50,7 @@ class PurchaseScreenHeaderCard extends StatelessWidget {
                   ),
                   Flexible(
                     child: Text(
-                      "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: title1Value, decimalDigits: 2)}",
+                      "\u{20B9} ${Utill.convertToIndianCurrency(sourceNumber: title1Value, decimalDigits: 2)}",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)
@@ -89,7 +89,7 @@ class PurchaseScreenHeaderCard extends StatelessWidget {
                   ),
                   Flexible(
                     child: Text(
-                      "\u{20B9} ${Utility.convertToIndianCurrency(sourceNumber: title2Value, decimalDigits: 2)}",
+                      "\u{20B9} ${Utill.convertToIndianCurrency(sourceNumber: title2Value, decimalDigits: 2)}",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)

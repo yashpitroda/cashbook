@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../provider/purchase_provider.dart';
 import '../provider/supplier_provider.dart';
 
-class ProviderUtill {
+class UtillProvider {
   static void searchInSupplierListInProvider(
       String value, BuildContext context) {
     Provider.of<SupplierProvider>(context, listen: false)
