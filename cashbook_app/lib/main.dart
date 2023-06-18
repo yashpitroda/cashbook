@@ -72,43 +72,19 @@ class MyApp extends StatelessWidget {
             androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
         debugShowCheckedModeBanner: false,
         title: 'cashbook',
-        // theme: ThemeData(
-        // textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
-        //     .apply(bodyColor: Palette.fontBlackColor)
-        //     .copyWith(),
-        // appBarTheme: const AppBarTheme(
-        //   elevation: 0.4,
-        //   backgroundColor: Colors.white,
-        //   foregroundColor: Palette.blackColor,
-        // ),
-        //   primarySwatch: generateMaterialColor(Palette.primaryColor),
-        //   //canvasColor: Palette.backgroundColor,
-        //   scaffoldBackgroundColor: Palette.backgroundColor,
-        // floatingActionButtonTheme: FloatingActionButtonThemeData(
-        //   shape:
-        //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-        // ),
-        //   inputDecorationTheme: const InputDecorationTheme(
-        //     iconColor: Colors.black,
-        //     filled: true,
-        //     fillColor: Colors.white,
-        //   ),
-        // ),
         theme: ThemeData(
           dialogTheme: DialogTheme(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
-
           bottomSheetTheme: BottomSheetThemeData(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12))),
           cardTheme: const CardTheme(
-              margin: EdgeInsets.symmetric(
-                  horizontal: 0, vertical: Constants.defaultPadding_6 / 2)),
+              margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0)),
           primarySwatch: generateMaterialColor(Palette.primaryColor),
           floatingActionButtonTheme: FloatingActionButtonThemeData(
-            extendedTextStyle: Theme.of(context).textTheme.button,
+            extendedTextStyle: Theme.of(context).textTheme.titleSmall,
             elevation: 3,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -122,24 +98,11 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.white,
             foregroundColor: Palette.blackColor,
           ),
-          // colorScheme: const ColorScheme(
-          //     brightness: Brightness.light,
-          //     primary: Palette.primaryColor,
-          //     onPrimary: Palette.fontWhiteColor,
-          //     secondary: Colors.amber,
-          //     onSecondary: Palette.fontBlackColor,
-          //     error: Palette.redColor,
-          //     onError: Palette.fontWhiteColor,
-          //     background: Palette.fontWhiteColor,
-          //     onBackground: Palette.fontWhiteColor,
-          //     surface: Palette.fontWhiteColor,
-          //     onSurface: Palette.fontBlackColor),
         ),
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, userSnapshot) {
             if (userSnapshot.hasData) {
-              print(FirebaseAuth.instance.currentUser!.email);
               return const HomeScreen();
             } else {
               return const AuthScreen();
@@ -151,7 +114,8 @@ class MyApp extends StatelessWidget {
           AddInPayableScreen.routeName: (context) => const AddInPayableScreen(),
           HomeScreen.routeName: (context) => const HomeScreen(),
           ClientScreen.routeName: (context) => ClientScreen(),
-          SelectSupplierScreen.routeName: (context) => SelectSupplierScreen(),
+          SelectSupplierScreen.routeName: (context) =>
+              const SelectSupplierScreen(),
           AddupdateSupplierScreen.routeName: (context) =>
               AddupdateSupplierScreen(),
           ManageSupplierScreen.routeName: (context) =>

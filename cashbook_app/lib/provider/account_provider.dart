@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cashbook_app/models/account.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 import '../services/utility.dart';
 
@@ -34,7 +33,8 @@ class AccountProvider with ChangeNotifier {
   Future<void> fetchAccount() async {
     print("fetchAccount is call");
     String useremail = Utill.getCurrentUserEMAILID();
-    final url = Uri.parse(Utill.BASEURL + "/account/fetchall");
+    final url = Uri.parse("${Utill.BASEURL}/account/fetchall");
+
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
@@ -44,32 +44,25 @@ class AccountProvider with ChangeNotifier {
         },
       ),
     );
+
     if (response.body == 'null') {
-      print('its products retruns data is not avalible in firebase server');
       return;
     }
-    final responseData = json.decode(response.body);
-    // print(responseData);
-    List responseSupplierDataList = responseData['datalist']; //[{},{},{}]
-    final List<Account> tempLoadedSupplierlist = [];
+    if (response.statusCode == 200) {
+      final dynamic responseData = json.decode(response.body);
+      final List<dynamic> responseDataList =
+          responseData['datalist']; //[{},{},{}]
+      final List<Account> tempLoadedAccountlist = [];
 
-    // Wed, 28 Dec 2022 13:34:09 GMT //element['entrydatetime'] -- hold this type of formate --this formate coming form flask server
-    final stirngToDateTmeFormatter =
-        DateFormat('EEE, d MMM yyyy HH:mm:ss'); // Wed, 28 Dec 2022 13:34:09 GMT
-
-    responseSupplierDataList.forEach((element) {
-      tempLoadedSupplierlist.add(Account(
-        accountId: element['accountId'].toString(),
-        accountName: element["accountName"], //if it will null or string
-        balance: element['balance'].toString(),
-        date: stirngToDateTmeFormatter.parse(element["date"]),
-        useremail: element['useremail'].toString(),
-      ));
-    });
-    _accountList = tempLoadedSupplierlist;
-    _storedAccountList = _accountList; //for backup in searching
-    print(_accountList);
-    notifyListeners();
+      for (Map<String, dynamic> element in responseDataList) {
+        tempLoadedAccountlist.add(Account.fromJson(element));
+      }
+      _accountList = tempLoadedAccountlist;
+      _storedAccountList = _accountList; //for backup in searching
+      notifyListeners();
+    } else {
+      return;
+    }
   }
 
   Future<void> submit_In_add_New_account({
@@ -80,6 +73,8 @@ class AccountProvider with ChangeNotifier {
     try {
       // final url = Uri.parse(Utill.BASEURL + "/addinpurchas");
       final url = Uri.parse(Utill.BASEURL + "/account/addone");
+
+      ///account/addone
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
@@ -102,7 +97,6 @@ class AccountProvider with ChangeNotifier {
         await fetchAccount();
       }
     } catch (e) {
-      print(e);
       throw e;
     }
 

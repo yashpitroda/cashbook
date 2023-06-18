@@ -64,10 +64,8 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
 
     return Scaffold(
       appBar: AppBar(
-       
         title: Text(
           "Select supplier",
-          
         ),
         actions: [
           IconButton(
@@ -123,6 +121,9 @@ class _SelectSupplierScreenState extends State<SelectSupplierScreen> {
                             padding: const EdgeInsets.only(
                                 left: Constants.defaultPadding_8),
                             child: Card(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 0,
+                                  vertical: Constants.defaultPadding_6 / 2),
                               shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(

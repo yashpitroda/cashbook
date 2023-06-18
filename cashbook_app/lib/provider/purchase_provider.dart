@@ -10,14 +10,23 @@ import 'package:cashbook_app/models/supplier.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 class PurchaseProvider extends ChangeNotifier {
-  String totalPurchase = "0";
-  String totalLastMounthPurchase = "0";
-  String totalThisMounthPurchase = "0";
-  String totalPaid = "0";
-  String totalAdvance = "0";
-  String totalDue = "0";
+  String _totalLastMounthPurchase = "0";
+  String _totalThisMounthPurchase = "0";
+
+  String _totalPurchase = "0";
+  String _totalPaid = "0";
+  String _withBillPurchase = "0";
+  String _withBillPaid = "0";
+  String _chalanPaid = "0";
+  String _chalanPurchase = "0";
+
+  String _totalAdvance = "0";
+  String _totalDue = "0";
+  String _withBillAdvance = "0";
+  String _chalanAdvance = "0";
+  String _withBillDue = "0";
+  String _chalanDue = "0";
 
   SupplierProvider? supplierProviderOBJ;
 
@@ -32,14 +41,166 @@ class PurchaseProvider extends ChangeNotifier {
     return _purchaseList == null ? null : [..._purchaseList!];
   }
 
+  String get getTotalAdvance {
+    return _totalAdvance;
+  }
+
+  String get getTotalDue {
+    return _totalDue;
+  }
+
+  String get getWithBillAdvance {
+    return _withBillAdvance;
+  }
+
+  String get getWithBillDue {
+    return _withBillDue;
+  }
+
+  String get getChalanAdvance {
+    return _chalanAdvance;
+  }
+
+  String get getChalanDue {
+    return _chalanDue;
+  }
+
+  String get getWithBillPurchase {
+    return _withBillPurchase;
+  }
+
+  String get getWithBillPaid {
+    return _withBillPaid;
+  }
+
+  String get getChalanPaid {
+    return _chalanPaid;
+  }
+
+  String get getChalanPurchase {
+    return _chalanPurchase;
+  }
+
   Purchase findPurchaseObjByPID({required String pid}) {
     return _purchaseList!.firstWhere((element) {
       return element.pid == pid;
     });
   }
 
+  void updateDueAndAdvanceAmounts() {
+    _totalAdvance = "0";
+    _totalDue = "0";
+    _withBillAdvance = "0";
+    _chalanAdvance = "0";
+    _withBillDue = "0";
+    _chalanDue = "0";
+    Set<int> supplierIdSet = {};
+    if (_purchaseList == null) {
+      return;
+    }
+    for (int i = 0; i < _purchaseList!.length; i++) {
+      Purchase purchaseObj = _purchaseList![i];
+      supplierIdSet.add(int.parse(purchaseObj.supplierId));
+    }
+    if (supplierIdSet.isEmpty || supplierProviderOBJ == null) {
+      return;
+    }
+
+    for (int uniqueSid in supplierIdSet) {
+      Supplier supplierObj =
+          supplierProviderOBJ!.findSupplierBySID(sid: uniqueSid.toString());
+
+      _totalAdvance = (int.parse(_totalAdvance) +
+              int.parse(supplierObj.advance_amount_with_bill) +
+              int.parse(supplierObj.advance_amount_without_bill))
+          .toString();
+      _totalDue = (int.parse(_totalDue) +
+              int.parse(supplierObj.outstanding_amount_withbill) +
+              int.parse(supplierObj.outstanding_amount_without_bill))
+          .toString();
+      _withBillAdvance = (int.parse(_withBillAdvance) +
+              int.parse(supplierObj.advance_amount_with_bill))
+          .toString();
+      _withBillDue = (int.parse(_withBillDue) +
+              int.parse(supplierObj.outstanding_amount_withbill))
+          .toString();
+      _chalanAdvance = (int.parse(_chalanAdvance) +
+              int.parse(supplierObj.advance_amount_without_bill))
+          .toString();
+      _chalanDue = (int.parse(_chalanDue) +
+              int.parse(supplierObj.outstanding_amount_without_bill))
+          .toString();
+    }
+    notifyListeners();
+  }
+
+  void upadatePaidAndPurchase() {
+    _totalPurchase = "0";
+    _totalPaid = "0";
+    _withBillPurchase = "0";
+    _withBillPaid = "0";
+    _chalanPaid = "0";
+    _chalanPurchase = "0";
+    if (_purchaseList == null) {
+      return;
+    }
+    for (int i = 0; i < _purchaseList!.length; i++) {
+      Purchase purchaseObj = _purchaseList![i];
+      _totalPurchase =
+          (int.parse(_totalPurchase) + int.parse(purchaseObj.biilAmount))
+              .toString();
+      _totalPaid = (int.parse(_totalPaid) + int.parse(purchaseObj.paidAmount))
+          .toString();
+      if (int.parse(purchaseObj.isBill) == 1) {
+        _withBillPurchase =
+            (int.parse(_withBillPurchase) + int.parse(purchaseObj.biilAmount))
+                .toString();
+        _withBillPaid =
+            (int.parse(_withBillPaid) + int.parse(purchaseObj.paidAmount))
+                .toString();
+      } else {
+        _chalanPaid =
+            (int.parse(_chalanPaid) + int.parse(purchaseObj.paidAmount))
+                .toString();
+        _chalanPurchase =
+            (int.parse(_chalanPurchase) + int.parse(purchaseObj.biilAmount))
+                .toString();
+      }
+    }
+    notifyListeners();
+  }
+
+  void updateThisAndLastMounthPurchaseAndPaid() {
+    _totalLastMounthPurchase = "0";
+    _totalThisMounthPurchase = "0";
+
+    var dtNow = DateTime.now();
+    int currentMonth = dtNow.month;
+    for (var i = 0; i < _purchaseList!.length; i++) {
+      Purchase purchaseObj = _purchaseList![i];
+      int objMounth = purchaseObj.date.month;
+      int lastMounth;
+      if (currentMonth == 1) {
+        lastMounth = 12;
+      } else {
+        lastMounth = currentMonth - 1;
+      }
+
+      if (objMounth == currentMonth) {
+        _totalThisMounthPurchase = (int.parse(_totalThisMounthPurchase) +
+                int.parse(purchaseObj.biilAmount))
+            .toString();
+      }
+      if (objMounth == lastMounth) {
+        _totalLastMounthPurchase = (int.parse(_totalLastMounthPurchase) +
+                int.parse(purchaseObj.biilAmount))
+            .toString();
+      }
+    }
+  }
+
   Future<void> fatchPurchase() async {
-    Uri url = Uri.parse(Utill.BASEURL + "/purchase/fetchall");
+    Uri url = Uri.parse("${Utill.BASEURL}/purchase/fetchall");
 
     final response = await http.post(
       url,
@@ -59,7 +220,6 @@ class PurchaseProvider extends ChangeNotifier {
     List responsePurchaseDataList = responseData['datalist']; //[{},{},{}]
 
     if (responsePurchaseDataList.isEmpty) {
-      print("HAPPY");
       _purchaseList = null;
       _storedPurchaseList = null;
       notifyListeners();
@@ -68,8 +228,7 @@ class PurchaseProvider extends ChangeNotifier {
     final List<Purchase> tempLoadedPurchaselist = [];
     final stirngToDateTmeFormatter =
         DateFormat('EEE, d MMM yyyy HH:mm:ss'); // Wed, 28 Dec 2022 13:34:09 GM
-
-    responsePurchaseDataList.forEach((element) {
+    for (var element in responsePurchaseDataList) {
       tempLoadedPurchaselist.add(Purchase(
         categoryObj: Category_(
           categoryId: element["category_map"]["categoryId"].toString(),
@@ -116,66 +275,18 @@ class PurchaseProvider extends ChangeNotifier {
           sid: element["puchase_map"]["supplierId"].toString(),
         ),
       ));
-    });
+    }
 
     _purchaseList = tempLoadedPurchaselist;
     _storedPurchaseList = _purchaseList; //for backup in searching
-    totalPurchase = "0";
-    totalLastMounthPurchase = "0";
-    totalThisMounthPurchase = "0";
-    totalPaid = "0";
-    totalAdvance = "0";
-    totalDue = "0";
 
     if (_purchaseList != null) {
-      var dtNow = DateTime.now();
-      int currentMonth = dtNow.month;
-      for (var i = 0; i < _purchaseList!.length; i++) {
-        Purchase purchaseObj = _purchaseList![i];
-        int objMounth = purchaseObj.date.month;
-        int lastMounth;
-        if (currentMonth == 1) {
-          lastMounth = 12;
-        } else {
-          lastMounth = currentMonth - 1;
-        }
-        totalPurchase =
-            (int.parse(totalPurchase) + int.parse(purchaseObj.biilAmount))
-                .toString();
-        totalPaid = (int.parse(totalPaid) + int.parse(purchaseObj.paidAmount))
-            .toString();
-        totalAdvance =
-            (int.parse(totalAdvance) + int.parse(purchaseObj.advanceAmount))
-                .toString();
-        totalDue =
-            (int.parse(totalDue) + int.parse(purchaseObj.outstandingAmount))
-                .toString();
-        if (objMounth == currentMonth) {
-          totalThisMounthPurchase = (int.parse(totalThisMounthPurchase) +
-                  int.parse(purchaseObj.biilAmount))
-              .toString();
-        }
-        if (objMounth == lastMounth) {
-          totalLastMounthPurchase = (int.parse(totalLastMounthPurchase) +
-                  int.parse(purchaseObj.biilAmount))
-              .toString();
-        }
-      }
-      print("totalPurchase :" + totalPurchase);
-      print("totalPaid :" + totalPaid);
-      print("totalAdvance :" + totalAdvance);
-      print("totalDue :" + totalDue);
-      print("totalThisMounthPurchase :" + totalThisMounthPurchase);
-
-      print("totalLastMounthPurchase :" + totalLastMounthPurchase);
+      upadatePaidAndPurchase();
+      updateDueAndAdvanceAmounts();
+      updateThisAndLastMounthPurchaseAndPaid();
     }
 
     notifyListeners();
-    // } else {
-    //   print("not add");
-    //   print(responseData["status"]);
-    // }
-    print("hahs");
   }
 
   Future<void> submit_IN_Purchase(
@@ -191,9 +302,7 @@ class PurchaseProvider extends ChangeNotifier {
       required String remark,
       required DateTime finaldateTime}) async {
     try {
-      // final url = Uri.parse(Utill.BASEURL + "/addinpurchas");
-      // final url = Uri.parse(Utill.BASEURL + "/purchase/addone");
-      final url = Uri.parse(Utill.BASEURL + "/purchase/addone");
+      final url = Uri.parse("${Utill.BASEURL}/purchase/addone");
 
       final response = await http.post(
         url,

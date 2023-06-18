@@ -1,3 +1,4 @@
+
 import 'package:cashbook_app/services/utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,17 +9,25 @@ import 'package:intl/intl.dart';
 import '../models/supplier.dart';
 
 class SupplierProvider with ChangeNotifier {
-  // ------------------------------initialization-----------------------------------
-  // User? currentUser = FirebaseAuth.instance.currentUser!; //this is not use here // it is passes from frentend fuction
-  List<Supplier> _supplierList = [];
-  List<Supplier> _storedSupplierList = []; //for backup of _clientContactList --
+  String totalAdvance = "0";
+  String totalDue = "0";
 
-  // ------------------------------getter-----------------------------------
+  List<Supplier> _supplierList = [];
+  List<Supplier> _storedSupplierList = [];
+
+  // getter
   List<Supplier> get supplierList {
     return [..._supplierList];
   }
 
-  // ------------------------------findClientContactByCID-----------------------------------
+  String get getTotalAdvance {
+    return totalAdvance;
+  }
+
+  String get getTotalDue {
+    return totalDue;
+  }
+
   Supplier findSupplierBySID({required String sid}) {
     return _supplierList.firstWhere((element) {
       return int.parse(element.sid) == int.parse(sid);
@@ -31,7 +40,22 @@ class SupplierProvider with ChangeNotifier {
     });
   }
 
-// ------------------------------filterSearchResults-----------------------------------
+  void updateDueAndAdvance() {
+    totalAdvance = "0";
+    totalDue = "0";
+    for (var i = 0; i < _supplierList.length; i++) {
+      totalAdvance = (int.parse(totalAdvance) +
+              int.parse(_supplierList[i].advance_amount_with_bill) +
+              int.parse(_supplierList[i].advance_amount_without_bill))
+          .toString();
+      totalDue = (int.parse(totalDue) +
+              int.parse(_supplierList[i].outstanding_amount_withbill) +
+              int.parse(_supplierList[i].outstanding_amount_without_bill))
+          .toString();
+    }
+    notifyListeners();
+  }
+
   void filterSearchResults({required String query}) {
     if (query.isNotEmpty) {
       List<Supplier> matchDataWithQueryList =
@@ -56,11 +80,11 @@ class SupplierProvider with ChangeNotifier {
       }).toList();
       // _clientContactList.clear();
       // _clientContactList.addAll(dummyListData); //it is not right way
-      _supplierList = matchDataWithQueryList; //right way //
+      _supplierList = matchDataWithQueryList; //right way
       notifyListeners();
     } else {
       //if query is empty  then _storedContactList add to _clientContactList
-      _supplierList = _storedSupplierList; //right way
+      _supplierList = _storedSupplierList;
       notifyListeners();
     }
   }
@@ -113,8 +137,8 @@ class SupplierProvider with ChangeNotifier {
       ));
     });
     _supplierList = tempLoadedSupplierlist;
-    _storedSupplierList = _supplierList; //for backup in searching
-    print(_supplierList);
+    _storedSupplierList = _supplierList;
+    updateDueAndAdvance();
     notifyListeners();
   }
 
@@ -142,7 +166,7 @@ class SupplierProvider with ChangeNotifier {
     }
     final responseData = json.decode(response.body);
     print(responseData);
-   await fatchSupplier();
+    await fatchSupplier();
   }
 
   // ------------------------------findClientContactByCID-----------------------------------
@@ -171,7 +195,7 @@ class SupplierProvider with ChangeNotifier {
     }
     final responseData = json.decode(response.body);
     print(responseData);
-   await fatchSupplier();
+    await fatchSupplier();
   }
 
   Future<void> deleteSupplier(

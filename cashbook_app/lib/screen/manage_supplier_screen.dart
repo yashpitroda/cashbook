@@ -233,6 +233,9 @@ class _ManageSupplierScreenState extends State<ManageSupplierScreen> {
                             padding: const EdgeInsets.only(
                                 left: Constants.defaultPadding_8 * 1.4),
                             child: Card(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 0,
+                                  vertical: Constants.defaultPadding_6 / 2),
                               shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(
