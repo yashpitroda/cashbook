@@ -76,7 +76,7 @@ class AddPurchaseNewScreen extends StatelessWidget {
     Supplier supplierobj =
         Provider.of<AddPurchaseNewScreenProvider>(context, listen: false)
             .getSelectedSupplier!;
-    int c_cr = Provider.of<AddPurchaseNewScreenProvider>(context, listen: false)
+    int cCr = Provider.of<AddPurchaseNewScreenProvider>(context, listen: false)
         .getIsC_cr;
     int isBillValue =
         Provider.of<AddPurchaseNewScreenProvider>(context, listen: false)
@@ -104,7 +104,7 @@ class AddPurchaseNewScreen extends StatelessWidget {
           .submit_IN_Purchase(
               categoryId: categoryid,
               isBill: isBillValue,
-              cOrCr: c_cr,
+              cOrCr: cCr,
               accountId: accountid,
               selectedSupplierobj: supplierobj,
               billAmount: int.parse(billamountController.text),
@@ -130,7 +130,7 @@ class AddPurchaseNewScreen extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
               title: const Text('A error occurred!'),
-              content: Text('somethings wents wrong.\($e)'),
+              content: Text('somethings wents wrong.($e)'),
               actions: [
                 ElevatedButton(
                   onPressed: () {
@@ -279,15 +279,19 @@ class AddPurchaseNewScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Add Purchase"),
         ),
-        body: Stack(
+        body: Column(
           children: [
-            (Provider.of<AddPurchaseNewScreenProvider>(context)
-                    .getIsLoadingOnSubmit)
-                ? UtillComponent.loadingIndicator()
-                : bodyContent(context),
-            Align(
-                alignment: AlignmentDirectional.bottomEnd,
-                child: bottombuttoncard(context)),
+            Expanded(
+              child: (Provider.of<AddPurchaseNewScreenProvider>(context)
+                      .getIsLoadingOnSubmit)
+                  ? UtillComponent.loadingIndicator()
+                  : bodyContent(context),
+            ),
+            // Align(
+            //     alignment: AlignmentDirectional.bottomEnd,
+            //     child: bottombuttoncard(context))
+            // ,
+            bottombuttoncard(context)
           ],
         ),
       ),
@@ -344,7 +348,7 @@ class AddPurchaseNewScreen extends StatelessWidget {
           ),
           reamrkCard(context),
           const SizedBox(
-            height: 24,
+            height: 30,
           ),
         ],
       ),
@@ -358,6 +362,13 @@ class AddPurchaseNewScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(
             horizontal: Constants.defaultPadding_8,
             vertical: Constants.defaultPadding_8),
+        // padding: EdgeInsets.only(
+        //     left: 10,
+        //     right: 10,
+        //     top: 10,
+        //     bottom: MediaQuery.of(context).viewInsets.bottom +
+        //         20 //for device keybord title and amount will show
+        //     ),
         child: TextField(
           controller: remarkController,
           cursorColor: Colors.black,
@@ -786,7 +797,7 @@ class AddPurchaseNewScreen extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 4,
         ),
         Row(

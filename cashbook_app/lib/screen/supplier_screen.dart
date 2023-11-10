@@ -110,6 +110,8 @@ class ClientScreen extends StatelessWidget {
       'ispaid': 'payable'
     }
   ];
+
+  ClientScreen({super.key});
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -130,12 +132,12 @@ class ClientScreen extends StatelessWidget {
           return Center(
             child: Column(
               children: [
-                CircularProgressIndicator(),
+                const CircularProgressIndicator(),
                 ElevatedButton(
                     onPressed: () =>
                         Provider.of<GauthProvider>(context, listen: false)
                             .signOutWithGoogle(),
-                    child: Text("Logout"))
+                    child: const Text("Logout"))
               ],
             ),
           );
@@ -176,7 +178,7 @@ class ClientScreen extends StatelessWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(14, 0, 14, 10),
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
               height: 60,
               child: Row(
                 children: [
@@ -227,7 +229,7 @@ class ClientScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Provider.of<GauthProvider>(context, listen: false)
             .signOutWithGoogle(),
-        child: Icon(Icons.exit_to_app),
+        child: const Icon(Icons.exit_to_app),
       ),
     );
   }
@@ -291,10 +293,10 @@ class ClientScreen extends StatelessWidget {
                 elevation: 5,
                 child: ListTile(
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
                   title: Text(
                     "yash",
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   leading: CircleAvatar(
                     backgroundColor: const Color(0xffac3452),
@@ -312,7 +314,7 @@ class ClientScreen extends StatelessWidget {
             },
             itemCount: 10,
           ),
-          Text("page 3"),
+          const Text("page 3"),
         ]),
       ),
     );

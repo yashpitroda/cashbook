@@ -6,19 +6,22 @@ import 'package:cashbook_app/screen/add_purchase_new_screen.dart';
 import 'package:cashbook_app/screen/add_supplier_screen.dart';
 import 'package:cashbook_app/screen/contact_screens/select_contact_screen.dart';
 import 'package:cashbook_app/screen/add_in_payable_screen.dart';
+import 'package:cashbook_app/screen/filter_screen.dart';
 import 'package:cashbook_app/screen/home_screen.dart';
 import 'package:cashbook_app/screen/manage_supplier_screen.dart';
 import 'package:cashbook_app/screen/add_update_purchase_screen.dart';
+import 'package:cashbook_app/screen/purchase_analitics_screeen.dart';
 import 'package:cashbook_app/screen/purchase_screen.dart';
 import 'package:cashbook_app/screen/select_supplier_screen.dart';
+import 'package:cashbook_app/screen_provider/PurchaseAnalyticsScreeen_provider.dart';
 import 'package:cashbook_app/screen_provider/add_purchase_new_screen_provider.dart';
+import 'package:cashbook_app/screen_provider/filter_screen_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-import 'services/constants.dart';
 import 'services/palette.dart';
 import 'provider/google_auth_provider.dart';
 import 'screen/auth_screen_final.dart';
@@ -59,13 +62,20 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (BuildContext ctx) => AddPurchaseNewScreenProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (BuildContext ctx) => PurchaseAnalyticsScreenProvider(),
+        ),
+
         ChangeNotifierProxyProvider<SupplierProvider, PurchaseProvider>(
           create: (BuildContext ctx) => PurchaseProvider(),
-          update: (BuildContext ctx, value_supplierProvider,
-                  previous_PurchaseProvider) =>
-              previous_PurchaseProvider!
-                ..update(supplierProvider_obj: value_supplierProvider),
-        )
+          update: (BuildContext ctx, valueSupplierProvider,
+                  previousPurchaseProvider) =>
+              previousPurchaseProvider!
+                ..update(supplierProvider_obj: valueSupplierProvider),
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext ctx) => FilterScreenProvider(),
+        ),
       ],
       child: MaterialApp(
         scrollBehavior: const ScrollBehavior(
@@ -94,6 +104,7 @@ class MyApp extends StatelessWidget {
               .apply(bodyColor: Palette.fontBlackColor)
               .copyWith(),
           appBarTheme: const AppBarTheme(
+            centerTitle: true,
             elevation: 0.4,
             backgroundColor: Colors.white,
             foregroundColor: Palette.blackColor,
@@ -126,6 +137,9 @@ class MyApp extends StatelessWidget {
               const AddUpdatePurchaseScreen(),
           AddPurchaseNewScreen.routeName: (context) => AddPurchaseNewScreen(),
           PurchaseScreen.routeName: (context) => PurchaseScreen(),
+          PurchaseAnalyticsScreeen.routeName: (context) =>
+              const PurchaseAnalyticsScreeen(),
+          FilterScreen.routeName: (context) => const FilterScreen(),
         },
       ),
     );

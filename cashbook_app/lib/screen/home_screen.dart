@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cashbook_app/screen/add_purchase_new_screen.dart';
+import 'package:cashbook_app/screen/filter_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -68,8 +69,8 @@ class HomeScreen extends StatelessWidget {
                   onPressed: () =>
                       Provider.of<GauthProvider>(context, listen: false)
                           .signOutWithGoogle(),
-                  child: Text("Logout")),
-              Center(
+                  child: const Text("Logout")),
+              const Center(
                 child: CircularProgressIndicator(),
               )
             ],
@@ -127,25 +128,30 @@ class HomeScreen extends StatelessWidget {
 //   MaterialPageRoute(builder: (MaterialAppContext) => ScreenB())
 // )
               },
-              child: Text("go to purchase screen")),
+              child: const Text("go to purchase screen")),
           ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(ClientScreen.routeName);
               },
-              child: Text("go to purchase screen")),
-          Center(
+              child: const Text("go to purchase screen")),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(FilterScreen.routeName);
+              },
+              child: const Text("go to filter screen")),
+          const Center(
             child: Text("home"),
           ),
           ElevatedButton(
               onPressed: () =>
                   Provider.of<GauthProvider>(context, listen: false)
                       .signOutWithGoogle(),
-              child: Text("Logout")),
+              child: const Text("Logout")),
           ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(AddPurchaseNewScreen.routeName);
               },
-              child: Text("nothing"))
+              child: const Text("nothing"))
         ],
       ),
     );

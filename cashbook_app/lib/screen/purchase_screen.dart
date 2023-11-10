@@ -1,5 +1,5 @@
 import 'package:cashbook_app/screen/add_purchase_new_screen.dart';
-import 'package:cashbook_app/services/palette.dart';
+import 'package:cashbook_app/screen/purchase_analitics_screeen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +13,6 @@ import '../services/provider_utill.dart';
 import '../services/widget_component_utill.dart';
 import '../widgets/purchase_card.dart';
 import '../widgets/purchase_screen_header.dart';
-import 'add_update_purchase_screen.dart';
 
 class PurchaseScreen extends StatelessWidget {
   static const routeName = '/PurchaseScreen';
@@ -26,6 +25,15 @@ class PurchaseScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Purchases"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .pushNamed(PurchaseAnalyticsScreeen.routeName);
+            },
+            icon: Icon(Icons.menu_book_outlined),
+          )
+        ],
       ),
       body: FutureBuilder(
           future: Future.wait([
@@ -53,99 +61,6 @@ class PurchaseScreen extends StatelessWidget {
                         controller: _scrollcontroller,
                         child: Column(
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 0),
-                              child: Card(
-                                elevation: 1.4,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                        bottomRight: Radius.circular(
-                                            Constants.borderRadius_6 * 2),
-                                        bottomLeft: Radius.circular(
-                                            Constants.borderRadius_6 * 2))),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: Constants.defaultPadding_6,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal:
-                                                Constants.defaultPadding_8 * 2,
-                                            vertical:
-                                                Constants.defaultPadding_6 / 3),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                                flex: 4, child: Container()),
-                                            Expanded(
-                                              flex: 8,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "(WITH BILL)",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodySmall!
-                                                        .copyWith(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColorDark),
-                                                  ),
-                                                  Text(
-                                                    "(CHALAN)",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodySmall!
-                                                        .copyWith(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColorDark),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Divider(
-                                        height: 6,
-                                      ),
-                                      TitleAndTitleValueRow(
-                                          title: "Prepayment",
-                                          titleValue1:
-                                              Provider.of<PurchaseProvider>(
-                                                      context)
-                                                  .getWithBillAdvance,
-                                          titleValue2:
-                                              Provider.of<PurchaseProvider>(
-                                                      context)
-                                                  .getChalanAdvance,
-                                          color: Palette.greendarkColor),
-                                      TitleAndTitleValueRow(
-                                          title: "Unpaid",
-                                          titleValue1:
-                                              Provider.of<PurchaseProvider>(
-                                                      context)
-                                                  .getWithBillDue,
-                                          titleValue2:
-                                              Provider.of<PurchaseProvider>(
-                                                      context)
-                                                  .getChalanDue,
-                                          color: Palette.redColor),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: Constants.defaultPadding_6,
-                            ),
-                            // UtillComponent.divider(1.4),
                             Card(
                               elevation: 1.5,
                               shape: const RoundedRectangleBorder(
@@ -228,54 +143,12 @@ class PurchaseScreen extends StatelessWidget {
                                                     context)
                                                 .getChalanPaid,
                                         color: null),
-                                    // TitleAndTitleValueRow(
-                                    //     title: "Prepayment",
-                                    //     titleValue1:
-                                    //         Provider.of<PurchaseProvider>(
-                                    //                 context)
-                                    //             .getWithBillAdvance,
-                                    //     titleValue2:
-                                    //         Provider.of<PurchaseProvider>(
-                                    //                 context)
-                                    //             .getChalanAdvance,
-                                    //     color: Palette.greendarkColor),
-                                    // TitleAndTitleValueRow(
-                                    //     title: "Unpaid",
-                                    //     titleValue1:
-                                    //         Provider.of<PurchaseProvider>(
-                                    //                 context)
-                                    //             .getWithBillDue,
-                                    //     titleValue2:
-                                    //         Provider.of<PurchaseProvider>(
-                                    //                 context)
-                                    //             .getChalanDue,
-                                    //     color: Palette.redColor),
                                   ],
                                 ),
                               ),
                             ),
-                            // PurchaseScreenHeaderCard(
-                            //   title1: "Purchase",
-                            //   title2: "paid",
-                            //   title3: "prepayment",
-                            //   title4: "Unpaid",
-                            //   title1Value:
-                            //       Provider.of<PurchaseProvider>(context)
-                            //           .totalPurchase,
-                            //   title2Value:
-                            //       Provider.of<PurchaseProvider>(context)
-                            //           .totalPaid,
-                            //   title3Value:
-                            //       Provider.of<SupplierProvider>(context)
-                            //           .totalAdvance,
-                            //   title4Value:
-                            //       Provider.of<SupplierProvider>(context)
-                            //           .totalDue,
-                            // ),
                             Consumer<PurchaseProvider>(
                               builder: (context, purchaseProvider, child) {
-                                print("fgfg");
-                                print(purchaseProvider.getPurchaseList == null);
                                 return (purchaseProvider.getPurchaseList ==
                                         null)
                                     ? const Center(

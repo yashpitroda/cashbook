@@ -45,6 +45,22 @@ class PurchaseProvider extends ChangeNotifier {
     return _totalAdvance;
   }
 
+  String get getTotalLastMounthPurchase {
+    return _totalLastMounthPurchase;
+  }
+
+  String get getTotalThisMounthPurchase {
+    return _totalThisMounthPurchase;
+  }
+
+  String get getTotalPaid {
+    return _totalPaid;
+  }
+
+  String get getTotalPurchase {
+    return _totalPurchase;
+  }
+
   String get getTotalDue {
     return _totalDue;
   }
